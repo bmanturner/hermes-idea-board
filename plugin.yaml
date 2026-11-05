@@ -1,0 +1,14 @@
+name: idea-board
+version: 0.1.0
+description: "A nightly board of things your Hermes can do for you, grounded in your own chats and the tools, connectors and skills this profile actually has. Click an idea to start it in a new chat; dismiss with a reason and it learns."
+author: Brendan Turner
+license: MIT
+homepage: https://github.com/bmanturner/hermes-idea-board
+requires_hermes: ">=0.22.0"
+provides_tools:
+  - idea_board_run
+provides_hooks:
+  - pre_llm_call
+config_schema:
+  max_cards: {type: int, default: 6, description: "Most new ideas per run"}
+  history_days: {type: int, default: 14, description: "Days of chat history each run reads"}

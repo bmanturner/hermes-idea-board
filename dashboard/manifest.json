@@ -1,0 +1,8 @@
+{
+  "name": "idea-board",
+  "label": "Idea Board",
+  "description": "Ideas your Hermes can do for you, from your own chats and capabilities.",
+  "icon": "Lightbulb",
+  "version": "0.1.0",
+  "api": "plugin_api.py"
+}
