@@ -32,7 +32,7 @@ class LlmResult:
 LlmFn = Callable[[str, str, str, dict, int], LlmResult]
 
 # Provider hiccups worth another try: overloaded, rate limited, server errors, timeouts, dropped links.
-_TRANSIENT = re.compile(r"overloaded|rate.?limit|\b(429|529)\b|(status|http|code|error)\D{0,6}(500|502|503|504)\b|"
+_TRANSIENT = re.compile(r"overloaded|rate.?limit|\b(429|529)\b|(status|http|code)\D{0,6}(500|502|503|504)\b|"
                         r"internal server error|bad gateway|service unavailable|time(d)? ?out|temporarily|"
                         r"connection (reset|error|aborted)", re.I)
 RETRY_WAITS = (15, 45)

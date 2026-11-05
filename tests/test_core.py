@@ -258,6 +258,9 @@ class PipelineTests(unittest.TestCase):
             pipeline.retrying(broken, sleep=waits.append)
         self.assertEqual(waits, [15, 45])  # no waiting on a real error
 
+        self.assertTrue(pipeline.is_transient(RuntimeError("Error code: 503")))
+        self.assertFalse(pipeline.is_transient(RuntimeError("max 500 tokens")))
+
         def always_overloaded():
             raise RuntimeError("529 Overloaded")
         with self.assertRaises(RuntimeError):
