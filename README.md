@@ -81,10 +81,21 @@ Setup stores your choices in the plugin's own data. Without setup, these keys in
 - `/idea-board generate` runs once in the background; `/idea-board connectors` rechecks which connectors would help (no model call); `/idea-board status` shows the last run.
 - `idea_board_run` (tool) runs once; the nightly job calls it.
 
+## Compatibility
+
+I use public plugin APIs everywhere except three Hermes internals that have no public equivalent yet. `hermes plugins validate` lists them as warnings (catalog rule 9: public surfaces only):
+
+| Internal | What I use it for | If a Hermes release moves it |
+|---|---|---|
+| `hermes_cli.tools_config._get_platform_tools` and `toolsets.resolve_toolset` | Which toolsets are on for chats, so ideas only use tools you can actually call | I fall back to every installed toolset minus `agent.disabled_toolsets`; lazily loaded MCP servers stay listed |
+| `cron.suggestions.load_suggestions` | Hermes's own suggested jobs, so I don't suggest them again | I skip that duplicate check and say so in the run's notes |
+
+`tests/test_compat.py` breaks each one on purpose and checks the board keeps working. A request for public versions is open upstream (link added when filed).
+
 ## Development
 
 ```bash
-python3 -m unittest tests.test_core tests.test_api tests.test_seeds   # core, backend and connector ranking, on a made-up user
+python3 -m unittest tests.test_core tests.test_api tests.test_seeds tests.test_compat   # core, backend, connector ranking, fallbacks; on a made-up user
 hermes plugins validate .                            # catalog checks
 ```
 

@@ -56,32 +56,61 @@ def connectors(dispatch: Dispatch) -> tuple[list[dict[str, Any]], str | None]:
     return out, None
 
 
+def _disabled_toolsets(cfg: dict[str, Any]) -> set[str]:
+    """``agent.disabled_toolsets`` from the public config (a list, or a JSON-array string)."""
+    raw = (cfg.get("agent") or {}).get("disabled_toolsets") or []
+    if isinstance(raw, str):
+        try:
+            raw = json.loads(raw.replace("'", '"'))
+        except ValueError:
+            raw = [p.strip() for p in raw.strip("[]").split(",")]
+    return {str(x).strip() for x in raw if str(x).strip()} if isinstance(raw, list) else set()
+
+
+def _mcp_enabled(cfg: dict[str, Any], name: str) -> bool:
+    entry = (cfg.get("mcp_servers") or {}).get(name)
+    return not (isinstance(entry, dict) and entry.get("enabled") is False)
+
+
 def toolsets(platform: str = "cli") -> list[dict[str, Any]]:
     """Toolsets enabled where cards run. Desktop chats use the ``cli`` platform's selection
-    (``tui_gateway/agent_factory.py``), so that is the default."""
+    (``tui_gateway/agent_factory.py``), so that is the default.
+
+    Hermes has no public API for "which toolsets are on for this platform" yet, so this uses two
+    core internals (``hermes_cli.tools_config._get_platform_tools`` and ``toolsets.resolve_toolset``;
+    see README, Compatibility). If either moves, it falls back to every available toolset minus the
+    ones disabled globally in config (``agent.disabled_toolsets``), and keeps working."""
     from tools.registry import registry
 
     tool_to_ts = registry.get_tool_to_toolset_map()
+    cfg: dict[str, Any] = {}
+    mcp_names: set[str] = set()
+    try:  # public: the profile config
+        from hermes_cli.config import load_config
+
+        cfg = load_config() or {}
+        mcp_names = {str(k) for k in (cfg.get("mcp_servers") or {})}
+    except Exception as exc:
+        log.debug("idea-board: config unavailable: %s", exc)
     enabled_tools: set[str] | None = None
     enabled_names: set[str] = set()
-    mcp_names: set[str] = set()
     try:  # private: the per-platform toolset selection and composite resolution
-        from hermes_cli.config import load_config
         from hermes_cli.tools_config import _get_platform_tools
         from toolsets import resolve_toolset
 
-        cfg = load_config()
-        mcp_names = {str(k) for k in (cfg.get("mcp_servers") or {})}
-        enabled_tools = set()
+        picked: set[str] = set()
+        names: set[str] = set()
         for ts in _get_platform_tools(cfg, platform):
-            enabled_names.add(str(ts))
-            enabled_tools.update(resolve_toolset(ts))
+            names.add(str(ts))
+            picked.update(resolve_toolset(ts))
+        enabled_tools, enabled_names = picked, names
     except Exception as exc:
         log.debug("idea-board: platform toolsets unavailable, using registry availability: %s", exc)
+    disabled = _disabled_toolsets(cfg) if enabled_tools is None else set()
     available = registry.get_available_toolsets()
     groups: dict[str, list[str]] = {}
     for tool, ts in tool_to_ts.items():
-        if ts in SKIP_TOOLSETS:
+        if ts in SKIP_TOOLSETS or ts in disabled:
             continue
         if enabled_tools is not None and tool not in enabled_tools:
             continue
@@ -96,7 +125,10 @@ def toolsets(platform: str = "cli") -> list[dict[str, Any]]:
                     "can_do": _first_sentence(schema.get("description") or ""), "tools": sorted(tools)[:12]})
     # MCP servers enabled for chats whose tools aren't loaded in this process (they connect lazily
     # in some processes): list them so ideas can use them, with what we know.
-    for name in sorted((mcp_names & enabled_names) - set(groups)):
+    # Without the private platform selection, every enabled MCP server in config counts.
+    lazy = mcp_names & enabled_names if enabled_tools is not None else {
+        n for n in mcp_names if _mcp_enabled(cfg, n) and n not in disabled}
+    for name in sorted(lazy - set(groups)):
         out.append({"id": f"mcp:{name}", "kind": "mcp", "name": name, "status": "ready",
                     "can_do": f"MCP server {name} (tools load when a chat connects to it)", "tools": []})
     return out
@@ -127,7 +159,7 @@ def platforms() -> list[dict[str, Any]]:
              "can_do": f"Deliver messages and scheduled-job results to {n}", "tools": []} for n in sorted(set(names))]
 
 
-def automations(dispatch: Dispatch) -> dict[str, Any]:
+def automations(dispatch: Dispatch, notes: list[str] | None = None) -> dict[str, Any]:
     jobs: list[dict[str, Any]] = []
     try:
         data = json.loads(dispatch("cronjob_manage", {"action": "list"}))
@@ -144,8 +176,10 @@ def automations(dispatch: Dispatch) -> dict[str, Any]:
 
         suggested = [{"title": s.get("title"), "status": s.get("status")} for s in load_suggestions()
                      if s.get("status") in ("pending", "dismissed")]
-    except Exception as exc:
+    except Exception as exc:  # fallback: skip the duplicate check against Hermes's suggestions
         log.debug("idea-board: suggestions unavailable: %s", exc)
+        if notes is not None:
+            notes.append("Hermes suggested jobs unavailable; duplicate check against them skipped")
     return {"jobs": jobs, "suggested": suggested}
 
 
@@ -161,7 +195,8 @@ def profile_text(limit: int = 1500) -> str:
 
 def build(dispatch: Dispatch) -> dict[str, Any]:
     conns, conn_note = connectors(dispatch)
+    notes = [n for n in (conn_note,) if n]
     caps = toolsets() + conns + skills() + platforms()
     tool_to_cap = {t: c["id"] for c in caps for t in c.get("tools") or []}
-    return {"capabilities": caps, "tool_to_cap": tool_to_cap, "automations": automations(dispatch),
-            "profile": profile_text(), "notes": [n for n in (conn_note,) if n]}
+    return {"capabilities": caps, "tool_to_cap": tool_to_cap, "automations": automations(dispatch, notes),
+            "profile": profile_text(), "notes": notes}
