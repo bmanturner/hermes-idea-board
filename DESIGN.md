@@ -257,8 +257,15 @@ Host `Badge`, muted variant only, codicon leading at 4px: capabilities (deduplic
 ### Message block (the prompt)
 - **Style:** Quiet Fill, 4px radius, 10px padding, Body type in secondary text. The text inside is clamped to 8 lines with "Show all"; the clamp sits on an inner element so the padding never shows a half line.
 - **Label:** a "YOUR MESSAGE · GOES INTO A NEW CHAT" overline above it, in the place of the PROMPT label on Hermes's Scheduled jobs page. The block is the user's own words, so its "I" is the user.
-- **Footer:** "Show all" and "Copy prompt".
+- **Footer:** "Show all" (only when the clamp can cut something off) and "Copy prompt".
 - **The promise:** the agent's promise sits under the Start row in Meta tertiary, never inside or under the user's message: "You read it and press send. I'll show you a plan first and act only after your yes." 
+
+### Connector recommendation
+Ranked in code and shown in the *Connect next* group, after the model's own connect ideas, as ordinary list rows: "Connect Todoist" over "9 new ideas · 3 match your chats". Its detail follows the idea detail exactly:
+- **Title:** "Connect {Name}" in the idea-title role; meta line with the `plug` codicon, "Connect next", "adds {what it adds}" and "or {alternatives}".
+- **Why:** the agent's sentence: "With Todoist connected, I could take on 9 new ideas. 3 of them match what you've talked about lately (deadline, todo, priority)."
+- **Ideas it would make possible · N:** up to eight rows, Row title over a Meta line ("Matches your chats: todo" first, otherwise what the idea does), then "and N more". Not clickable.
+- **Message block, actions and promise** as for ideas: "Connect in a new chat" (primary, `plug` codicon) and "Not interested" (secondary; undo bar "I won't suggest Todoist again."), then "You read it and press send. Nothing connects until you approve it in the connect step." Keyboard: Enter connects, N or D hides.
 
 ### Undo bar
 Soft fill, 4px radius, 8px 12px padding, Body type; message left, then "Edit rules" (text action, only when the dismissal made a rule) and "Undo" (textStrong). It appears at the top of the detail column after a dismiss or snooze and stays until the next action (another dismiss or snooze, picking another idea, or Start). No timer. A new rule is shown as the agent's own sentence: "Dismissed. I'll stay off the topic "job search"." 

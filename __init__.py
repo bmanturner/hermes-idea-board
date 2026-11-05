@@ -14,7 +14,9 @@ import logging
 import threading
 from typing import Any
 
-from .idea_board import inventory, packet, pipeline, safety, transcripts
+import time
+
+from .idea_board import inventory, packet, pipeline, safety, seeds, transcripts
 from .idea_board.store import Store
 
 log = logging.getLogger("plugins.idea-board")
@@ -63,13 +65,45 @@ def run_once(trigger: str) -> dict[str, Any]:
         store = _store()
         inv = inventory.build(_CTX.dispatch_tool)
         sessions = transcripts.load_sessions(history_days=_setting("history_days", 14))
-        pkt = packet.build(inv, sessions, store)
+        library = seeds.load_seeds()
+        try:
+            _rank_connectors(store, inv, sessions, library)
+        except Exception:
+            log.exception("idea-board: connector ranking failed")
+        have = seeds.classes_ready(inv["capabilities"])
+        pkt = packet.build(inv, sessions, store,
+                           seeds=seeds.available_now(library, have, seeds.chat_topics(sessions)))
         report = pipeline.run(pkt, _llm, store, trigger=trigger, max_cards=_setting("max_cards", 6))
         out = report.summary()
         out["notes"] = pkt.get("notes") or []
         return out
     finally:
         _RUN_LOCK.release()
+
+
+def _rank_connectors(store: Store, inv: dict[str, Any], sessions: list[dict[str, Any]],
+                     library: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Connectors worth adding next, ranked in code by the seed ideas they'd make possible."""
+    recs = seeds.recommend(inv["capabilities"], sessions, seeds=library)
+    store.set_meta("connector_recs", {"as_of": time.time(), "items": recs})
+    return recs
+
+
+def refresh_connectors() -> str:
+    """Recheck connectors now, without a model call (after the user connects one)."""
+    store = _store()
+    inv = inventory.build(_CTX.dispatch_tool)
+    if not any(c["kind"] == "connector" for c in inv["capabilities"]):
+        return "I can't see any connectors for this profile, so I have nothing to suggest."
+    recs = _rank_connectors(store, inv, transcripts.load_sessions(history_days=_setting("history_days", 14)),
+                            seeds.load_seeds())
+    hidden = set(store.get_meta("hidden_connectors") or [])
+    shown = [r for r in recs if r["slug"] not in hidden][:3]
+    if not shown:
+        return "I rechecked your connectors. None of the ones you could add would open up new ideas right now."
+    parts = [f"{r['name']} ({r['unlocked']} new ideas" + (f", {r['matched']} matching your chats)" if r["matched"] else ")")
+             for r in shown]
+    return "I rechecked your connectors. Worth connecting next: " + "; ".join(parts) + ". They're on the Idea Board."
 
 
 def _tool_run(args: dict, **_kw: Any) -> str:
@@ -96,7 +130,14 @@ def _command(raw_args: str = "", **_kw: Any) -> str:
                     "Send `/idea-board generate` to try again.")
         return (f"Last {last['trigger']} run: I read {last['sessions_read']} chats, drafted {last['candidates']} "
                 f"ideas and kept {last['kept']}, using {tokens:,} tokens on {last['model'] or 'the default model'}.")
-    return "Send `/idea-board generate` to make new ideas, or `/idea-board status` to see my last run."
+    if arg == "connectors":
+        try:
+            return refresh_connectors()
+        except Exception as exc:
+            log.exception("idea-board connector refresh failed")
+            return f"I couldn't recheck your connectors ({type(exc).__name__}). Try again in a moment."
+    return ("Send `/idea-board generate` to make new ideas, `/idea-board connectors` to recheck which "
+            "connectors would help, or `/idea-board status` to see my last run.")
 
 
 def _background_generate() -> None:
@@ -139,7 +180,7 @@ def register(ctx) -> None:
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
         handler=_tool_run)
-    ctx.register_command("idea-board", _command, description="Idea Board: generate new ideas now, or show the last run",
+    ctx.register_command("idea-board", _command, description="Idea Board: generate new ideas now, recheck connectors, or show the last run",
                          args_hint="generate|status")
     ctx.register_automation_blueprint(
         "nightly", title="Idea Board nightly ideas",

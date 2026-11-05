@@ -154,7 +154,42 @@ def board():
         "last_run": _run_out(s.last_run()),
         "reasons": [{"code": k, "label": v} for k, v in store_mod.REASONS.items()],
         "setup": _setup(s),
+        "connectors": _connectors_out(s),
     }
+
+
+def _connectors_out(s, limit: int = 3) -> list[dict[str, Any]]:
+    """Top connector recommendations from the last run, minus the ones the user hid."""
+    seeds_mod = _core("seeds")
+    saved = s.get_meta("connector_recs") or {}
+    hidden = set(s.get_meta("hidden_connectors") or [])
+    out = []
+    for rec in saved.get("items") or []:
+        if rec.get("slug") in hidden:
+            continue
+        adds = ", ".join(seeds_mod.CLASSES.get(c, c) for c in rec.get("classes") or [])
+        out.append({**rec, "adds": adds, "prompt": seeds_mod.connect_prompt(rec), "as_of": saved.get("as_of")})
+        if len(out) == limit:
+            break
+    return out
+
+
+@router.post("/connectors/{slug}/hide")
+def hide_connector(slug: str):
+    s = _store()
+    known = {r.get("slug") for r in (s.get_meta("connector_recs") or {}).get("items") or []}
+    if slug not in known:
+        raise HTTPException(status_code=404, detail="unknown connector")
+    hidden = list(dict.fromkeys([*(s.get_meta("hidden_connectors") or []), slug]))
+    s.set_meta("hidden_connectors", hidden)
+    return {"ok": True}
+
+
+@router.post("/connectors/{slug}/unhide")
+def unhide_connector(slug: str):
+    s = _store()
+    s.set_meta("hidden_connectors", [h for h in (s.get_meta("hidden_connectors") or []) if h != slug])
+    return {"ok": True}
 
 
 @router.post("/setup")

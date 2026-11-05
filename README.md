@@ -11,6 +11,18 @@ Each night I go through the day's conversations and find signals in code: things
 - **Three kinds.** *Do once* (close a loop, prep for a date), *Put on autopilot* (a scheduled job or standing skill), and *Connect next* (one connector that would unlock something you asked for).
 - **No repeats.** Ideas are checked against the board, your scheduled jobs, Hermes' own suggested jobs, and your dismissal rules.
 
+## Which connector to add next
+
+Every run, I also work out which connectors would open up the most new ideas for you, in code, with no model call:
+
+1. **Seed ideas.** `data/seeds.json` holds 128 generic ideas distilled once from the [Hermes user stories](https://hermes-agent.nousresearch.com/docs/user-stories), each linked to its stories and tagged with the kinds of tool it needs (email, calendar, notes, tasks, team chat, payments, and so on; the full list is `CLASSES` in `idea_board/seeds.py`).
+2. **What you have.** Your toolsets, MCP servers, skills, messaging platforms and connected Portal connectors are mapped to those same kinds.
+3. **What each connector adds.** Each Portal connector in `data/connectors.json` is tagged with the kinds it adds. For every connector you could still connect, I count the seed ideas you can't do today but could with it, and how many of those match what you've talked about: two of the idea's topic words came up together in one of your recent chats, and the topic came up in at least two.
+4. **Grounded or gone.** A connector is suggested only if at least one idea it opens up matches your chats. One that merely opens up many generic ideas (a sales tool for someone who isn't selling) is not. If nothing qualifies, the group doesn't appear.
+5. **The board.** The top three appear under *Connect next*: "Connect Todoist · 9 new ideas · 3 match your chats". Connectors that open up exactly the same ideas are folded together ("or Linear, Asana, Jira"). Pick one to see the ideas it would make possible and a ready message; *Connect in a new chat* places it in the composer for you to send, and *Not interested* stops suggesting it (with Undo).
+
+Ideas you can already do from the seed list are also given to the nightly run as starting points, adapted to your own tools and topics. After you connect something, send `/idea-board connectors` to recheck right away; otherwise the next run notices.
+
 ## Safety
 
 The prompt on a card was written by a model that read your chats, and you send it with your full tool access. So code, not the model, controls what a card can carry:
@@ -66,17 +78,17 @@ Setup stores your choices in the plugin's own data. Without setup, these keys in
 
 ## Commands and tools
 
-- `/idea-board generate` runs once in the background; `/idea-board status` shows the last run.
+- `/idea-board generate` runs once in the background; `/idea-board connectors` rechecks which connectors would help (no model call); `/idea-board status` shows the last run.
 - `idea_board_run` (tool) runs once; the nightly job calls it.
 
 ## Development
 
 ```bash
-python3 -m unittest tests.test_core tests.test_api   # core and backend, on a made-up user
+python3 -m unittest tests.test_core tests.test_api tests.test_seeds   # core, backend and connector ranking, on a made-up user
 hermes plugins validate .                            # catalog checks
 ```
 
-Layout: `idea_board/` is the core (evidence, safety, prompts, pipeline, store). `inventory.py` and `transcripts.py` are the only modules that read Hermes. `dashboard/plugin_api.py` is the board's REST backend, `desktop/plugin.js` the page. `docs/nightly-run.md` describes the pipeline.
+Layout: `idea_board/` is the core (evidence, safety, prompts, pipeline, store, and `seeds.py` for seed ideas and connector ranking). `inventory.py` and `transcripts.py` are the only modules that read Hermes. `dashboard/plugin_api.py` is the board's REST backend, `desktop/plugin.js` the page. `docs/nightly-run.md` describes the pipeline.
 
 ## License
 

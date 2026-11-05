@@ -83,9 +83,9 @@ const STYLE = `
 .ib-prompt-text.is-clamped { display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; }
 .ib-undo { display: flex; align-items: center; gap: 12px; background: var(--ui-bg-quaternary); color: var(--ui-text-secondary); border-radius: 4px; padding: 8px 12px; font-size: 0.8125rem; line-height: 1.5; max-width: 720px; }
 @container ib (max-width: ${NARROW}px) {
-  .ib-split { grid-template-columns: minmax(0, 1fr); gap: 16px; overflow: auto; }
-  .ib-list-col { border-right: 0; border-bottom: 1px solid var(--ui-stroke-tertiary); padding: 0 0 16px; overflow: visible; }
-  .ib-detail-col { overflow: visible; }
+  .ib-split { grid-template-columns: minmax(0, 1fr); grid-auto-rows: max-content; align-content: start; gap: 16px; overflow: auto; }
+  .ib-list-col { border-right: 0; border-bottom: 1px solid var(--ui-stroke-tertiary); padding: 0 0 16px; overflow: visible; min-height: auto; }
+  .ib-detail-col { overflow: visible; min-height: auto; }
 }
 `
 
@@ -125,8 +125,12 @@ async function placeInNewChat(text) {
 
 async function startIdea(card) {
   rest(`/cards/${card.id}/started`, { method: 'POST' }).catch(() => {})
-  if (await placeInNewChat(card.prompt)) return
-  const copied = await api.os.writeClipboard(card.prompt)
+  await openWithPrompt(card.prompt)
+}
+
+async function openWithPrompt(text) {
+  if (await placeInNewChat(text)) return
+  const copied = await api.os.writeClipboard(text)
   host.notify({
     kind: copied ? 'info' : 'error',
     message: copied
@@ -311,11 +315,13 @@ function PromptPreview({ card }) {
   const body = card.prompt
     .replace(/^\[Idea Board · [^\]]+\][^\n]*\n[^\n]*\n\n/, '')
     .replace(/\n\n— Idea Board · IB-\d+\s*$/, '')
+  // Offer "Show all" only when the 8-line clamp can actually cut something off.
+  const long = body.length > 560 || body.split('\n').length > 8
   return col({ gap: 6, maxWidth: PROSE }, [
     jsx(Overline, { children: 'Your message · goes into a new chat' }),
     jsx('div', { className: 'ib-prompt', children: jsx('div', { className: open ? 'ib-prompt-text' : 'ib-prompt-text is-clamped', children: body }) }),
     row({ ...T.meta, gap: 12, color: C.t, flexWrap: 'wrap' }, [
-      jsx(Button, { variant: 'text', size: 'inline', onClick: () => setOpen(!open), children: open ? 'Show less' : 'Show all' }, 't'),
+      long && jsx(Button, { variant: 'text', size: 'inline', onClick: () => setOpen(!open), children: open ? 'Show less' : 'Show all' }, 't'),
       jsx(Button, {
         variant: 'text',
         size: 'inline',
@@ -771,6 +777,65 @@ function Detail({ card, reasons, onStart, onSnooze, onDismiss, onNote }) {
   ])
 }
 
+// A connector recommendation shown as a list item in the "Connect next" group.
+const recItem = rec => ({
+  id: `conn:${rec.slug}`,
+  isRec: true,
+  kind: 'connector',
+  title: `Connect ${rec.name}`,
+  value_note: `${plural(rec.unlocked, 'new idea')}${rec.matched ? ` · ${rec.matched} ${rec.matched === 1 ? 'matches' : 'match'} your chats` : ''}`,
+  rec
+})
+
+function ConnectorDetail({ item, onConnect, onHide }) {
+  const rec = item.rec
+  const alts = rec.alternatives || []
+  const words = rec.matched_words || []
+  const shown = (rec.examples || []).length
+  const why = rec.matched
+    ? `With ${rec.name} connected, I could take on ${plural(rec.unlocked, 'new idea')}. ${rec.matched === 1 ? 'One of them matches' : `${rec.matched} of them match`} what you’ve talked about lately${words.length ? ` (${words.slice(0, 3).join(', ')})` : ''}.`
+    : `With ${rec.name} connected, I could take on ${plural(rec.unlocked, 'new idea')}, like the ones below.`
+  return col({ gap: 16, maxWidth: 720 }, [
+    col({ gap: 8 }, [
+      heading(2, 'ideaTitle', C.p, item.title),
+      row({ ...T.meta, gap: 6, color: C.t, flexWrap: 'wrap' }, [
+        icon('plug'),
+        jsx('span', { children: 'Connect next' }),
+        rec.adds && jsx('span', { children: `· adds ${rec.adds}` }),
+        alts.length > 0 && jsx('span', { children: `· or ${alts.map(a => a.name).join(', ')}` })
+      ])
+    ]),
+    txt('body', C.s, why, { maxWidth: PROSE }),
+    col({ gap: 8, maxWidth: PROSE }, [
+      jsx(Overline, { children: `Ideas it would make possible · ${rec.unlocked}` }),
+      col(
+        { gap: 8 },
+        (rec.examples || []).map(ex =>
+          col({ gap: 2 }, [
+            txt('row', C.p, ex.title),
+            txt('meta', C.t, ex.words && ex.words.length ? `Matches your chats: ${ex.words.join(', ')}` : ex.what)
+          ])
+        )
+      ),
+      rec.unlocked > shown && txt('meta', C.t, `and ${rec.unlocked - shown} more`)
+    ]),
+    jsx(PromptPreview, { card: { prompt: rec.prompt } }),
+    col({ gap: 6, paddingTop: 8 }, [
+      row({ gap: 8, flexWrap: 'wrap' }, [
+        jsxs(Button, { onClick: () => onConnect(item), children: [icon('plug', { marginRight: 6 }), 'Connect in a new chat'] }, 'c'),
+        jsx(Button, { variant: 'secondary', onClick: () => onHide(item), children: 'Not interested' }, 'h')
+      ]),
+      txt('meta', C.t, 'You read it and press send. Nothing connects until you approve it in the connect step.'),
+      txt('meta', C.t, 'Connected it already? I’ll notice on my next run, or send /idea-board connectors.')
+    ]),
+    row({ ...T.meta, gap: 12, color: C.t, flexWrap: 'wrap' }, [
+      jsxs('span', { children: [jsx(Kbd, { children: '↑' }), ' ', jsx(Kbd, { children: '↓' }), ' move'] }),
+      jsxs('span', { children: [jsx(Kbd, { children: 'Enter' }), ' connect'] }),
+      jsxs('span', { children: [jsx(Kbd, { children: 'N' }), ' not interested'] })
+    ])
+  ])
+}
+
 function Started({ cards }) {
   if (!cards.length) return null
   return col({ gap: 2 }, [
@@ -837,7 +902,10 @@ function BoardPage() {
   const detailRef = useRef(null)
   const data = board.data
   const cards = data ? data.cards : []
-  const ordered = useMemo(() => KINDS.flatMap(k => cards.filter(c => c.kind === k.kind)), [cards])
+  const suggested = new Set(cards.flatMap(c => (c.kind === 'connector' ? (c.uses || []).map(u => u.id) : [])))
+  const recs = (data && data.connectors ? data.connectors : []).filter(r => !suggested.has(`connector:${r.slug}`))
+  // Connector recommendations follow the model's own "Connect next" cards, at the end of the list.
+  const ordered = useMemo(() => [...KINDS.flatMap(k => cards.filter(c => c.kind === k.kind)), ...recs.map(recItem)], [cards, recs])
   const current = ordered.find(c => c.id === selected) || ordered[0]
   const inSetup = Boolean(data && data.setup && (!data.setup.done || showSetup))
 
@@ -877,6 +945,7 @@ function BoardPage() {
     onMutate: ({ card }) => nextAfter(card),
     onSuccess: (res, { card }) => {
       setUndo({
+        kind: 'card',
         card,
         rule: Boolean(res.rule),
         message: res.rule ? `Dismissed. ${res.rule}` : res.action === 'evidence_consumed' ? 'Dismissed. I’ll count that as handled.' : 'Dismissed.'
@@ -889,23 +958,36 @@ function BoardPage() {
     mutationFn: card => rest(`/cards/${card.id}/snooze`, { method: 'POST', body: { days: 7 } }),
     onMutate: card => nextAfter(card),
     onSuccess: (_r, card) => {
-      setUndo({ card, message: 'I’ll hide it for a week.' })
+      setUndo({ kind: 'card', card, message: 'I’ll hide it for a week.' })
+      refresh()
+    },
+    onError: failed('hide it')
+  })
+  const hideRec = useMutation({
+    mutationFn: item => rest(`/connectors/${item.rec.slug}/hide`, { method: 'POST' }),
+    onMutate: item => nextAfter(item),
+    onSuccess: (_r, item) => {
+      setUndo({ kind: 'conn', item, message: `I won’t suggest ${item.rec.name} again.` })
       refresh()
     },
     onError: failed('hide it')
   })
   const undoMut = useMutation({
-    mutationFn: card => rest(`/cards/${card.id}/undo`, { method: 'POST' }),
-    onSuccess: (_r, card) => {
+    mutationFn: u =>
+      u.kind === 'conn'
+        ? rest(`/connectors/${u.item.rec.slug}/unhide`, { method: 'POST' })
+        : rest(`/cards/${u.card.id}/undo`, { method: 'POST' }),
+    onSuccess: (_r, u) => {
       setUndo(null)
-      setSelected(card.id)
+      setSelected(u.kind === 'conn' ? u.item.id : u.card.id)
       refresh()
     },
     onError: failed('undo that')
   })
-  const start = card => {
+  const start = item => {
     setUndo(null)
-    startIdea(card).finally(refresh)
+    if (item.isRec) openWithPrompt(item.rec.prompt)
+    else startIdea(item).finally(refresh)
   }
   const onDismiss = (card, reason, note) => dismiss.mutate({ card, reason, note })
 
@@ -926,10 +1008,10 @@ function BoardPage() {
       start(current)
     } else if (k === 'n') {
       e.preventDefault()
-      snooze.mutate(current)
+      current.isRec ? hideRec.mutate(current) : snooze.mutate(current)
     } else if (k === 'd') {
       e.preventDefault()
-      setNoteFor(current)
+      current.isRec ? hideRec.mutate(current) : setNoteFor(current)
     }
   }
   const openSetup = step => {
@@ -949,7 +1031,7 @@ function BoardPage() {
     })
   } else if (inSetup) {
     body = jsx(SetupView, { data, initialStep: setupStep, onDone: () => setShowSetup(false) }, setupStep || 'setup')
-  } else if (!cards.length) {
+  } else if (!ordered.length) {
     const next = job.data ? `I’ll look again tonight at ${timeLabel(job.data.schedule)}.` : 'Ask me to look again whenever you like.'
     body = jsx(Empty, {
       title: data.last_run ? 'No new ideas right now' : 'No ideas yet',
@@ -967,7 +1049,7 @@ function BoardPage() {
           className: 'ib-list-col',
           children: kids([
             ...KINDS.map(k => {
-              const items = ordered.filter(c => c.kind === k.kind)
+              const items = ordered.filter(c => c.kind === k.kind)  // connector recs ride in "Connect next"
               if (!items.length) return null
               return col({ gap: 2 }, [
                 jsx(Overline, { iconName: k.icon, style: { paddingBottom: 4 }, children: `${k.label} · ${items.length}` }),
@@ -988,10 +1070,13 @@ function BoardPage() {
                 children: kids([
                   jsx('span', { style: { flex: 1 }, children: undo.message }),
                   undo.rule && jsx(Button, { variant: 'text', size: 'inline', onClick: () => setRulesOpen(true), children: 'Edit rules' }, 'r'),
-                  jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => undoMut.mutate(undo.card), children: 'Undo' }, 'u')
+                  jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => undoMut.mutate(undo), children: 'Undo' }, 'u')
                 ])
               }),
-            current && jsx(Detail, { card: current, reasons: data.reasons, onStart: start, onSnooze: c => snooze.mutate(c), onDismiss, onNote: setNoteFor })
+            current &&
+              (current.isRec
+                ? jsx(ConnectorDetail, { item: current, onConnect: start, onHide: it => hideRec.mutate(it) }, current.id)
+                : jsx(Detail, { card: current, reasons: data.reasons, onStart: start, onSnooze: c => snooze.mutate(c), onDismiss, onNote: setNoteFor }, current.id))
           ])
         })
       ]

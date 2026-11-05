@@ -1,330 +1,540 @@
 {
- "source": "Nous Portal connector catalog",
- "as_of": "2026-11-04",
- "connectors": [
-  {
-   "slug": "adobe_marketing_agent_mcp",
-   "name": "Adobe Marketing Agent",
-   "category": "Developer",
-   "description": "Use Adobe Marketing Agent through Hermes"
-  },
-  {
-   "slug": "ahrefs_mcp",
-   "name": "Ahrefs",
-   "category": "Developer",
-   "description": "Use Ahrefs through Hermes"
-  },
-  {
-   "slug": "airtable",
-   "name": "Airtable",
-   "category": "Files and docs",
-   "description": "Read and edit bases, tables, and records"
-  },
-  {
-   "slug": "amplitude_mcp",
-   "name": "Amplitude",
-   "category": "Developer",
-   "description": "Use Amplitude through Hermes"
-  },
-  {
-   "slug": "apollo",
-   "name": "Apollo",
-   "category": "Sales and support",
-   "description": "Find contacts and manage outreach"
-  },
-  {
-   "slug": "asana",
-   "name": "Asana",
-   "category": "Work management",
-   "description": "Read and manage tasks and projects"
-  },
-  {
-   "slug": "ashby",
-   "name": "Ashby",
-   "category": "Sales and support",
-   "description": "Read and manage candidates, jobs, and interviews"
-  },
-  {
-   "slug": "better_stack_mcp",
-   "name": "Better Stack",
-   "category": "Data and monitoring",
-   "description": "Investigate monitors, incidents, and logs"
-  },
-  {
-   "slug": "box",
-   "name": "Box",
-   "category": "Files and docs",
-   "description": "Find, read, and manage files and folders"
-  },
-  {
-   "slug": "calendly",
-   "name": "Calendly",
-   "category": "Work management",
-   "description": "Read bookings and manage scheduling links"
-  },
-  {
-   "slug": "canva_mcp",
-   "name": "Canva",
-   "category": "Design and media",
-   "description": "Find, create, and edit designs"
-  },
-  {
-   "slug": "cashfree_payments_mcp",
-   "name": "Cashfree Payments",
-   "category": "Developer",
-   "description": "Use Cashfree Payments through Hermes"
-  },
-  {
-   "slug": "circleback_mcp",
-   "name": "Circleback",
-   "category": "Developer",
-   "description": "Use Circleback through Hermes"
-  },
-  {
-   "slug": "clickhouse_mcp",
-   "name": "ClickHouse",
-   "category": "Data and monitoring",
-   "description": "Query ClickHouse Cloud data"
-  },
-  {
-   "slug": "clickup_mcp",
-   "name": "Clickup",
-   "category": "Developer",
-   "description": "Use Clickup through Hermes"
-  },
-  {
-   "slug": "cloudflare_mcp",
-   "name": "Cloudflare",
-   "category": "Developer",
-   "description": "Manage zones, DNS, Workers, and storage"
-  },
-  {
-   "slug": "coinbase_agents_mcp",
-   "name": "Coinbase Agents",
-   "category": "Developer",
-   "description": "Use Coinbase Agents through Hermes"
-  },
-  {
-   "slug": "coinbase_wallet_mcp",
-   "name": "Coinbase Wallet",
-   "category": "Developer",
-   "description": "Use Coinbase Wallet through Hermes"
-  },
-  {
-   "slug": "confluence",
-   "name": "Confluence",
-   "category": "Files and docs",
-   "description": "Search, read, and write wiki pages"
-  },
-  {
-   "slug": "customerio_mcp",
-   "name": "Customer.io",
-   "category": "Sales and support",
-   "description": "Manage people, campaigns, and broadcasts"
-  },
-  {
-   "slug": "datadog_mcp",
-   "name": "Datadog",
-   "category": "Data and monitoring",
-   "description": "Investigate metrics, logs, incidents, and dashboards"
-  },
-  {
-   "slug": "discordbot",
-   "name": "Discord Bot",
-   "category": "Communication",
-   "description": "Post and moderate in a server as a bot"
-  },
-  {
-   "slug": "granola_mcp",
-   "name": "Granola",
-   "category": "Work management",
-   "description": "Search meeting notes and transcripts"
-  },
-  {
-   "slug": "greptile_mcp",
-   "name": "Greptile",
-   "category": "Developer",
-   "description": "Use Greptile through Hermes"
-  },
-  {
-   "slug": "higgsfield_mcp",
-   "name": "Higgsfield",
-   "category": "Developer",
-   "description": "Use Higgsfield through Hermes"
-  },
-  {
-   "slug": "intercom_mcp",
-   "name": "Intercom",
-   "category": "Sales and support",
-   "description": "Read conversations, contacts, and help articles"
-  },
-  {
-   "slug": "jira",
-   "name": "Jira",
-   "category": "Work management",
-   "description": "Search, create, and update issues"
-  },
-  {
-   "slug": "linear",
-   "name": "Linear",
-   "category": "Work management",
-   "description": "Search, create, and update issues and projects"
-  },
-  {
-   "slug": "memelord_mcp",
-   "name": "Memelord",
-   "category": "Developer",
-   "description": "Use Memelord through Hermes"
-  },
-  {
-   "slug": "metabase",
-   "name": "Metabase",
-   "category": "Data and monitoring",
-   "description": "Run questions and read dashboards"
-  },
-  {
-   "slug": "mintlify_mcp",
-   "name": "Mintlify",
-   "category": "Developer",
-   "description": "Search and read product documentation"
-  },
-  {
-   "slug": "neon_mcp",
-   "name": "Neon",
-   "category": "Developer",
-   "description": "Manage Postgres projects and branches, and run SQL"
-  },
-  {
-   "slug": "notion",
-   "name": "Notion",
-   "category": "Files and docs",
-   "description": "Search, read, and edit pages and databases"
-  },
-  {
-   "slug": "pandadoc_mcp",
-   "name": "PandaDoc",
-   "category": "Files and docs",
-   "description": "Create, send, and track documents"
-  },
-  {
-   "slug": "peopledatalabs",
-   "name": "People Data Labs",
-   "category": "Sales and support",
-   "description": "Look up people and company records"
-  },
-  {
-   "slug": "plaid_mcp",
-   "name": "Plaid",
-   "category": "Developer",
-   "description": "Use Plaid through Hermes"
-  },
-  {
-   "slug": "plain",
-   "name": "Plain",
-   "category": "Sales and support",
-   "description": "Read and answer customer support threads"
-  },
-  {
-   "slug": "posthog_mcp",
-   "name": "PostHog",
-   "category": "Data and monitoring",
-   "description": "Query product analytics and feature flags"
-  },
-  {
-   "slug": "pylon_mcp",
-   "name": "Pylon",
-   "category": "Developer",
-   "description": "Use Pylon through Hermes"
-  },
-  {
-   "slug": "railway",
-   "name": "Railway",
-   "category": "Developer",
-   "description": "Manage projects, services, and deployments"
-  },
-  {
-   "slug": "ramp_mcp",
-   "name": "Ramp",
-   "category": "Developer",
-   "description": "Use Ramp through Hermes"
-  },
-  {
-   "slug": "resend_mcp",
-   "name": "Resend",
-   "category": "Communication",
-   "description": "Send and manage transactional email"
-  },
-  {
-   "slug": "semrush",
-   "name": "Semrush",
-   "category": "Data and monitoring",
-   "description": "Research keywords, domains, and competitors"
-  },
-  {
-   "slug": "sendgrid",
-   "name": "SendGrid",
-   "category": "Communication",
-   "description": "Send email and manage lists and templates"
-  },
-  {
-   "slug": "sentry_mcp",
-   "name": "Sentry",
-   "category": "Data and monitoring",
-   "description": "Investigate issues, events, and releases"
-  },
-  {
-   "slug": "shopify",
-   "name": "Shopify",
-   "category": "Commerce",
-   "description": "Manage products, orders, and customers"
-  },
-  {
-   "slug": "slack",
-   "name": "Slack",
-   "category": "Communication",
-   "description": "Read and post messages, and search channels"
-  },
-  {
-   "slug": "statsig_mcp",
-   "name": "Statsig",
-   "category": "Developer",
-   "description": "Use Statsig through Hermes"
-  },
-  {
-   "slug": "stripe_mcp",
-   "name": "Stripe",
-   "category": "Commerce",
-   "description": "Read and manage customers, products, and payments"
-  },
-  {
-   "slug": "supabase",
-   "name": "Supabase",
-   "category": "Developer",
-   "description": "Manage projects, databases, and functions"
-  },
-  {
-   "slug": "todoist_mcp",
-   "name": "Todoist",
-   "category": "Developer",
-   "description": "Use Todoist through Hermes"
-  },
-  {
-   "slug": "turso",
-   "name": "Turso",
-   "category": "Developer",
-   "description": "Manage SQLite databases and groups"
-  },
-  {
-   "slug": "vercel_mcp",
-   "name": "Vercel",
-   "category": "Developer",
-   "description": "Manage projects and deployments, and read logs"
-  },
-  {
-   "slug": "wispr_flow_mcp",
-   "name": "Wispr Flow",
-   "category": "Developer",
-   "description": "Use Wispr Flow through Hermes"
-  }
- ]
+  "source": "Nous Portal connector catalog",
+  "as_of": "2026-11-04",
+  "connectors": [
+    {
+      "slug": "adobe_marketing_agent_mcp",
+      "name": "Adobe Marketing Agent",
+      "category": "Developer",
+      "description": "Use Adobe Marketing Agent through Hermes",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "ahrefs_mcp",
+      "name": "Ahrefs",
+      "category": "Developer",
+      "description": "Use Ahrefs through Hermes",
+      "classes": [
+        "seo"
+      ],
+      "rank": 25
+    },
+    {
+      "slug": "airtable",
+      "name": "Airtable",
+      "category": "Files and docs",
+      "description": "Read and edit bases, tables, and records",
+      "classes": [
+        "spreadsheet"
+      ],
+      "rank": 6
+    },
+    {
+      "slug": "amplitude_mcp",
+      "name": "Amplitude",
+      "category": "Developer",
+      "description": "Use Amplitude through Hermes",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "apollo",
+      "name": "Apollo",
+      "category": "Sales and support",
+      "description": "Find contacts and manage outreach",
+      "classes": [
+        "crm"
+      ],
+      "rank": 27
+    },
+    {
+      "slug": "asana",
+      "name": "Asana",
+      "category": "Work management",
+      "description": "Read and manage tasks and projects",
+      "classes": [
+        "tasks"
+      ],
+      "rank": 13
+    },
+    {
+      "slug": "ashby",
+      "name": "Ashby",
+      "category": "Sales and support",
+      "description": "Read and manage candidates, jobs, and interviews",
+      "classes": [
+        "recruiting"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "better_stack_mcp",
+      "name": "Better Stack",
+      "category": "Data and monitoring",
+      "description": "Investigate monitors, incidents, and logs",
+      "classes": [
+        "monitoring"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "box",
+      "name": "Box",
+      "category": "Files and docs",
+      "description": "Find, read, and manage files and folders",
+      "classes": [
+        "files"
+      ],
+      "rank": 7
+    },
+    {
+      "slug": "calendly",
+      "name": "Calendly",
+      "category": "Work management",
+      "description": "Read bookings and manage scheduling links",
+      "classes": [
+        "scheduling_links"
+      ],
+      "rank": 4
+    },
+    {
+      "slug": "canva_mcp",
+      "name": "Canva",
+      "category": "Design and media",
+      "description": "Find, create, and edit designs",
+      "classes": [
+        "design"
+      ],
+      "rank": 11
+    },
+    {
+      "slug": "cashfree_payments_mcp",
+      "name": "Cashfree Payments",
+      "category": "Developer",
+      "description": "Use Cashfree Payments through Hermes",
+      "classes": [
+        "payments"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "circleback_mcp",
+      "name": "Circleback",
+      "category": "Developer",
+      "description": "Use Circleback through Hermes",
+      "classes": [
+        "meeting_notes"
+      ],
+      "rank": 18
+    },
+    {
+      "slug": "clickhouse_mcp",
+      "name": "ClickHouse",
+      "category": "Data and monitoring",
+      "description": "Query ClickHouse Cloud data",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "clickup_mcp",
+      "name": "Clickup",
+      "category": "Developer",
+      "description": "Use Clickup through Hermes",
+      "classes": [
+        "tasks"
+      ],
+      "rank": 15
+    },
+    {
+      "slug": "cloudflare_mcp",
+      "name": "Cloudflare",
+      "category": "Developer",
+      "description": "Manage zones, DNS, Workers, and storage",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 23
+    },
+    {
+      "slug": "coinbase_agents_mcp",
+      "name": "Coinbase Agents",
+      "category": "Developer",
+      "description": "Use Coinbase Agents through Hermes",
+      "classes": [
+        "crypto"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "coinbase_wallet_mcp",
+      "name": "Coinbase Wallet",
+      "category": "Developer",
+      "description": "Use Coinbase Wallet through Hermes",
+      "classes": [
+        "crypto"
+      ],
+      "rank": 31
+    },
+    {
+      "slug": "confluence",
+      "name": "Confluence",
+      "category": "Files and docs",
+      "description": "Search, read, and write wiki pages",
+      "classes": [
+        "notes"
+      ],
+      "rank": 16
+    },
+    {
+      "slug": "customerio_mcp",
+      "name": "Customer.io",
+      "category": "Sales and support",
+      "description": "Manage people, campaigns, and broadcasts",
+      "classes": [
+        "bulk_email",
+        "crm"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "datadog_mcp",
+      "name": "Datadog",
+      "category": "Data and monitoring",
+      "description": "Investigate metrics, logs, incidents, and dashboards",
+      "classes": [
+        "monitoring"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "discordbot",
+      "name": "Discord Bot",
+      "category": "Communication",
+      "description": "Post and moderate in a server as a bot",
+      "classes": [
+        "team_chat"
+      ],
+      "rank": 17
+    },
+    {
+      "slug": "granola_mcp",
+      "name": "Granola",
+      "category": "Work management",
+      "description": "Search meeting notes and transcripts",
+      "classes": [
+        "meeting_notes"
+      ],
+      "rank": 5
+    },
+    {
+      "slug": "greptile_mcp",
+      "name": "Greptile",
+      "category": "Developer",
+      "description": "Use Greptile through Hermes",
+      "classes": [
+        "code"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "higgsfield_mcp",
+      "name": "Higgsfield",
+      "category": "Developer",
+      "description": "Use Higgsfield through Hermes",
+      "classes": [
+        "media"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "intercom_mcp",
+      "name": "Intercom",
+      "category": "Sales and support",
+      "description": "Read conversations, contacts, and help articles",
+      "classes": [
+        "support"
+      ],
+      "rank": 19
+    },
+    {
+      "slug": "jira",
+      "name": "Jira",
+      "category": "Work management",
+      "description": "Search, create, and update issues",
+      "classes": [
+        "tasks"
+      ],
+      "rank": 14
+    },
+    {
+      "slug": "linear",
+      "name": "Linear",
+      "category": "Work management",
+      "description": "Search, create, and update issues and projects",
+      "classes": [
+        "tasks"
+      ],
+      "rank": 12
+    },
+    {
+      "slug": "memelord_mcp",
+      "name": "Memelord",
+      "category": "Developer",
+      "description": "Use Memelord through Hermes",
+      "classes": [],
+      "rank": 50
+    },
+    {
+      "slug": "metabase",
+      "name": "Metabase",
+      "category": "Data and monitoring",
+      "description": "Run questions and read dashboards",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "mintlify_mcp",
+      "name": "Mintlify",
+      "category": "Developer",
+      "description": "Search and read product documentation",
+      "classes": [],
+      "rank": 50
+    },
+    {
+      "slug": "neon_mcp",
+      "name": "Neon",
+      "category": "Developer",
+      "description": "Manage Postgres projects and branches, and run SQL",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "notion",
+      "name": "Notion",
+      "category": "Files and docs",
+      "description": "Search, read, and edit pages and databases",
+      "classes": [
+        "notes"
+      ],
+      "rank": 1
+    },
+    {
+      "slug": "pandadoc_mcp",
+      "name": "PandaDoc",
+      "category": "Files and docs",
+      "description": "Create, send, and track documents",
+      "classes": [],
+      "rank": 50
+    },
+    {
+      "slug": "peopledatalabs",
+      "name": "People Data Labs",
+      "category": "Sales and support",
+      "description": "Look up people and company records",
+      "classes": [
+        "crm"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "plaid_mcp",
+      "name": "Plaid",
+      "category": "Developer",
+      "description": "Use Plaid through Hermes",
+      "classes": [
+        "banking"
+      ],
+      "rank": 9
+    },
+    {
+      "slug": "plain",
+      "name": "Plain",
+      "category": "Sales and support",
+      "description": "Read and answer customer support threads",
+      "classes": [
+        "support"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "posthog_mcp",
+      "name": "PostHog",
+      "category": "Data and monitoring",
+      "description": "Query product analytics and feature flags",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 21
+    },
+    {
+      "slug": "pylon_mcp",
+      "name": "Pylon",
+      "category": "Developer",
+      "description": "Use Pylon through Hermes",
+      "classes": [
+        "support"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "railway",
+      "name": "Railway",
+      "category": "Developer",
+      "description": "Manage projects, services, and deployments",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "ramp_mcp",
+      "name": "Ramp",
+      "category": "Developer",
+      "description": "Use Ramp through Hermes",
+      "classes": [
+        "banking"
+      ],
+      "rank": 30
+    },
+    {
+      "slug": "resend_mcp",
+      "name": "Resend",
+      "category": "Communication",
+      "description": "Send and manage transactional email",
+      "classes": [
+        "bulk_email"
+      ],
+      "rank": 29
+    },
+    {
+      "slug": "semrush",
+      "name": "Semrush",
+      "category": "Data and monitoring",
+      "description": "Research keywords, domains, and competitors",
+      "classes": [
+        "seo"
+      ],
+      "rank": 26
+    },
+    {
+      "slug": "sendgrid",
+      "name": "SendGrid",
+      "category": "Communication",
+      "description": "Send email and manage lists and templates",
+      "classes": [
+        "bulk_email"
+      ],
+      "rank": 28
+    },
+    {
+      "slug": "sentry_mcp",
+      "name": "Sentry",
+      "category": "Data and monitoring",
+      "description": "Investigate issues, events, and releases",
+      "classes": [
+        "monitoring"
+      ],
+      "rank": 20
+    },
+    {
+      "slug": "shopify",
+      "name": "Shopify",
+      "category": "Commerce",
+      "description": "Manage products, orders, and customers",
+      "classes": [
+        "ecommerce"
+      ],
+      "rank": 10
+    },
+    {
+      "slug": "slack",
+      "name": "Slack",
+      "category": "Communication",
+      "description": "Read and post messages, and search channels",
+      "classes": [
+        "team_chat"
+      ],
+      "rank": 3
+    },
+    {
+      "slug": "statsig_mcp",
+      "name": "Statsig",
+      "category": "Developer",
+      "description": "Use Statsig through Hermes",
+      "classes": [
+        "analytics"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "stripe_mcp",
+      "name": "Stripe",
+      "category": "Commerce",
+      "description": "Read and manage customers, products, and payments",
+      "classes": [
+        "payments"
+      ],
+      "rank": 8
+    },
+    {
+      "slug": "supabase",
+      "name": "Supabase",
+      "category": "Developer",
+      "description": "Manage projects, databases, and functions",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 24
+    },
+    {
+      "slug": "todoist_mcp",
+      "name": "Todoist",
+      "category": "Developer",
+      "description": "Use Todoist through Hermes",
+      "classes": [
+        "tasks"
+      ],
+      "rank": 2
+    },
+    {
+      "slug": "turso",
+      "name": "Turso",
+      "category": "Developer",
+      "description": "Manage SQLite databases and groups",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 50
+    },
+    {
+      "slug": "vercel_mcp",
+      "name": "Vercel",
+      "category": "Developer",
+      "description": "Manage projects and deployments, and read logs",
+      "classes": [
+        "hosting"
+      ],
+      "rank": 22
+    },
+    {
+      "slug": "wispr_flow_mcp",
+      "name": "Wispr Flow",
+      "category": "Developer",
+      "description": "Use Wispr Flow through Hermes",
+      "classes": [],
+      "rank": 50
+    }
+  ],
+  "classes_note": "classes: capability kinds each connector adds (see idea_board/seeds.py CLASSES), hand-tagged 2026-11-05; rank: which connector leads when several make the same ideas possible"
 }

@@ -1,0 +1,2796 @@
+{
+  "source": "Hermes user stories (website/src/data/userStories.json in the claude-code repo, MIT)",
+  "as_of": "2026-11-05",
+  "method": "Distilled once by a model from the user stories; each seed links to the stories it came from.",
+  "seeds": [
+    {
+      "id": "s001",
+      "title": "Watch a sold-out showing and text you when seats open",
+      "what": "Checks a sold-out event or showing on a schedule and messages you the moment seats in your range appear.",
+      "kind": "recurring",
+      "needs": [
+        "browser",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "showtime",
+        "theater",
+        "imax",
+        "sold-out",
+        "seat"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "x-tborges77-imax-seat-hunt"
+      ]
+    },
+    {
+      "id": "s002",
+      "title": "Book your gym classes the minute booking opens",
+      "what": "Lists upcoming classes, asks you which you want, then books each one the instant booking opens.",
+      "kind": "recurring",
+      "needs": [
+        "browser",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "gym",
+        "yoga",
+        "pilates",
+        "crossfit",
+        "class-booking"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "blog-ickas-gym-booking-menu-fixtures"
+      ]
+    },
+    {
+      "id": "s003",
+      "title": "Plan the week's meals and fill your grocery cart",
+      "what": "Turns your saved recipes into a weekly meal plan scaled to your household and builds the pickup cart.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "browser"
+      ],
+      "keywords": [
+        "meal-plan",
+        "grocery",
+        "recipe",
+        "instacart",
+        "pickup"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "reddit-rgreen192-mealie-kroger-meal-planning"
+      ]
+    },
+    {
+      "id": "s004",
+      "title": "Suggest what to cook from what is in your pantry",
+      "what": "Keeps a loose inventory from your chat messages and suggests dinners by what you have and what you cooked lately.",
+      "kind": "once",
+      "needs": [
+        "memory"
+      ],
+      "keywords": [
+        "pantry",
+        "fridge",
+        "leftover",
+        "ingredient",
+        "recipe"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-sergiparpal-meal-manager"
+      ]
+    },
+    {
+      "id": "s005",
+      "title": "Keep school, tutor and home plans in sync for your child",
+      "what": "Tracks tutoring sessions, school notes and home practice so you always see one current plan.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "memory"
+      ],
+      "keywords": [
+        "tutor",
+        "homework",
+        "tutoring",
+        "teacher",
+        "classroom"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "reddit-rpg36-school-tutor-sync"
+      ]
+    },
+    {
+      "id": "s006",
+      "title": "Draft client invoices from your tracked work",
+      "what": "Reviews completed tasks and time entries, drafts the invoice and writes a short summary for the client.",
+      "kind": "recurring",
+      "needs": [
+        "tasks",
+        "payments"
+      ],
+      "keywords": [
+        "invoice",
+        "timesheet",
+        "freelance",
+        "billable",
+        "hourly"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-corxntyn-agency-invoice-drafting",
+        "x-marc-bara-client-invoice-mcp"
+      ]
+    },
+    {
+      "id": "s007",
+      "title": "Make quotes and invoices as PDFs for your jobs",
+      "what": "Turns a short job description into a quote or invoice PDF and keeps a simple customer and job list.",
+      "kind": "once",
+      "needs": [
+        "spreadsheet",
+        "terminal"
+      ],
+      "keywords": [
+        "invoice",
+        "estimate",
+        "plumber",
+        "contractor",
+        "job-quote"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-sanvell-drainlaying-admin"
+      ]
+    },
+    {
+      "id": "s008",
+      "title": "Reconcile customer payments against your books",
+      "what": "Matches incoming payments to invoices and ledger entries and lists what does not line up.",
+      "kind": "recurring",
+      "needs": [
+        "payments",
+        "banking",
+        "spreadsheet"
+      ],
+      "keywords": [
+        "reconcile",
+        "ledger",
+        "bookkeeping",
+        "quickbooks",
+        "bank-feed"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-neurosisbyanalysis-attorney-shop",
+        "x-jaredclucas-real-estate-client"
+      ]
+    },
+    {
+      "id": "s009",
+      "title": "Send estimates, collect payment and keep books in sync",
+      "what": "Drafts estimates for the owner's OK, sends them, collects payment and updates the accounting records.",
+      "kind": "once",
+      "needs": [
+        "payments",
+        "messaging"
+      ],
+      "keywords": [
+        "estimate",
+        "invoice",
+        "quickbooks",
+        "stripe",
+        "bookkeeping"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "github-hewi333-service-business"
+      ]
+    },
+    {
+      "id": "s010",
+      "title": "Build a verified prospect list from one chat request",
+      "what": "Takes a plain-language description of your target market and returns a list of contacts with verified details.",
+      "kind": "once",
+      "needs": [
+        "crm",
+        "web",
+        "team_chat"
+      ],
+      "keywords": [
+        "prospect",
+        "lead-list",
+        "apollo",
+        "icp",
+        "cold-outreach"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-coldemailchris-gtm-tam-slack-agent"
+      ]
+    },
+    {
+      "id": "s011",
+      "title": "Research prospects and queue outreach for your approval",
+      "what": "Finds and scores prospects, drafts personal messages and waits for your yes before anything goes out.",
+      "kind": "recurring",
+      "needs": [
+        "crm",
+        "web",
+        "messaging",
+        "schedule"
+      ],
+      "keywords": [
+        "prospect",
+        "outreach",
+        "cold-email",
+        "sequence",
+        "icp"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "x-vibemarketer_-outbound-gtm-agent",
+        "reddit-forsaken_coconut3717-agency-outreach",
+        "reddit-osamu-dazai-12-company-agents",
+        "blog-halfbitstudio-software-house",
+        "reddit-nkb82-sme-consultancy",
+        "sharbel-junior-operator"
+      ]
+    },
+    {
+      "id": "s012",
+      "title": "Draft a reply when a prospect responds",
+      "what": "Spots replies to your outreach, summarizes the conversation and drafts the next message for you to approve.",
+      "kind": "recurring",
+      "needs": [
+        "crm",
+        "messaging"
+      ],
+      "keywords": [
+        "prospect",
+        "cold-email",
+        "outreach",
+        "linkedin",
+        "objection"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "x-leploutos-client-prospecting-agents"
+      ]
+    },
+    {
+      "id": "s013",
+      "title": "Find and verify contact emails for outreach",
+      "what": "Looks up and verifies business email addresses for the people on your target list.",
+      "kind": "once",
+      "needs": [
+        "crm",
+        "web"
+      ],
+      "keywords": [
+        "email-finder",
+        "hunter",
+        "verified-email",
+        "prospect",
+        "bounce"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "gh-isak-hunter"
+      ]
+    },
+    {
+      "id": "s014",
+      "title": "Find local leads for a service business",
+      "what": "Searches for homeowners or businesses likely to need your service and builds a lead list you can work.",
+      "kind": "once",
+      "needs": [
+        "web",
+        "crm"
+      ],
+      "keywords": [
+        "roofing",
+        "homeowner",
+        "hvac",
+        "landscaping",
+        "lead-gen"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "discord-cyberfarmacist-roofing-leadgen"
+      ]
+    },
+    {
+      "id": "s015",
+      "title": "Summarize new customer messages and ask how to reply",
+      "what": "Reads new leads from your business inbox or page every few minutes, sums each up and asks how you want to answer.",
+      "kind": "recurring",
+      "needs": [
+        "browser",
+        "messaging",
+        "schedule"
+      ],
+      "keywords": [
+        "inquiry",
+        "messenger",
+        "lead-form",
+        "facebook-page",
+        "storefront"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-julientalbot974-french-smb-clients"
+      ]
+    },
+    {
+      "id": "s016",
+      "title": "Look up contacts, invoices and emails from team chat",
+      "what": "Answers questions like who we last emailed or what a client owes by searching your CRM and billing from chat.",
+      "kind": "once",
+      "needs": [
+        "crm",
+        "payments",
+        "team_chat"
+      ],
+      "keywords": [
+        "crm",
+        "hubspot",
+        "salesforce",
+        "slack",
+        "receivable"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "youtube-presswhizz-sales-ops"
+      ]
+    },
+    {
+      "id": "s017",
+      "title": "Answer phone calls from prospects using your proposal",
+      "what": "Picks up calls on a business number, answers questions from your proposal and notes the outcome for you.",
+      "kind": "once",
+      "needs": [
+        "media",
+        "memory"
+      ],
+      "keywords": [
+        "receptionist",
+        "voicemail",
+        "inbound-call",
+        "proposal",
+        "prospect"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-alexcovo-eth-vapi-consulting-deal"
+      ]
+    },
+    {
+      "id": "s018",
+      "title": "Run first-line IT support in your team chat",
+      "what": "Answers staff IT questions from your guidelines, fixes routine issues and hands you only the ones that need a decision.",
+      "kind": "recurring",
+      "needs": [
+        "team_chat",
+        "support"
+      ],
+      "keywords": [
+        "helpdesk",
+        "it-support",
+        "password-reset",
+        "vpn",
+        "onboarding"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-thomasbekkers-it-support-agent",
+        "reddit-physical-economist27-solo-it-department"
+      ]
+    },
+    {
+      "id": "s019",
+      "title": "Post a narrated demo video of finished work for review",
+      "what": "Builds a requested change, records a short walkthrough with a voiceover and posts it for your review.",
+      "kind": "once",
+      "needs": [
+        "code",
+        "media",
+        "team_chat"
+      ],
+      "keywords": [
+        "walkthrough",
+        "screen-recording",
+        "voiceover",
+        "loom",
+        "changelog"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "x-advaitraykar-elmo-narrated-demos"
+      ]
+    },
+    {
+      "id": "s020",
+      "title": "Turn photos and spoken dimensions into a CAD drawing",
+      "what": "Takes your photos and the key measurements you say aloud and produces a parametric drawing and model.",
+      "kind": "once",
+      "needs": [
+        "terminal"
+      ],
+      "keywords": [
+        "cad",
+        "parametric",
+        "freecad",
+        "fusion-360",
+        "dimension"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "x-gsabin86-photo-to-cad"
+      ]
+    },
+    {
+      "id": "s021",
+      "title": "Split a project into tasks and have agents work them",
+      "what": "Breaks a goal into tickets, assigns them to specialist agents and tracks progress on a shared board.",
+      "kind": "recurring",
+      "needs": [
+        "tasks",
+        "code",
+        "terminal"
+      ],
+      "keywords": [
+        "kanban",
+        "sprint",
+        "subtask",
+        "ticket",
+        "assignee"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "x-michaelgannotti-gabriel-pm-fleet",
+        "reddit-uc_kratom-two-human-sdlc",
+        "reddit-hermes-kanban-self-managing",
+        "tonbi-18-agent-kanban-fleet"
+      ]
+    },
+    {
+      "id": "s022",
+      "title": "Check a job plan against your manuals and known issues",
+      "what": "Runs a repair or work plan against product guides and advisories and flags steps that conflict with them.",
+      "kind": "once",
+      "needs": [
+        "files",
+        "notes"
+      ],
+      "keywords": [
+        "repair",
+        "advisory",
+        "technician",
+        "maintenance-manual",
+        "recall-notice"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-purgii-field-service-repair-check"
+      ]
+    },
+    {
+      "id": "s023",
+      "title": "Answer questions from long PDFs and manuals",
+      "what": "Indexes large documents locally and answers questions with page references instead of loading everything.",
+      "kind": "once",
+      "needs": [
+        "files",
+        "terminal"
+      ],
+      "keywords": [
+        "manual",
+        "datasheet",
+        "textbook",
+        "pdf-index",
+        "citation"
+      ],
+      "category": "cost-optimization",
+      "story_ids": [
+        "reddit-barnet-pdf-skill-fts5",
+        "discord-lemoussel-vectorless-rag"
+      ]
+    },
+    {
+      "id": "s024",
+      "title": "Make workout and practice playlists every morning",
+      "what": "Builds fresh playlists of the right length for your workout or practice session each day.",
+      "kind": "recurring",
+      "needs": [
+        "schedule"
+      ],
+      "keywords": [
+        "playlist",
+        "spotify",
+        "setlist",
+        "tempo",
+        "workout-music"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "reddit-music-library-spotify",
+        "discord-splosh123-tidal-music-skills",
+        "reddit-bob-lobsta-band-manager"
+      ]
+    },
+    {
+      "id": "s025",
+      "title": "Check the weather each afternoon for your hobby plans",
+      "what": "Checks the forecast daily and tells you which nights or days suit your hobby, such as stargazing.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "stargazing",
+        "astronomy",
+        "forecast",
+        "cloud-cover",
+        "telescope"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "reddit-bob-lobsta-band-manager"
+      ]
+    },
+    {
+      "id": "s026",
+      "title": "Set up home safety alerts and a panic button for a relative",
+      "what": "Wires door and motion sensors and a panic button into a simple local system that alerts family.",
+      "kind": "once",
+      "needs": [
+        "home",
+        "messaging"
+      ],
+      "keywords": [
+        "panic-button",
+        "elderly",
+        "home-assistant",
+        "door-sensor",
+        "caregiver"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "x-alexandermann-grandfather-safety-system"
+      ]
+    },
+    {
+      "id": "s027",
+      "title": "Keep your home network inventory current",
+      "what": "Scans your network on a schedule and updates the device inventory and documentation.",
+      "kind": "recurring",
+      "needs": [
+        "terminal",
+        "schedule",
+        "notes"
+      ],
+      "keywords": [
+        "homelab",
+        "nmap",
+        "subnet",
+        "network-scan",
+        "device-inventory"
+      ],
+      "category": "integrations",
+      "story_ids": [
+        "blog-virtualizationhowto-netbox-homelab-inventory"
+      ]
+    },
+    {
+      "id": "s028",
+      "title": "Track card charges against your budget and answer questions",
+      "what": "Reads your card charges, files them by category and tells you where you stand against your budget.",
+      "kind": "recurring",
+      "needs": [
+        "banking",
+        "messaging"
+      ],
+      "keywords": [
+        "budget",
+        "ynab",
+        "overspent",
+        "transaction",
+        "spending"
+      ],
+      "category": "messaging",
+      "story_ids": [
+        "blog-technodrone-family-budget-whatsapp-bot"
+      ]
+    },
+    {
+      "id": "s029",
+      "title": "Watch your sensors and adjust devices overnight",
+      "what": "Reads sensors on a regular cycle, compares them to your thresholds and switches devices or alerts you.",
+      "kind": "recurring",
+      "needs": [
+        "home",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "sensor",
+        "humidity",
+        "thermostat",
+        "relay",
+        "grow-tent"
+      ],
+      "category": "integrations",
+      "story_ids": [
+        "github-setasoma-mushroom-grow-tent",
+        "reddit-brisket-fireboard"
+      ]
+    },
+    {
+      "id": "s030",
+      "title": "Flag problem service reports while the crew is still on site",
+      "what": "Watches incoming field reports and flags missing or bad work in time to fix it before the crew leaves.",
+      "kind": "recurring",
+      "needs": [
+        "spreadsheet",
+        "messaging",
+        "schedule"
+      ],
+      "keywords": [
+        "fieldwork",
+        "crew",
+        "inspection",
+        "work-order",
+        "punch-list"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-andrewtcombs-pool-route-qc"
+      ]
+    },
+    {
+      "id": "s031",
+      "title": "Draft deal memos and follow up on stale sales leads",
+      "what": "Prepares production or sales paperwork and nudges you about leads that have gone quiet.",
+      "kind": "recurring",
+      "needs": [
+        "crm",
+        "notes"
+      ],
+      "keywords": [
+        "deal-memo",
+        "production-paperwork",
+        "stale-lead",
+        "pipeline",
+        "producer"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-chrisaumen-film-company-office"
+      ]
+    },
+    {
+      "id": "s032",
+      "title": "Turn rough dictation into structured documents",
+      "what": "Takes voice notes or messy ideas sent from your phone and returns a clean, structured document.",
+      "kind": "once",
+      "needs": [
+        "notes",
+        "messaging"
+      ],
+      "keywords": [
+        "dictation",
+        "voice-memo",
+        "transcription",
+        "whisper",
+        "rough-draft"
+      ],
+      "category": "content-creation",
+      "story_ids": [
+        "reddit-kenmazaika-dictation-proof-docs",
+        "blog-doctorswhocode-clinical-skills"
+      ]
+    },
+    {
+      "id": "s033",
+      "title": "Answer data questions from your company tools in team chat",
+      "what": "Lets non-technical teammates ask about revenue, usage or ads and get answers pulled from your data tools.",
+      "kind": "once",
+      "needs": [
+        "analytics",
+        "payments",
+        "team_chat"
+      ],
+      "keywords": [
+        "revenue",
+        "dashboard",
+        "bigquery",
+        "sql",
+        "analytics"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "hn-brettcvz-company-data-slack"
+      ]
+    },
+    {
+      "id": "s034",
+      "title": "Audit ad spend and suggest creative refreshes",
+      "what": "Reviews ad performance, shows where money is wasted and proposes new creative variations.",
+      "kind": "once",
+      "needs": [
+        "analytics",
+        "social"
+      ],
+      "keywords": [
+        "ad-spend",
+        "meta-ads",
+        "roas",
+        "creative-fatigue",
+        "campaign"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "x-ericosiu-slack-ad-strategy",
+        "discord-masonjames-meta-ads-kit"
+      ]
+    },
+    {
+      "id": "s035",
+      "title": "Make the same change across hundreds of files and verify it",
+      "what": "Applies a repeated edit across many files or rules, runs the tests and reports what changed.",
+      "kind": "once",
+      "needs": [
+        "code",
+        "terminal"
+      ],
+      "keywords": [
+        "refactor",
+        "codemod",
+        "find-and-replace",
+        "migration",
+        "lint"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "reddit-jamieandlion-fintech-rules"
+      ]
+    },
+    {
+      "id": "s036",
+      "title": "Prepare a briefing before each client meeting",
+      "what": "Researches the person and company, reads your notes on them and hands you a short prep brief.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "calendar",
+        "crm"
+      ],
+      "keywords": [
+        "pre-meeting",
+        "briefing",
+        "attendee",
+        "crunchbase",
+        "prospect-call"
+      ],
+      "category": "integrations",
+      "story_ids": [
+        "reddit-jean-jcrx-consulting-sales-prep",
+        "mvanhorn-business-ops",
+        "hn-schezhugo-verso-knowledge-work",
+        "blog-stewartmedia-shopify-agency"
+      ]
+    },
+    {
+      "id": "s037",
+      "title": "Draft bids and legal documents from your company knowledge",
+      "what": "Uses your past bids, contracts and standards to produce first drafts of new proposals and contracts.",
+      "kind": "once",
+      "needs": [
+        "notes",
+        "files"
+      ],
+      "keywords": [
+        "bid",
+        "rfp",
+        "subcontractor",
+        "contract",
+        "construction"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-crfr4mvzl-construction-office"
+      ]
+    },
+    {
+      "id": "s038",
+      "title": "Scan support tickets and turn patterns into fixes",
+      "what": "Reviews new support tickets, groups the recurring problems and files tasks for the underlying cause.",
+      "kind": "recurring",
+      "needs": [
+        "support",
+        "tasks",
+        "schedule"
+      ],
+      "keywords": [
+        "zendesk",
+        "intercom",
+        "support-ticket",
+        "recurring-bug",
+        "complaint"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-thecraighewitt-support-ticket-mining",
+        "x-scotty529-gumroad-gumclaw"
+      ]
+    },
+    {
+      "id": "s039",
+      "title": "Draft support replies using each customer's history",
+      "what": "Pulls the customer's past conversations and orders and drafts a reply for you or the agent to send.",
+      "kind": "once",
+      "needs": [
+        "support",
+        "memory"
+      ],
+      "keywords": [
+        "zendesk",
+        "shopify",
+        "support-ticket",
+        "order-history",
+        "refund"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "hn-theturtletalks-helpdesk-replaced",
+        "reddit-jack-dawed-bookstore-agents"
+      ]
+    },
+    {
+      "id": "s040",
+      "title": "Review your pull requests and diffs before merge",
+      "what": "Checks changes for bugs, leaked secrets, debug leftovers and unresolved TODOs and comments on them.",
+      "kind": "once",
+      "needs": [
+        "code"
+      ],
+      "keywords": [
+        "pull-request",
+        "diff",
+        "code-review",
+        "leaked-secret",
+        "todo"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "reddit-how_gauche-50-dev-team",
+        "discord-sprmn24-diff-review-plugin"
+      ]
+    },
+    {
+      "id": "s041",
+      "title": "Write incident timelines and postmortems",
+      "what": "Collects what happened during a production incident and writes the timeline and follow-ups.",
+      "kind": "once",
+      "needs": [
+        "monitoring",
+        "team_chat"
+      ],
+      "keywords": [
+        "postmortem",
+        "incident",
+        "outage",
+        "pagerduty",
+        "timeline"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "reddit-how_gauche-50-dev-team"
+      ]
+    },
+    {
+      "id": "s042",
+      "title": "Investigate production errors and open a fix for review",
+      "what": "Wakes on bug spikes or user feedback, traces the cause and opens a pull request for you to approve.",
+      "kind": "recurring",
+      "needs": [
+        "monitoring",
+        "code"
+      ],
+      "keywords": [
+        "stacktrace",
+        "exception",
+        "sentry",
+        "outage",
+        "production"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "reddit-avishic-startup-on-call"
+      ]
+    },
+    {
+      "id": "s043",
+      "title": "Dictate quotes straight into your CRM",
+      "what": "Turns a spoken or typed quote request into a CRM record and a ready-to-send quote.",
+      "kind": "once",
+      "needs": [
+        "crm"
+      ],
+      "keywords": [
+        "dealer",
+        "salesforce",
+        "hubspot",
+        "dictate",
+        "quote-request"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-julientalbot974-french-smb-clients"
+      ]
+    },
+    {
+      "id": "s044",
+      "title": "Turn business client emails into store draft orders",
+      "what": "Reads a client's order email and creates a draft order in your store for you to confirm.",
+      "kind": "once",
+      "needs": [
+        "email",
+        "ecommerce"
+      ],
+      "keywords": [
+        "draft-order",
+        "shopify",
+        "wholesale",
+        "b2b",
+        "purchase-order"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-bluffman-b2b-draft-orders"
+      ]
+    },
+    {
+      "id": "s045",
+      "title": "Watch your stock levels and alert you when items run low",
+      "what": "Checks inventory against thresholds and tells you what to reorder or bundle.",
+      "kind": "recurring",
+      "needs": [
+        "ecommerce",
+        "spreadsheet",
+        "schedule"
+      ],
+      "keywords": [
+        "inventory",
+        "reorder",
+        "sku",
+        "warehouse",
+        "stockout"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-geektekrob-collectibles-shop",
+        "akashnet-inventory"
+      ]
+    },
+    {
+      "id": "s046",
+      "title": "Triage your shop inbox for sales questions and orders",
+      "what": "Scans your business email and separates sales, customer questions and noise for you.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "messaging"
+      ],
+      "keywords": [
+        "shopify",
+        "storefront",
+        "wholesale",
+        "sales-inquiry",
+        "shop-inbox"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-geektekrob-collectibles-shop"
+      ]
+    },
+    {
+      "id": "s047",
+      "title": "Answer questions about orders and inventory from your phone",
+      "what": "Lets you ask in chat about pending orders, stock and past prices and get answers from your business tools.",
+      "kind": "once",
+      "needs": [
+        "ecommerce",
+        "messaging"
+      ],
+      "keywords": [
+        "shopify",
+        "inventory",
+        "pending-order",
+        "stockout",
+        "wholesale"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "hn-leansensei-orders-inventory"
+      ]
+    },
+    {
+      "id": "s048",
+      "title": "Review search performance and propose content to publish",
+      "what": "Checks your analytics and search data each day, finds opportunities and drafts content for your approval.",
+      "kind": "recurring",
+      "needs": [
+        "seo",
+        "analytics",
+        "schedule"
+      ],
+      "keywords": [
+        "seo",
+        "search-console",
+        "ranking",
+        "organic",
+        "impression"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "youtube-airanking-seo-loop"
+      ]
+    },
+    {
+      "id": "s049",
+      "title": "Watch competitor pages and keywords weekly",
+      "what": "Scans competitor sites on a schedule and tells you how their pages and keywords compare with yours.",
+      "kind": "recurring",
+      "needs": [
+        "seo",
+        "web",
+        "schedule"
+      ],
+      "keywords": [
+        "competitor",
+        "backlink",
+        "serp",
+        "semrush",
+        "ahrefs"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "reddit-forsaken_coconut3717-agency-outreach"
+      ]
+    },
+    {
+      "id": "s050",
+      "title": "Watch competitor pricing and alert on changes",
+      "what": "Checks competitor sites, pricing and news on a schedule and sends you a short digest of what changed.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "competitor",
+        "pricing-page",
+        "launch",
+        "changelog",
+        "rival"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "discord-zedosplasticos-business-swarm",
+        "aakashgupta-pm-briefing",
+        "x-quxiaoyin-three-agent-split"
+      ]
+    },
+    {
+      "id": "s051",
+      "title": "Audit your store's product pages for search",
+      "what": "Reviews product and collection pages for search problems and lists fixes in priority order.",
+      "kind": "once",
+      "needs": [
+        "ecommerce",
+        "seo"
+      ],
+      "keywords": [
+        "shopify",
+        "seo",
+        "meta-description",
+        "collection-page",
+        "alt-text"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "blog-stewartmedia-shopify-agency"
+      ]
+    },
+    {
+      "id": "s052",
+      "title": "Run a daily standup in your team chat",
+      "what": "Asks the team for updates each morning, tracks goal numbers and posts a summary.",
+      "kind": "recurring",
+      "needs": [
+        "team_chat",
+        "schedule",
+        "tasks"
+      ],
+      "keywords": [
+        "standup",
+        "discord",
+        "okr",
+        "blocker",
+        "async-standup"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "blog-sanjuacodez-company-brain",
+        "captain-awesome-pm-standups-adhd"
+      ]
+    },
+    {
+      "id": "s053",
+      "title": "Ask your top priority each morning and plan tasks around it",
+      "what": "Asks what matters most today, lines up the tasks that support it and remembers how you work.",
+      "kind": "recurring",
+      "needs": [
+        "schedule",
+        "messaging",
+        "memory"
+      ],
+      "keywords": [
+        "founder",
+        "most-important",
+        "deep-work",
+        "time-blocking"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "alexfinn-memory-wiki",
+        "hn-jjcm-founder-boss",
+        "gh-alexferrari-checkin"
+      ]
+    },
+    {
+      "id": "s054",
+      "title": "Spot tasks you repeat by hand and suggest automating them",
+      "what": "Notices work you keep doing manually and proposes how to automate it.",
+      "kind": "recurring",
+      "needs": [
+        "memory",
+        "schedule"
+      ],
+      "keywords": [
+        "automate",
+        "repetitive",
+        "workflow",
+        "shortcut"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "codehead-daily-operator"
+      ]
+    },
+    {
+      "id": "s055",
+      "title": "Send a daily briefing on the topics you follow",
+      "what": "Searches the web each morning for news on your interests and messages you a filtered summary.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "briefing",
+        "interest",
+        "tech-news",
+        "headline",
+        "rss"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "codehead-daily-operator",
+        "dev-arsh-natural-cron",
+        "0xmega-no-mac-mini",
+        "discord-m05tr0-hermes-on-kubernetes",
+        "captain-awesome-news-discord-cron"
+      ]
+    },
+    {
+      "id": "s056",
+      "title": "Email you a daily digest of what you should read",
+      "what": "Reads sites like Hacker News or RSS feeds once a day and emails you what deserves your attention.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "email",
+        "schedule"
+      ],
+      "keywords": [
+        "hacker-news",
+        "rss",
+        "feed",
+        "newsletter",
+        "reading-list"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-awais-h-hermes-reads-internet"
+      ]
+    },
+    {
+      "id": "s057",
+      "title": "Summarize your inbox each weekday and post it to team chat",
+      "what": "Reads your inbox at a set time and posts a short summary to a channel you pick.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "schedule",
+        "team_chat"
+      ],
+      "keywords": [
+        "slack",
+        "channel",
+        "weekday",
+        "gmail",
+        "inbox-summary"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "anthony-inbox-cron"
+      ]
+    },
+    {
+      "id": "s058",
+      "title": "Triage your inbox and text you what is urgent",
+      "what": "Watches your email, uses the AI only on mail that matters and messages you the urgent items.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "messaging",
+        "schedule"
+      ],
+      "keywords": [
+        "urgent",
+        "imap",
+        "spam",
+        "newsletter",
+        "vip-sender"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-mayuronx-email-state-machine",
+        "discord-monty-13277-claude-hermes-mcp"
+      ]
+    },
+    {
+      "id": "s059",
+      "title": "Draft email replies and keep security codes out of reach",
+      "what": "Drafts replies to ordinary mail but filters out login codes, password resets and bank notices first.",
+      "kind": "recurring",
+      "needs": [
+        "email"
+      ],
+      "keywords": [
+        "login-code",
+        "password-reset",
+        "one-time-code",
+        "bank-notice",
+        "phishing"
+      ],
+      "category": "privacy",
+      "story_ids": [
+        "reddit-holmebengt-local-email-gatekeeper"
+      ]
+    },
+    {
+      "id": "s060",
+      "title": "Scout new rental listings each morning and email the best",
+      "what": "Reads daily listing alerts and sends you the one to three best matches for your criteria.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "schedule",
+        "web"
+      ],
+      "keywords": [
+        "rental",
+        "apartment",
+        "lease",
+        "landlord",
+        "zillow"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "reddit-kenmazaika-apartment-inbox",
+        "reddit-kenmazaika-175-optiplex"
+      ]
+    },
+    {
+      "id": "s061",
+      "title": "Keep your tasks in sync with your notes and calendar",
+      "what": "Maintains your task list in your notes and cross-checks it against your calendar.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "calendar",
+        "tasks"
+      ],
+      "keywords": [
+        "todoist",
+        "obsidian",
+        "task-list",
+        "calendar-sync",
+        "daily-note"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-kouff-obsidian-calendar-signal",
+        "gh-oangelo-tasks"
+      ]
+    },
+    {
+      "id": "s062",
+      "title": "Keep your calendar updated and catch conflicts",
+      "what": "Adds events from your email and chats to your calendar and warns you about clashes.",
+      "kind": "once",
+      "needs": [
+        "calendar",
+        "email"
+      ],
+      "keywords": [
+        "calendar",
+        "conflict",
+        "double-booked",
+        "invite",
+        "appointment"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-monty-13277-claude-hermes-mcp"
+      ]
+    },
+    {
+      "id": "s063",
+      "title": "Fill out online forms for you",
+      "what": "Opens a website in a real browser, fills in a form with details you provide and stops before submitting for your check.",
+      "kind": "once",
+      "needs": [
+        "browser"
+      ],
+      "keywords": [
+        "web-form",
+        "autofill",
+        "signup",
+        "captcha",
+        "application-form"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-monty-13277-claude-hermes-mcp"
+      ]
+    },
+    {
+      "id": "s064",
+      "title": "Log your day into your notes and summarize it each night",
+      "what": "Records what you tell it about your day in your notes and writes a short evening summary.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "schedule"
+      ],
+      "keywords": [
+        "journal",
+        "diary",
+        "reflection",
+        "daily-note",
+        "gratitude"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-jezza2463-daily-journal-kimi"
+      ]
+    },
+    {
+      "id": "s065",
+      "title": "Review the day's chats each night and log decisions",
+      "what": "Reads the day's conversations, extracts decisions and open items and writes tomorrow's plan.",
+      "kind": "recurring",
+      "needs": [
+        "memory",
+        "notes",
+        "schedule"
+      ],
+      "keywords": [
+        "open-loop",
+        "tomorrow-plan",
+        "nightly-review",
+        "session-recap"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "reddit-holmebengt-28-crons",
+        "discord-ajaylakhani-agent-dreams",
+        "discord-stefan171-dream-auto"
+      ]
+    },
+    {
+      "id": "s066",
+      "title": "Write bedtime stories starring your child",
+      "what": "Writes a fresh short story each night with your child's name and favorite characters.",
+      "kind": "once",
+      "needs": [
+        "memory"
+      ],
+      "keywords": [
+        "bedtime",
+        "story",
+        "daughter",
+        "bedtime-story",
+        "goodnight"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "gh-kovern-bedtime"
+      ]
+    },
+    {
+      "id": "s067",
+      "title": "Set up a safe learning assistant for your child",
+      "what": "Creates a separate assistant for a child with age-appropriate rules and a parent approval step.",
+      "kind": "once",
+      "needs": [
+        "memory",
+        "messaging"
+      ],
+      "keywords": [
+        "parental-control",
+        "kid-safe",
+        "age-appropriate",
+        "homeschool",
+        "tablet"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "x-trevin-kids-profile-daughter",
+        "reddit-kid-mode-jarvis",
+        "gh-iacker-discord-gate"
+      ]
+    },
+    {
+      "id": "s068",
+      "title": "Track workouts and health data and spot trends",
+      "what": "Collects what you log and your wearable data, then tells you what the numbers mean over time.",
+      "kind": "recurring",
+      "needs": [
+        "memory",
+        "terminal"
+      ],
+      "keywords": [
+        "whoop",
+        "oura",
+        "garmin",
+        "sleep",
+        "wearable"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-muschi2396-voice-fitness-coach",
+        "rumjahn-everything",
+        "discord-djbuck-ios-companion",
+        "discord-wysie-whoop-plugin",
+        "discord-wysie-health-connect-receiver"
+      ]
+    },
+    {
+      "id": "s069",
+      "title": "Plan a trip using the preferences you have mentioned before",
+      "what": "Recalls what you liked on past trips and builds a new itinerary around it.",
+      "kind": "once",
+      "needs": [
+        "memory",
+        "web"
+      ],
+      "keywords": [
+        "itinerary",
+        "trip",
+        "vacation",
+        "airbnb",
+        "flight"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "vivek-shetye-trip-memory"
+      ]
+    },
+    {
+      "id": "s070",
+      "title": "Build a personal wiki from what you read and discuss",
+      "what": "Files your notes, articles and chats into a linked wiki that you can search and that stays tidy.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "memory"
+      ],
+      "keywords": [
+        "wiki",
+        "second-brain",
+        "obsidian",
+        "zettelkasten",
+        "backlink"
+      ],
+      "category": "research",
+      "story_ids": [
+        "jsong-llm-wiki",
+        "nickspisak-everything",
+        "reddit-jonathan-rivera-obsidian-as-the",
+        "reddit-onebrain-four-agents",
+        "discord-modest-maoist-cartographer-brain"
+      ]
+    },
+    {
+      "id": "s071",
+      "title": "Turn your SOPs and client notes into a company brain",
+      "what": "Gathers your procedures and decisions into one searchable base your team can ask questions of.",
+      "kind": "once",
+      "needs": [
+        "notes",
+        "team_chat"
+      ],
+      "keywords": [
+        "sop",
+        "onboarding",
+        "runbook",
+        "wiki",
+        "handbook"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-milesdeutscher-business-brain",
+        "x-martybent-tftc-company-brain",
+        "blog-echobind-company-slack-bot",
+        "discord-megabyte0x-hermes-for-team"
+      ]
+    },
+    {
+      "id": "s072",
+      "title": "File forwarded email threads into your company wiki",
+      "what": "Watches a shared mailbox and adds the lasting facts from forwarded threads to your wiki.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "notes"
+      ],
+      "keywords": [
+        "shared-mailbox",
+        "forwarded-thread",
+        "wiki",
+        "knowledge-base"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "reddit-thetomsays-wiki-inbox"
+      ]
+    },
+    {
+      "id": "s073",
+      "title": "Deliver a daily research brief on your field",
+      "what": "Watches sources in your field, picks the useful signals and writes a short brief with content ideas.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "notes"
+      ],
+      "keywords": [
+        "arxiv",
+        "paper",
+        "field-research",
+        "content-idea",
+        "signal"
+      ],
+      "category": "research",
+      "story_ids": [
+        "gkisokay-research-brief",
+        "reddit-research-agent",
+        "discord-dre108-gigaxity-research"
+      ]
+    },
+    {
+      "id": "s074",
+      "title": "Rank your saved bookmarks and suggest next steps",
+      "what": "Picks your most relevant saved posts, ranks them by your interests and proposes what to do about each.",
+      "kind": "recurring",
+      "needs": [
+        "social",
+        "memory"
+      ],
+      "keywords": [
+        "bookmark",
+        "saved-post",
+        "x-bookmark",
+        "reading-list"
+      ],
+      "category": "research",
+      "story_ids": [
+        "defi0xjeff-30-skills"
+      ]
+    },
+    {
+      "id": "s075",
+      "title": "Turn your saved posts into a listenable podcast",
+      "what": "Pulls posts from your lists and bookmarks, structures them and generates an audio episode.",
+      "kind": "recurring",
+      "needs": [
+        "social",
+        "media"
+      ],
+      "keywords": [
+        "podcast",
+        "notebooklm",
+        "audio-episode",
+        "bookmark"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "x-heyyanvi-hermes-designed-an"
+      ]
+    },
+    {
+      "id": "s076",
+      "title": "Turn podcasts into short digests",
+      "what": "Transcribes the podcasts you follow and gives you a brief digest of each episode.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule"
+      ],
+      "keywords": [
+        "podcast",
+        "episode",
+        "transcript",
+        "show-note"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "mvanhorn-business-ops"
+      ]
+    },
+    {
+      "id": "s077",
+      "title": "Translate and summarize long pages and documents",
+      "what": "Translates and condenses articles and documents so you can read them in your own language.",
+      "kind": "once",
+      "needs": [
+        "web"
+      ],
+      "keywords": [
+        "translate",
+        "translation",
+        "bilingual",
+        "language",
+        "article"
+      ],
+      "category": "content-creation",
+      "story_ids": [
+        "discord-misswuhanliang-translator-extension"
+      ]
+    },
+    {
+      "id": "s078",
+      "title": "Research a topic and save a reference sheet",
+      "what": "Looks up a topic, organizes the answers in a table and saves it in your notes for next time.",
+      "kind": "once",
+      "needs": [
+        "web",
+        "spreadsheet"
+      ],
+      "keywords": [
+        "reference-sheet",
+        "lookup",
+        "pet",
+        "breed",
+        "comparison"
+      ],
+      "category": "general",
+      "story_ids": [
+        "reddit-elaphe-non-coder-uses"
+      ]
+    },
+    {
+      "id": "s079",
+      "title": "Draft posts in your own voice for your approval",
+      "what": "Reads what you have published, then writes social posts that sound like you and waits for your yes.",
+      "kind": "once",
+      "needs": [
+        "social",
+        "memory"
+      ],
+      "keywords": [
+        "linkedin",
+        "tweet",
+        "writing-voice",
+        "ghostwrite",
+        "style-guide"
+      ],
+      "category": "content-creation",
+      "story_ids": [
+        "yashica-linkedin",
+        "saboo-monica"
+      ]
+    },
+    {
+      "id": "s080",
+      "title": "Make short-form video slideshows from a topic",
+      "what": "Researches a topic, writes the script and builds slides in the right dimensions for short-form video.",
+      "kind": "once",
+      "needs": [
+        "media",
+        "web",
+        "social"
+      ],
+      "keywords": [
+        "tiktok",
+        "slideshow",
+        "reel",
+        "short-form",
+        "carousel"
+      ],
+      "category": "content-creation",
+      "story_ids": [
+        "cyrilxbt-tiktok-factory"
+      ]
+    },
+    {
+      "id": "s081",
+      "title": "Generate product ad concepts from a product page",
+      "what": "Reads a product page, finds winning hooks in your niche and generates draft ad creatives.",
+      "kind": "once",
+      "needs": [
+        "media",
+        "web"
+      ],
+      "keywords": [
+        "ad-creative",
+        "ugc",
+        "shopify",
+        "winning-ad",
+        "hook-line"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "codewithimanshu-higgsfield"
+      ]
+    },
+    {
+      "id": "s082",
+      "title": "Research weekly video ideas and draft titles",
+      "what": "Finds what is trending in your area each week and drafts video topics and titles.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "social"
+      ],
+      "keywords": [
+        "youtube",
+        "thumbnail",
+        "video-title",
+        "channel",
+        "creator"
+      ],
+      "category": "content-creation",
+      "story_ids": [
+        "metics-weekly-cron",
+        "leon-amazon-titles"
+      ]
+    },
+    {
+      "id": "s083",
+      "title": "Pull performance stats for your social posts",
+      "what": "Collects analytics for your recent posts and tells you what worked.",
+      "kind": "once",
+      "needs": [
+        "social",
+        "browser"
+      ],
+      "keywords": [
+        "engagement",
+        "impression",
+        "threads",
+        "instagram",
+        "follower"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "rumjahn-everything"
+      ]
+    },
+    {
+      "id": "s084",
+      "title": "Turn meeting notes into tasks",
+      "what": "Reads your meeting notes and files the action items with owners and dates in your task tracker.",
+      "kind": "once",
+      "needs": [
+        "meeting_notes",
+        "tasks"
+      ],
+      "keywords": [
+        "meeting",
+        "action-item",
+        "granola",
+        "standup",
+        "transcript"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "julian-meet-teams",
+        "mvanhorn-business-ops"
+      ]
+    },
+    {
+      "id": "s085",
+      "title": "Draft follow-up emails after your meetings",
+      "what": "Uses the meeting transcript to draft follow-up emails to attendees for your approval.",
+      "kind": "once",
+      "needs": [
+        "meeting_notes",
+        "email"
+      ],
+      "keywords": [
+        "meeting-recap",
+        "transcript",
+        "attendee",
+        "fireflies",
+        "granola"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "mvanhorn-business-ops",
+        "julian-meet-teams"
+      ]
+    },
+    {
+      "id": "s086",
+      "title": "Summarize your portfolio news each morning",
+      "what": "Collects news and price moves on the holdings you name and sends a short morning summary.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "portfolio",
+        "holding",
+        "ticker",
+        "earnings",
+        "dividend"
+      ],
+      "category": "trading",
+      "story_ids": [
+        "deronin-weather",
+        "gideon-trading-hetzner"
+      ]
+    },
+    {
+      "id": "s087",
+      "title": "Alert you to unusual moves in prediction markets",
+      "what": "Watches market categories you choose, researches the likely reason for big moves and sends a brief without trading.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "polymarket",
+        "kalshi",
+        "prediction-market",
+        "odds"
+      ],
+      "category": "trading",
+      "story_ids": [
+        "sharbel-polymarket-alerts",
+        "adiix-polymarket",
+        "moonsat-polymarket-weather"
+      ]
+    },
+    {
+      "id": "s088",
+      "title": "Watch your crypto balances and alert on big moves",
+      "what": "Checks your wallet balances and prices on a schedule and messages you when something moves past your threshold.",
+      "kind": "recurring",
+      "needs": [
+        "crypto",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "crypto",
+        "wallet",
+        "bitcoin",
+        "ethereum",
+        "token"
+      ],
+      "category": "trading",
+      "story_ids": [
+        "gideon-trading-hetzner",
+        "sharbel-polymarket-alerts"
+      ]
+    },
+    {
+      "id": "s089",
+      "title": "Watch your node endpoints and ping you when they go down",
+      "what": "Checks validator or server endpoints on a schedule and messages you when one stops responding.",
+      "kind": "recurring",
+      "needs": [
+        "monitoring",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "validator",
+        "node",
+        "endpoint",
+        "uptime",
+        "rpc"
+      ],
+      "category": "integrations",
+      "story_ids": [
+        "discord-0xajpanda-validator-monitor"
+      ]
+    },
+    {
+      "id": "s090",
+      "title": "Watch prices for movies or products and alert on lows",
+      "what": "Checks the prices of items on your list and tells you when one hits a new low.",
+      "kind": "recurring",
+      "needs": [
+        "web",
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "price-drop",
+        "camelcamelcamel",
+        "wishlist",
+        "deal",
+        "sale"
+      ],
+      "category": "general",
+      "story_ids": [
+        "reddit-cheapcharts-skill"
+      ]
+    },
+    {
+      "id": "s091",
+      "title": "Nudge you through routines with timed reminders",
+      "what": "Sends timed prompts on your phone so routines happen without you having to start them.",
+      "kind": "recurring",
+      "needs": [
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "adhd",
+        "routine",
+        "nudge",
+        "executive-function",
+        "timer"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-o-o-o-o000-adhd-cronjobs",
+        "captain-awesome-pm-standups-adhd"
+      ]
+    },
+    {
+      "id": "s092",
+      "title": "Collect daily signals and send a triaged summary",
+      "what": "Runs small checks through the day, logs the results and sends one ranked summary of what needs you.",
+      "kind": "recurring",
+      "needs": [
+        "schedule",
+        "messaging"
+      ],
+      "keywords": [
+        "watchdog",
+        "cron",
+        "heartbeat",
+        "probe"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "reddit-signal-triage-notify"
+      ]
+    },
+    {
+      "id": "s093",
+      "title": "Boil down busy group chats into a short summary",
+      "what": "Reads active group chats and sends you the few lines that matter, such as safety updates or schedule changes.",
+      "kind": "recurring",
+      "needs": [
+        "team_chat",
+        "messaging",
+        "schedule"
+      ],
+      "keywords": [
+        "whatsapp",
+        "group-chat",
+        "telegram-group",
+        "crew",
+        "thread"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-godzillaton-construction-whatsapp"
+      ]
+    },
+    {
+      "id": "s094",
+      "title": "Draft replies to customer messages and ask before sending",
+      "what": "Drafts answers to customer chats in your voice and runs jobs only after you approve in your chat app.",
+      "kind": "once",
+      "needs": [
+        "messaging"
+      ],
+      "keywords": [
+        "whatsapp",
+        "customer-chat",
+        "approval-gate",
+        "storefront"
+      ],
+      "category": "marketing",
+      "story_ids": [
+        "blog-martechai-whatsapp-business",
+        "x-lecaj-food-beverage-ops-profiles"
+      ]
+    },
+    {
+      "id": "s095",
+      "title": "Run a chief-of-staff that tracks each project's open items",
+      "what": "Keeps a running list of open items and decisions per project and reports what is stuck.",
+      "kind": "recurring",
+      "needs": [
+        "tasks",
+        "memory",
+        "team_chat"
+      ],
+      "keywords": [
+        "chief-of-staff",
+        "open-loop",
+        "stuck",
+        "commitment"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-hvhprofessionalist-real-estate-cos",
+        "discord-ogiberstein-project-os",
+        "x-michaelversluis-energy-advisory-rbac-gateway"
+      ]
+    },
+    {
+      "id": "s096",
+      "title": "Send clients a daily status with pull requests and builds",
+      "what": "Collects pull request notices, build status and progress and sends each client a short update.",
+      "kind": "recurring",
+      "needs": [
+        "code",
+        "email",
+        "schedule"
+      ],
+      "keywords": [
+        "pull-request",
+        "deploy",
+        "vercel",
+        "github",
+        "staging"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "reddit-xbxz-dev-shop-prs",
+        "reddit-osamu-dazai-12-company-agents"
+      ]
+    },
+    {
+      "id": "s097",
+      "title": "Triage new tickets, assign them and start working",
+      "what": "Reads new tickets in your tracker, prioritizes and assigns them and begins on the straightforward ones.",
+      "kind": "recurring",
+      "needs": [
+        "tasks",
+        "code"
+      ],
+      "keywords": [
+        "ticket",
+        "linear",
+        "jira",
+        "backlog",
+        "assignee"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "discord-dalekc72-hermes-managing-tickets",
+        "blog-halfbitstudio-software-house"
+      ]
+    },
+    {
+      "id": "s098",
+      "title": "Turn a request or spec into a reviewed pull request",
+      "what": "Takes a written spec or forwarded document, makes the change in your repo and opens a pull request.",
+      "kind": "once",
+      "needs": [
+        "code",
+        "terminal"
+      ],
+      "keywords": [
+        "spec",
+        "pull-request",
+        "implementation",
+        "repo",
+        "feature-branch"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-agency-client-deliverable",
+        "x-advaitraykar-elmo-narrated-demos",
+        "reddit-riceinmybelly-solo-jobsite"
+      ]
+    },
+    {
+      "id": "s099",
+      "title": "Build a small useful tool for you every night",
+      "what": "Each night builds a small app or script aimed at your goals and tells you what it made.",
+      "kind": "recurring",
+      "needs": [
+        "terminal",
+        "schedule"
+      ],
+      "keywords": [
+        "micro-app",
+        "side-project",
+        "nightly-build",
+        "prototype",
+        "scaffold"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "alexfinn-2am-microapp",
+        "discord-alpaca1712-hermes-ships-with-vals",
+        "andrew-gordon-5-apps"
+      ]
+    },
+    {
+      "id": "s100",
+      "title": "Build and deploy a landing page from a short brief",
+      "what": "Researches you or your business, builds a landing page and publishes it to your server.",
+      "kind": "once",
+      "needs": [
+        "hosting",
+        "web"
+      ],
+      "keywords": [
+        "landing-page",
+        "deploy",
+        "portfolio",
+        "hosting",
+        "vercel"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "captain-awesome-google-me-deploy"
+      ]
+    },
+    {
+      "id": "s101",
+      "title": "Have one agent audit another's code overnight",
+      "what": "Runs a second model over code written by the first and reports the problems it finds by morning.",
+      "kind": "recurring",
+      "needs": [
+        "code",
+        "schedule"
+      ],
+      "keywords": [
+        "second-opinion",
+        "code-audit",
+        "second-model",
+        "reviewer"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "x-ibuzovskyi-cross-agent-audit",
+        "gkisokay-autobuild"
+      ]
+    },
+    {
+      "id": "s102",
+      "title": "Build a dashboard from your data",
+      "what": "Turns a spreadsheet or database into a clean dashboard you can open in a browser.",
+      "kind": "once",
+      "needs": [
+        "spreadsheet",
+        "terminal"
+      ],
+      "keywords": [
+        "dashboard",
+        "chart",
+        "spreadsheet",
+        "visualization",
+        "sql"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "worldofai-shadcn-manim"
+      ]
+    },
+    {
+      "id": "s103",
+      "title": "Set up a simple CRM for your contacts",
+      "what": "Creates a lightweight contact database with a dashboard and keeps it updated from your conversations.",
+      "kind": "once",
+      "needs": [
+        "crm",
+        "hosting"
+      ],
+      "keywords": [
+        "crm",
+        "pipeline",
+        "supabase",
+        "airtable",
+        "contact-database"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "derek-supabase-crm",
+        "worldofai-recursive-crm"
+      ]
+    },
+    {
+      "id": "s104",
+      "title": "Back up your agent's settings to a repo each night",
+      "what": "Commits your agent's configuration and data to a private repository nightly so you can restore it.",
+      "kind": "recurring",
+      "needs": [
+        "code",
+        "schedule"
+      ],
+      "keywords": [
+        "backup",
+        "restore",
+        "dotfile",
+        "private-repo",
+        "snapshot"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "discord-mayuronx-backup-hermes-github"
+      ]
+    },
+    {
+      "id": "s105",
+      "title": "Check on your servers and fix routine problems",
+      "what": "Checks disk, services and containers on your server and fixes the routine issues or reports them.",
+      "kind": "recurring",
+      "needs": [
+        "terminal",
+        "monitoring"
+      ],
+      "keywords": [
+        "vps",
+        "disk",
+        "docker",
+        "container",
+        "uptime"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "hn-rnxrx-obsidian",
+        "discord-sammcf-vps-tailscale"
+      ]
+    },
+    {
+      "id": "s106",
+      "title": "Set up uptime and metrics alerts for your service",
+      "what": "Sets up metrics collection and alert rules for your service and checks that they fire.",
+      "kind": "once",
+      "needs": [
+        "monitoring",
+        "hosting"
+      ],
+      "keywords": [
+        "prometheus",
+        "grafana",
+        "alertmanager",
+        "uptime",
+        "exporter"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "jahangir-stackademic-field-report"
+      ]
+    },
+    {
+      "id": "s107",
+      "title": "Act automatically when a file changes in a folder",
+      "what": "Watches a folder and runs the steps you describe whenever a file appears or changes.",
+      "kind": "recurring",
+      "needs": [
+        "terminal",
+        "files"
+      ],
+      "keywords": [
+        "folder-watch",
+        "inotify",
+        "file-watcher",
+        "drop-folder",
+        "trigger"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "onlyterp-file-change"
+      ]
+    },
+    {
+      "id": "s108",
+      "title": "Write clean commit messages that follow your convention",
+      "what": "Writes commit messages in your team's format with a short subject and a body explaining why.",
+      "kind": "once",
+      "needs": [
+        "code"
+      ],
+      "keywords": [
+        "commit-message",
+        "conventional-commit",
+        "changelog",
+        "git",
+        "subject-line"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "discord-meatrition-conventional-commits-skill"
+      ]
+    },
+    {
+      "id": "s109",
+      "title": "Learn your codebase conventions and apply them in reviews",
+      "what": "Builds up knowledge of your repo, deployment quirks and preferences so reviews and changes match your style.",
+      "kind": "recurring",
+      "needs": [
+        "code",
+        "memory"
+      ],
+      "keywords": [
+        "codebase",
+        "convention",
+        "style-guide",
+        "repo-quirk",
+        "lint"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "kristopher-codebase-memory",
+        "technmak-10-days",
+        "discord-hypercubed-knowledge-starter-kit"
+      ]
+    },
+    {
+      "id": "s110",
+      "title": "Watch another bot or process and restart it when it breaks",
+      "what": "Checks that your other agents and jobs are running and restarts or reports the ones that fail.",
+      "kind": "recurring",
+      "needs": [
+        "terminal",
+        "schedule"
+      ],
+      "keywords": [
+        "watchdog",
+        "restart",
+        "supervisor",
+        "systemd",
+        "crash-loop"
+      ],
+      "category": "dev-workflow",
+      "story_ids": [
+        "gkisokay-watchdog",
+        "discord-ones07389-4-agents-on-laptop"
+      ]
+    },
+    {
+      "id": "s111",
+      "title": "Keep a log of everything installed on your machine",
+      "what": "Records the packages and containers your tools install so you know where they came from.",
+      "kind": "recurring",
+      "needs": [
+        "terminal"
+      ],
+      "keywords": [
+        "package",
+        "container",
+        "installed-software",
+        "apt",
+        "homebrew"
+      ],
+      "category": "privacy",
+      "story_ids": [
+        "reddit-agent-install-monitor"
+      ]
+    },
+    {
+      "id": "s112",
+      "title": "Draft a weekly marketing performance report",
+      "what": "Pulls your marketing, support and traffic numbers each week and writes a short report of what changed.",
+      "kind": "recurring",
+      "needs": [
+        "analytics",
+        "schedule"
+      ],
+      "keywords": [
+        "ga4",
+        "campaign",
+        "growth",
+        "traffic",
+        "marketing-report"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-loicberthelot-dropmagic-backbone",
+        "blog-sanjuacodez-company-brain"
+      ]
+    },
+    {
+      "id": "s113",
+      "title": "Check your bank and payment balances every morning",
+      "what": "Reads balances and recent activity from your bank and payment accounts and flags anything unusual.",
+      "kind": "recurring",
+      "needs": [
+        "banking",
+        "payments",
+        "schedule"
+      ],
+      "keywords": [
+        "bank-balance",
+        "stripe",
+        "cash-balance",
+        "plaid",
+        "transaction"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-loicberthelot-dropmagic-backbone"
+      ]
+    },
+    {
+      "id": "s114",
+      "title": "Draft your newsletter from what you published",
+      "what": "Collects your recent content and writes a newsletter draft for your approval before it is sent.",
+      "kind": "recurring",
+      "needs": [
+        "bulk_email",
+        "notes"
+      ],
+      "keywords": [
+        "newsletter",
+        "substack",
+        "subscriber",
+        "mailchimp",
+        "beehiiv"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-ecommerce_addict-managed-service",
+        "sharbel-junior-operator"
+      ]
+    },
+    {
+      "id": "s115",
+      "title": "Create and edit slide decks",
+      "what": "Builds or edits a presentation from your outline and existing documents.",
+      "kind": "once",
+      "needs": [
+        "notes"
+      ],
+      "keywords": [
+        "slide",
+        "deck",
+        "powerpoint",
+        "presentation",
+        "keynote"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "gh-zednik-slides"
+      ]
+    },
+    {
+      "id": "s116",
+      "title": "Talk to your assistant by voice instead of typing",
+      "what": "Lets you speak your requests and hear the answers, useful when typing is hard or your hands are busy.",
+      "kind": "once",
+      "needs": [
+        "media"
+      ],
+      "keywords": [
+        "hands-free",
+        "speech",
+        "accessibility",
+        "dictate",
+        "voice-mode"
+      ],
+      "category": "general",
+      "story_ids": [
+        "discord-timmmie-voice-from-terminal",
+        "x-juliangoldie-apollo-voice",
+        "discord-s0uthpaw-agentic-elevator-music"
+      ]
+    },
+    {
+      "id": "s117",
+      "title": "Turn a concept into an explainer video",
+      "what": "Takes a topic or paper and produces a short animated explainer video.",
+      "kind": "once",
+      "needs": [
+        "media"
+      ],
+      "keywords": [
+        "explainer",
+        "animation",
+        "manim",
+        "lesson",
+        "concept"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "worldofai-shadcn-manim"
+      ]
+    },
+    {
+      "id": "s118",
+      "title": "Build web pages that match your own style guide",
+      "what": "Turns your preferred design style into rules so every page the agent builds looks consistent.",
+      "kind": "once",
+      "needs": [
+        "code"
+      ],
+      "keywords": [
+        "style-guide",
+        "design-system",
+        "tailwind",
+        "css",
+        "component"
+      ],
+      "category": "creative",
+      "story_ids": [
+        "discord-arm64be-personal-webpage-style",
+        "reddit-typeui-design-skills"
+      ]
+    },
+    {
+      "id": "s119",
+      "title": "Answer staff and customer questions for your shop in chat",
+      "what": "Runs an internal channel for staff questions about inventory and policies, with a separate customer-facing helper.",
+      "kind": "recurring",
+      "needs": [
+        "team_chat",
+        "support"
+      ],
+      "keywords": [
+        "shop-staff",
+        "discord",
+        "policy",
+        "inventory",
+        "customer-faq"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-jack-dawed-bookstore-agents"
+      ]
+    },
+    {
+      "id": "s120",
+      "title": "Keep separate assistants for work, family and hobbies",
+      "what": "Sets up separate assistants for work, coaching and home so context and permissions do not mix.",
+      "kind": "once",
+      "needs": [
+        "memory"
+      ],
+      "keywords": [
+        "separate-profile",
+        "work-persona",
+        "boundary",
+        "role",
+        "permission"
+      ],
+      "category": "enterprise",
+      "story_ids": [
+        "reddit-stan-frbd-cyber-analyst",
+        "x-lecaj-food-beverage-ops-profiles"
+      ]
+    },
+    {
+      "id": "s121",
+      "title": "Draft a client deliverable from your SOPs",
+      "what": "Follows your checklist to produce a repeatable deliverable for each client with a separate workspace per client.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "files"
+      ],
+      "keywords": [
+        "deliverable",
+        "sop",
+        "checklist",
+        "agency",
+        "client-workspace"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-ecommerce_addict-managed-service",
+        "ibuzovskyi-3-money-setups"
+      ]
+    },
+    {
+      "id": "s122",
+      "title": "Remember your preferences so you stop repeating them",
+      "what": "Saves your preferences and tool quirks once and applies them in every later conversation.",
+      "kind": "once",
+      "needs": [
+        "memory"
+      ],
+      "keywords": [
+        "preference",
+        "standing-instruction",
+        "quirk",
+        "remember",
+        "convention"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "discord-tonywhelan-memory-tools-workflow",
+        "reddit-patbhakta-hermes-vs-openclaw",
+        "discord-jezza2463-standing-instructions-plugin"
+      ]
+    },
+    {
+      "id": "s123",
+      "title": "Give your agent its own email inbox to work from",
+      "what": "Creates a dedicated mailbox where alerts and forwarded mail land so the agent never touches your main inbox.",
+      "kind": "once",
+      "needs": [
+        "email"
+      ],
+      "keywords": [
+        "agent-mailbox",
+        "dedicated-inbox",
+        "forward",
+        "alias"
+      ],
+      "category": "integrations",
+      "story_ids": [
+        "agentmail-inbox",
+        "reddit-kenmazaika-apartment-inbox"
+      ]
+    },
+    {
+      "id": "s124",
+      "title": "Read your calendar and Gmail together to plan your day",
+      "what": "Combines your email and calendar each morning into a short plan with what needs attention.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "calendar",
+        "schedule"
+      ],
+      "keywords": [
+        "gmail",
+        "calendar",
+        "agenda",
+        "day-plan"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "rumjahn-everything",
+        "discord-monty-13277-claude-hermes-mcp"
+      ]
+    },
+    {
+      "id": "s125",
+      "title": "Run a weekly review of your goals and notes",
+      "what": "Reads your notes and logs each week and writes a review of what moved and what stalled.",
+      "kind": "recurring",
+      "needs": [
+        "notes",
+        "memory",
+        "schedule"
+      ],
+      "keywords": [
+        "weekly-review",
+        "goal",
+        "stalled",
+        "reflection",
+        "progress"
+      ],
+      "category": "personal-assistant",
+      "story_ids": [
+        "alexfinn-memory-wiki",
+        "reddit-holmebengt-28-crons"
+      ]
+    },
+    {
+      "id": "s126",
+      "title": "Keep a shared company agent that remembers months of context",
+      "what": "Carries long-term company knowledge between team agents so new tasks start with full context.",
+      "kind": "recurring",
+      "needs": [
+        "memory",
+        "team_chat"
+      ],
+      "keywords": [
+        "long-term-memory",
+        "team-agent",
+        "shared-memory",
+        "handoff"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-martybent-tftc-company-brain",
+        "blog-echobind-company-slack-bot"
+      ]
+    },
+    {
+      "id": "s127",
+      "title": "Route approvals to the right person in your chat app",
+      "what": "Sends high-stakes actions to an approver on their phone and only proceeds after a yes.",
+      "kind": "once",
+      "needs": [
+        "messaging"
+      ],
+      "keywords": [
+        "approver",
+        "sign-off",
+        "authorization",
+        "high-stakes",
+        "approval-gate"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "x-lecaj-food-beverage-ops-profiles",
+        "github-hewi333-service-business"
+      ]
+    },
+    {
+      "id": "s128",
+      "title": "Summarize new customer requests and file them as tasks",
+      "what": "Turns customer emails and chats into tasks with the details attached.",
+      "kind": "recurring",
+      "needs": [
+        "email",
+        "tasks"
+      ],
+      "keywords": [
+        "intake",
+        "customer-request",
+        "backlog",
+        "helpdesk",
+        "linear"
+      ],
+      "category": "business-ops",
+      "story_ids": [
+        "reddit-agency-client-deliverable",
+        "x-thecraighewitt-support-ticket-mining"
+      ]
+    }
+  ]
+}
