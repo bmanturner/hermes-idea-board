@@ -236,6 +236,18 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(rep2.kept, [])
         self.assertIn("blocked by your rule", rep2.rejected[0]["why"])
 
+    def test_wrong_tool_dismissal_still_allows_other_ideas_on_the_topic(self):
+        rep = pipeline.run(self.pkt, fake_llm([cand()]), self.store, now=fixtures.NOW)
+        first = rep.kept[0]
+        self.store.dismiss(first["id"], "wrong_tool")
+        same_tool = cand(title="Send Acme invoices from Harvest each week", topic=first["topic"])
+        rep2 = pipeline.run(self.pkt, fake_llm([same_tool]), self.store, now=fixtures.NOW)
+        self.assertIn("blocked by your rule", rep2.rejected[0]["why"])
+        other_tool = cand(title="Chase Acme about the unpaid invoice", topic=first["topic"],
+                          uses=[u for u in first["uses"] if u not in self.store.rules()[0]["match"]["capability"]])
+        rep3 = pipeline.run(self.pkt, fake_llm([other_tool]), self.store, now=fixtures.NOW)
+        self.assertEqual([k["title"] for k in rep3.kept], ["Chase Acme about the unpaid invoice"], rep3.rejected)
+
     def test_critic_can_drop(self):
         rev = [{"index": 0, "keep": False, "value": 2, "specificity": 1, "feasibility": 3, "novelty": 3,
                 "reason": "generic", "title": "", "why": ""}]

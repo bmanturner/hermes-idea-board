@@ -205,12 +205,15 @@ def validate(c: dict[str, Any], packet: dict[str, Any], store: Store) -> str | N
 
 
 def duplicate_of(c: dict[str, Any], store: Store) -> str | None:
+    """The same idea again. Any earlier card with a near-identical title counts. A same-topic card counts
+    only while it is still on the board or snoozed: once dismissed, the dismissal's rule decides what stays
+    off (a "wrong tool" dismissal must not block a different idea on the same topic)."""
     key = title_key(c.get("title") or "")
     for old in store.cards(("open", "snoozed", "started", "done", "dismissed")):
         if jaccard(key, title_key(old["title"] or "")) >= 0.6:
             return old["id"]
         if old["kind"] == c.get("kind") and old.get("topic") and topic_match(old["topic"], c.get("topic") or "") \
-                and old["status"] in ("open", "snoozed", "dismissed"):
+                and old["status"] in ("open", "snoozed"):
             return old["id"]
     return None
 
