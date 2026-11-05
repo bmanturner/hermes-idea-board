@@ -287,6 +287,16 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             pipeline.retrying(always_overloaded, waits=(1, 2), sleep=lambda s: None)
 
+    def test_reading_the_board_never_holds_the_write_lock(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            board = Store(sqlite3.connect(f"{d}/data.db"))
+            board.board(), board.active_run(), board.last_run()  # what /board does; last call leaves no commit
+            nightly = Store(sqlite3.connect(f"{d}/data.db", timeout=0.2))
+            nightly.finish_run(nightly.start_run("nightly"), "ok")  # raised "database is locked" before the fix
+            board.conn.close()
+            nightly.conn.close()
+
     def test_cut_off_run_is_closed_and_a_live_run_is_not_the_last_run(self):
         pipeline.run(self.pkt, fake_llm([cand()]), self.store, now=fixtures.NOW)
         ok = self.store.last_run() or {}

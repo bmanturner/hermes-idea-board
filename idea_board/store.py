@@ -104,11 +104,12 @@ class Store:
     def _close_stale_runs(self) -> None:
         """A run takes minutes. One still 'running' after STALE_RUN_SECONDS was cut off (Hermes
         restarted or the process died), so record it as failed instead of running forever."""
-        cur = self.conn.execute(
+        self.conn.execute(
             "UPDATE runs SET status = 'error', finished_at = started_at, error = ? "
             "WHERE status = 'running' AND started_at < ?", (STALE_RUN_ERROR, time.time() - STALE_RUN_SECONDS))
-        if cur.rowcount:
-            self.conn.commit()
+        # Always commit: Python's sqlite3 opens a transaction for any UPDATE, even one that changes no
+        # rows, and an uncommitted one holds the write lock against the nightly run and the board.
+        self.conn.commit()
 
     def start_run(self, trigger: str) -> int:
         self._close_stale_runs()
