@@ -165,7 +165,7 @@ Hermes's own palette, borrowed whole: an ink neutral at stepped opacities, one s
 
 ### Primary
 - **Hermes Signal Blue** (`--ui-accent`): the primary action of a view (Start in a new chat, Schedule it), filled day dots, and finished step markers. Nothing else.
-- **On-Accent White** (`--color-primary-foreground`): text and icons on Signal Blue (the primary button label, the check in a finished step marker).
+- **On-Accent White** (`--dt-primary-foreground`): text and icons on Signal Blue (the primary button label, the check in a finished step marker).
 
 ### Neutral
 - **Ink** (`--ui-base`): the root of every text tone. Never used directly.

@@ -1,8 +1,8 @@
 # Idea Board
 
-A nightly board of things your Hermes could do for you, grounded in your own chats and in the tools, connectors and skills this profile actually has.
+I'm your Hermes agent's idea board. Each night I read your chats and what this profile can do (its tools, connectors and skills), and I post a short board of things I could take off your plate, each tied to your own words.
 
-Each night Idea Board reads the day's conversations, finds signals in code (things you asked for on several days, "remind me" loops, dates coming up, corrections, tools that keep failing, things Hermes said it couldn't reach), and asks a model to turn them into a short list of ideas. A second pass critiques them, and code checks every idea before it reaches the board. Click an idea to start it in a new chat, with the prompt already in the composer. You read it and press send. Dismiss an idea with a reason, and the reason becomes a rule that later runs follow.
+Each night I go through the day's conversations and find signals in code: things you asked for on several days, "remind me" loops, dates coming up, corrections, tools that keep failing, things I said I couldn't reach. A model turns them into a short list of ideas, a second pass critiques them, and code checks every idea before it reaches the board. Click an idea and I open a new chat with the prompt already in the composer; you read it and press send. Dismiss an idea with a reason, and the reason becomes a rule I follow on every later run.
 
 ## What makes an idea
 
@@ -21,12 +21,12 @@ The prompt on a card was written by a model that read your chats, and you send i
 - The risk badge is computed in code and can only go up from what the model claimed.
 - Nothing is ever sent for you. The board places text in a new chat; you press send.
 
-## What it reads, stores and costs
+## What I read, store and cost
 
 - **Reads:** your chats from the last 14 days (scheduled-job runs, subagents, hidden and group chats are skipped), this profile's tools, skills, connectors, platforms and scheduled jobs, and `memories/USER.md`.
 - **Stores:** ideas, dismissals, rules and run history in `<HERMES_HOME>/plugin-data/idea-board/data.db`. Nothing leaves your machine except the two model calls per run.
 - **Costs:** two model calls per run (ideation and critique). A run over two weeks of heavy use was about 70k tokens. The board shows the model and tokens for every run. Pick a cheaper model in **Settings → Models → Auxiliary → Idea Board** (or `auxiliary.idea_board` in `config.yaml`); until you do, it uses your main model.
-- **Runs:** only when you schedule it in setup, or when you ask (the board's *Make my first ideas* / *Generate ideas now*, or `/idea-board generate`).
+- **Runs:** only when you schedule it in setup, or when you ask (*Make my first ideas* in setup, *Make ideas now* on an empty board, or `/idea-board generate`).
 
 ## Install
 
@@ -40,11 +40,11 @@ Then in Hermes Desktop, turn on **Idea Board** in **Settings → Plugins**. It a
 
 ### First run: setup
 
-Open **Idea Board** in the sidebar. Until you finish setup, the page shows a short setup instead of the board, and nothing runs:
+Open **Idea Board** in the sidebar. Until you finish setup, the page shows a short setup instead of the board, and nothing runs. Steps are on the left with your current choice under each; the step you pick opens on the right:
 
-1. **What it reads**: how many days of chats each run reads (7, 14 or 30) and how many new ideas a run may add (3, 6 or 10).
-2. **Which model writes the ideas**: shows the model in use and its token cost on your last run, with a link to choose a smaller one for Idea Board alone.
-3. **When it runs**: *Every night* at a time you pick (creates a scheduled job only when you press *Schedule it*), or *Only when I ask*.
+1. **What I read**: how many days of chats each run reads (7, 14 or 30) and how many new ideas a run may add (up to 3, 6 or 10), with one of your ideas (or an example) to show what the board makes.
+2. **Which model I use**: shows the model in use and its token cost on your last run, with a link to choose a smaller one for Idea Board alone.
+3. **When I run**: *Every night* at a time you pick (creates a scheduled job only when you press *Schedule it*), or *Only when you ask*.
 4. **Your first ideas**: opens a new chat with `/idea-board generate` ready; you press send.
 
 Reopen it any time with **Setup** at the top of the board. The *Idea Board nightly ideas* blueprint (Desktop Cron page, `/blueprint idea-board:nightly`) schedules the same job from outside the board.

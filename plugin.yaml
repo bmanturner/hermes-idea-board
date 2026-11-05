@@ -1,6 +1,6 @@
 name: idea-board
 version: 0.1.0
-description: "A nightly board of things your Hermes can do for you, grounded in your own chats and the tools, connectors and skills this profile actually has. Click an idea to start it in a new chat; dismiss with a reason and it learns."
+description: "Each night I read your chats and what this profile can do, and post a short board of things I can take off your plate, each tied to your own words. Click an idea to start it in a new chat; dismiss one with a reason and I learn."
 author: Brendan Turner
 license: MIT
 homepage: https://github.com/bmanturner/hermes-idea-board

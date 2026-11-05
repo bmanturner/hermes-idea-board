@@ -85,16 +85,18 @@ def _command(raw_args: str = "", **_kw: Any) -> str:
     arg = (raw_args or "").strip().lower() or "status"
     if arg == "generate":
         threading.Thread(target=_background_generate, name="idea-board-generate", daemon=True).start()
-        return "Idea Board is reading your recent chats and capabilities. New ideas appear on the board in a minute or two."
+        return "I'm reading your recent chats and what this profile can do. New ideas land on the Idea Board in a minute or two."
     if arg == "status":
         last = _store().last_run()
         if not last:
-            return "Idea Board hasn't run yet. Send `/idea-board generate` to make the first board."
-        return (f"Last run {last['status']} ({last['trigger']}): {last['kept']} new ideas from "
-                f"{last['candidates']} candidates, {last['sessions_read']} chats read, "
-                f"{(last['input_tokens'] or 0) + (last['output_tokens'] or 0)} tokens on {last['model'] or 'the default model'}."
-                + (f" Error: {last['error']}" if last.get("error") else ""))
-    return "Usage: /idea-board generate | status"
+            return "I haven't made any ideas yet. Send `/idea-board generate` and I'll make the first board."
+        tokens = (last['input_tokens'] or 0) + (last['output_tokens'] or 0)
+        if last.get("error") or last["status"] == "error":
+            return (f"My last {last['trigger']} run failed: {last.get('error') or 'unknown error'}. "
+                    "Send `/idea-board generate` to try again.")
+        return (f"Last {last['trigger']} run: I read {last['sessions_read']} chats, drafted {last['candidates']} "
+                f"ideas and kept {last['kept']}, using {tokens:,} tokens on {last['model'] or 'the default model'}.")
+    return "Send `/idea-board generate` to make new ideas, or `/idea-board status` to see my last run."
 
 
 def _background_generate() -> None:
@@ -141,7 +143,7 @@ def register(ctx) -> None:
                          args_hint="generate|status")
     ctx.register_automation_blueprint(
         "nightly", title="Idea Board nightly ideas",
-        description="Every night, read the day's chats and your capabilities and post new ideas to the Idea Board.",
+        description="Every night I read the day's chats and what this profile can do, and post new ideas to the Idea Board.",
         category="productivity", schedule_template="{minute} {hour} * * *",
         prompt_template="Call the idea_board_run tool once. Do nothing else, then reply [SILENT].",
         slots=[{"name": "time", "type": "time", "label": "What time?", "default": "03:30"}],
