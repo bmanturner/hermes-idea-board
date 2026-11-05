@@ -48,6 +48,7 @@ Success means the user starts ideas from the board, and the dismiss rate falls o
 - Hackathon entry: Hermes Agent Plugin Hackathon, submissions due 2026-11-11 17:00 EST (16:00 CT). Entry = a PR adding the plugin to the Hermes plugin catalog, a demo video under 90 seconds on X tagging @NousResearch, and the submission form. Judged on usefulness, reliability, polish and creativity; judges favor plugins that do more than a prompt or a skill could.
 - Catalog admission rules apply: pinned full commit SHA, no self-updating code, declared capabilities that match reality, credentials only through Hermes, approvals and unattended runs respected, risky behaviour disclosed (it reads conversation history and spends model tokens nightly).
 - Must be profile-safe (`get_hermes_home()`), generic for any user, and independent of any personal vault or ledger.
+- Setup comes before anything runs (Brendan, 2026-11-05): the board shows a setup screen until the user finishes it (what it reads, which model, when it runs, first ideas). Nothing is scheduled until the user presses Schedule it.
 - Starting an idea opens a new chat with the prompt placed in the composer; the user presses send (Brendan, 2026-11-04). The plugin never auto-sends.
 - Tested 2026-11-04 (spike notes kept outside the repo):
   - Starting a new chat with a prompt: `host.newChat()` then `host.composer.setDraft('new', …)` retried every 100 ms; second try succeeds, 275–460 ms.
