@@ -50,7 +50,12 @@ class SignalTests(unittest.TestCase):
         self.assertIn("web_extract", self.by_kind["tool_friction"][0]["quote"])
 
     def test_unanswered_offer_is_open_loop(self):
-        self.assertTrue(any(e.get("note") == "the agent offered a next step; no reply" for e in self.by_kind["open_loop"]))
+        notes = [e.get("note") or "" for e in self.by_kind["open_loop"]]
+        self.assertIn('the agent already answered this and offered a next step: "Want me to email it to Acme?"; no reply',
+                      notes)
+        # the offer is model input only; the quote stays the user's own words
+        offered = next(e for e in self.by_kind["open_loop"] if "Acme?" in (e.get("note") or ""))
+        self.assertNotIn("Want me to", offered["quote"])
 
     def test_pasted_text_is_never_quoted(self):
         relay = self.by_kind["manual_relay"][0]["quote"]

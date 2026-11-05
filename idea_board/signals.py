@@ -149,8 +149,11 @@ def extract(sessions: list[dict[str, Any]], *, now: dt.datetime | None = None,
             last_user = next((t for t in reversed(turns) if t.get("role") == "user" and (t.get("text") or "").strip()),
                              None)
             if last_user:
+                offer = _offer_sentence(turns[-1].get("text") or "")
+                note = (f"the agent already answered this and offered a next step: \"{offer}\"; no reply"
+                        if offer else "the agent offered a next step; no reply")
                 items.append(_item("open_loop", sid, float(last_user.get("ts") or 0),
-                                   _user_quote(last_user["text"]), note="the agent offered a next step; no reply"))
+                                   _user_quote(last_user["text"]), note=note))
 
     items.extend(_repeats(user_msgs))
     for tool, hits in tool_errors.items():
@@ -175,6 +178,15 @@ def extract(sessions: list[dict[str, Any]], *, now: dt.datetime | None = None,
         it["days"] = sorted({_day(ts) for ts in it.pop("_ts")})
         it["last_seen_day"] = _day(it["last_seen"])
     return items
+
+
+def _offer_sentence(text: str, limit: int = 160) -> str:
+    """The sentence in which the agent offered a next step, so ideas follow up on the offer instead of
+    redoing work the agent already did. Model input only; cards quote the user, never this."""
+    for sentence in reversed(re.split(r"(?<=[.?!])\s+", squash(text))):
+        if _OFFER_ASSISTANT.search(sentence):
+            return clip(sentence, limit)
+    return ""
 
 
 def _item(kind: str, sid: str, ts: float, quote: str, note: str | None = None) -> dict[str, Any]:
