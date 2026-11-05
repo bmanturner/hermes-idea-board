@@ -36,8 +36,8 @@ The prompt on a card was written by a model that read your chats, and you send i
 ## What I read, store and cost
 
 - **Reads:** your chats from the last 14 days (scheduled-job runs, subagents, hidden and group chats are skipped), this profile's tools, skills, connectors, platforms and scheduled jobs, and `memories/USER.md`.
-- **Stores:** ideas, dismissals, rules and run history in `<HERMES_HOME>/plugin-data/idea-board/data.db`. Nothing leaves your machine except the two model calls per run.
-- **Costs:** two model calls per run (ideation and critique). A run over two weeks of heavy use was about 70k tokens. The board shows the model and tokens for every run. Pick a cheaper model in **Settings → Models → Auxiliary → Idea Board** (or `auxiliary.idea_board` in `config.yaml`); until you do, it uses your main model.
+- **Stores:** ideas, dismissals, rules and run history in `<HERMES_HOME>/plugin-data/idea-board/data.db`. Nothing leaves your machine except model calls: the two I make per run, plus the scheduled job's short turn that starts me.
+- **Costs:** two model calls per run (ideation and critique). A run over two weeks of heavy use was about 70–80k tokens. The nightly job also wakes your agent for one short turn to call me; on the first tester's profile that turn was about 30k prompt tokens, mostly cached. The board shows the model and tokens for every run. Pick a cheaper model in **Settings → Models → Auxiliary → Idea Board** (or `auxiliary.idea_board` in `config.yaml`); until you do, it uses your main model.
 - **Runs:** only when you schedule it in setup, or when you ask (*Make my first ideas* in setup, *Make ideas now* on an empty board, or `/idea-board generate`).
 
 ## Install

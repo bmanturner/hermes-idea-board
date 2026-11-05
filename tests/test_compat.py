@@ -44,10 +44,11 @@ def package(name, **attrs):
     return mod
 
 
-def public_hermes():
+def public_hermes(tool_to_ts=None):
+    mapping = dict(tool_to_ts or TOOL_TO_TS)
     registry = types.SimpleNamespace(
-        get_tool_to_toolset_map=lambda: dict(TOOL_TO_TS),
-        get_available_toolsets=lambda: {ts: {"available": True} for ts in TOOL_TO_TS.values()},
+        get_tool_to_toolset_map=lambda: dict(mapping),
+        get_available_toolsets=lambda: {ts: {"available": True} for ts in mapping.values()},
         get_schema=lambda tool: {"description": f"{tool} does a thing. More detail."},
     )
     reg_mod = types.ModuleType("tools.registry")
@@ -97,6 +98,23 @@ class FallbackTests(unittest.TestCase):
             caps = by_id(inventory.toolsets())
         self.assertIn("toolset:web", caps)
         self.assertIn("mcp:Lazy", caps)
+
+    def test_loaded_mcp_servers_are_named_by_server_once(self):
+        # Where MCP servers are loaded (scheduled runs), their tools sit under ``mcp-<server>``.
+        loaded = {**TOOL_TO_TS, "mcp__Fastmail__read_email": "mcp-Fastmail"}
+        tools_config = types.ModuleType("hermes_cli.tools_config")
+        setattr(tools_config, "_get_platform_tools", lambda cfg, platform: {"web", "Fastmail"})
+        toolsets_mod = types.ModuleType("toolsets")
+        setattr(toolsets_mod, "resolve_toolset",
+                lambda ts: {"web": ["web_search"], "Fastmail": ["mcp__Fastmail__read_email"]}[ts])
+        for private in ({"hermes_cli.tools_config": tools_config, "toolsets": toolsets_mod}, BROKEN_PRIVATE):
+            with modules({**public_hermes(loaded), **private}):
+                caps = inventory.toolsets()
+            ids = [c["id"] for c in caps]
+            self.assertEqual(ids.count("mcp:Fastmail"), 1, ids)
+            self.assertNotIn("toolset:mcp-Fastmail", ids)
+            fastmail = by_id(caps)["mcp:Fastmail"]
+            self.assertEqual((fastmail["kind"], fastmail["tools"]), ("mcp", ["mcp__Fastmail__read_email"]))
 
     def test_suggested_jobs_missing_skips_duplicate_check_with_a_note(self):
         jobs = {"jobs": [{"name": "Morning brief", "schedule": "30 7 * * 1-5", "enabled": True, "prompt_preview": "Brief me"}]}

@@ -110,6 +110,10 @@ def toolsets(platform: str = "cli") -> list[dict[str, Any]]:
     available = registry.get_available_toolsets()
     groups: dict[str, list[str]] = {}
     for tool, ts in tool_to_ts.items():
+        # Loaded MCP servers register their tools under ``mcp-<server>`` (with ``<server>`` as an alias);
+        # name them by the server so a loaded and a lazily listed server look the same.
+        if ts.startswith("mcp-") and ts[4:] in mcp_names:
+            ts = ts[4:]
         if ts in SKIP_TOOLSETS or ts in disabled:
             continue
         if enabled_tools is not None and tool not in enabled_tools:

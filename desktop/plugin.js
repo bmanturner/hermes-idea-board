@@ -614,7 +614,7 @@ function SetupView({ data, onDone, initialStep }) {
   // The One Blue Rule: Finish turns blue only when the open step has no blue action of its own.
   const stepHasPrimary = (step === 3 && !nightly && mode === 'nightly') || (step === 4 && !hasIdeas && !firstAsked)
   const modelName = model.name || 'your main model'
-  const costLine = `Each run makes two model calls${tokens ? `; your last run used about ${tokens}k tokens` : ''}.`
+  const costLine = `Each run makes two model calls, plus a short turn of your agent to start the scheduled job${tokens ? `; your last run used about ${tokens}k tokens` : ''}.`
 
   const steps = [
     { n: 1, title: 'What I read', value: `Last ${setup.history_days} days · up to ${setup.max_cards} ideas a run` },
