@@ -144,7 +144,7 @@
     },
     {
       "slug": "clickup_mcp",
-      "name": "Clickup",
+      "name": "ClickUp",
       "category": "Developer",
       "description": "Use Clickup through Hermes",
       "classes": [
