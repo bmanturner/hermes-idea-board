@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T14:08:58+00:00",
+  "title": "Design System: Idea Board",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Hermes Signal Blue",
+        "canonical": "var(--ui-accent)",
+        "lightSample": "#0053fd",
+        "tonalRamp": [
+          "oklch(15.0% 0.201 262.7)",
+          "oklch(26.4% 0.218 262.7)",
+          "oklch(37.9% 0.236 262.7)",
+          "oklch(49.3% 0.254 262.7)",
+          "oklch(60.7% 0.247 262.7)",
+          "oklch(72.1% 0.229 262.7)",
+          "oklch(83.6% 0.212 262.7)",
+          "oklch(95.0% 0.194 262.7)"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "On-Accent White",
+        "canonical": "var(--color-primary-foreground)",
+        "lightSample": "#ffffff",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 89.9)",
+          "oklch(26.4% 0.000 89.9)",
+          "oklch(37.9% 0.000 89.9)",
+          "oklch(49.3% 0.000 89.9)",
+          "oklch(60.7% 0.000 89.9)",
+          "oklch(72.1% 0.000 89.9)",
+          "oklch(83.6% 0.000 89.9)",
+          "oklch(95.0% 0.000 89.9)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "var(--ui-base)",
+        "lightSample": "#1f2328",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 254.0)",
+          "oklch(26.4% 0.011 254.0)",
+          "oklch(37.9% 0.010 254.0)",
+          "oklch(49.3% 0.010 254.0)",
+          "oklch(60.7% 0.009 254.0)",
+          "oklch(72.1% 0.008 254.0)",
+          "oklch(83.6% 0.007 254.0)",
+          "oklch(95.0% 0.006 254.0)"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Page",
+        "canonical": "var(--ui-bg-editor)",
+        "lightSample": "#fbfbfc",
+        "tonalRamp": [
+          "oklch(15.0% 0.001 286.4)",
+          "oklch(26.4% 0.001 286.4)",
+          "oklch(37.9% 0.001 286.4)",
+          "oklch(49.3% 0.001 286.4)",
+          "oklch(60.7% 0.001 286.4)",
+          "oklch(72.1% 0.001 286.4)",
+          "oklch(83.6% 0.001 286.4)",
+          "oklch(95.0% 0.001 286.4)"
+        ]
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Primary Text",
+        "canonical": "var(--ui-text-primary)",
+        "lightSample": "#1f2328f0",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 254.0)",
+          "oklch(26.4% 0.011 254.0)",
+          "oklch(37.9% 0.010 254.0)",
+          "oklch(49.3% 0.010 254.0)",
+          "oklch(60.7% 0.009 254.0)",
+          "oklch(72.1% 0.008 254.0)",
+          "oklch(83.6% 0.007 254.0)",
+          "oklch(95.0% 0.006 254.0)"
+        ]
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Text",
+        "canonical": "var(--ui-text-secondary)",
+        "lightSample": "#1f2328bd",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 254.0)",
+          "oklch(26.4% 0.011 254.0)",
+          "oklch(37.9% 0.010 254.0)",
+          "oklch(49.3% 0.010 254.0)",
+          "oklch(60.7% 0.009 254.0)",
+          "oklch(72.1% 0.008 254.0)",
+          "oklch(83.6% 0.007 254.0)",
+          "oklch(95.0% 0.006 254.0)"
+        ]
+      },
+      "text-tertiary": {
+        "role": "neutral",
+        "displayName": "Tertiary Text",
+        "canonical": "var(--ui-text-tertiary)",
+        "lightSample": "#1f23288a",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 254.0)",
+          "oklch(26.4% 0.011 254.0)",
+          "oklch(37.9% 0.010 254.0)",
+          "oklch(49.3% 0.010 254.0)",
+          "oklch(60.7% 0.009 254.0)",
+          "oklch(72.1% 0.008 254.0)",
+          "oklch(83.6% 0.007 254.0)",
+          "oklch(95.0% 0.006 254.0)"
+        ]
+      },
+      "text-quaternary": {
+        "role": "neutral",
+        "displayName": "Quaternary Text",
+        "canonical": "var(--ui-text-quaternary)",
+        "lightSample": "#1f23285c",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 254.0)",
+          "oklch(26.4% 0.011 254.0)",
+          "oklch(37.9% 0.010 254.0)",
+          "oklch(49.3% 0.010 254.0)",
+          "oklch(60.7% 0.009 254.0)",
+          "oklch(72.1% 0.008 254.0)",
+          "oklch(83.6% 0.007 254.0)",
+          "oklch(95.0% 0.006 254.0)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "var(--ui-stroke-tertiary)",
+        "lightSample": "#0a44bb25",
+        "tonalRamp": [
+          "oklch(15.0% 0.161 262.5)",
+          "oklch(26.4% 0.175 262.5)",
+          "oklch(37.9% 0.188 262.5)",
+          "oklch(49.3% 0.189 262.5)",
+          "oklch(60.7% 0.175 262.5)",
+          "oklch(72.1% 0.162 262.5)",
+          "oklch(83.6% 0.149 262.5)",
+          "oklch(95.0% 0.135 262.5)"
+        ]
+      },
+      "fill-soft": {
+        "role": "neutral",
+        "displayName": "Soft Fill",
+        "canonical": "var(--ui-bg-quaternary)",
+        "lightSample": "#0d3ea116",
+        "tonalRamp": [
+          "oklch(15.0% 0.143 262.2)",
+          "oklch(26.4% 0.154 262.2)",
+          "oklch(37.9% 0.166 262.2)",
+          "oklch(49.3% 0.159 262.2)",
+          "oklch(60.7% 0.148 262.2)",
+          "oklch(72.1% 0.136 262.2)",
+          "oklch(83.6% 0.125 262.2)",
+          "oklch(95.0% 0.113 262.2)"
+        ]
+      },
+      "fill-quiet": {
+        "role": "neutral",
+        "displayName": "Quiet Fill",
+        "canonical": "var(--ui-bg-quinary)",
+        "lightSample": "#0f3b940f",
+        "tonalRamp": [
+          "oklch(15.0% 0.132 262.2)",
+          "oklch(26.4% 0.143 262.2)",
+          "oklch(37.9% 0.153 262.2)",
+          "oklch(49.3% 0.144 262.2)",
+          "oklch(60.7% 0.134 262.2)",
+          "oklch(72.1% 0.123 262.2)",
+          "oklch(83.6% 0.112 262.2)",
+          "oklch(95.0% 0.102 262.2)"
+        ]
+      },
+      "row-hover": {
+        "role": "neutral",
+        "displayName": "Row Hover",
+        "canonical": "var(--ui-row-hover-background)",
+        "lightSample": "#0d3fa412",
+        "tonalRamp": [
+          "oklch(15.0% 0.145 262.3)",
+          "oklch(26.4% 0.156 262.3)",
+          "oklch(37.9% 0.168 262.3)",
+          "oklch(49.3% 0.162 262.3)",
+          "oklch(60.7% 0.150 262.3)",
+          "oklch(72.1% 0.139 262.3)",
+          "oklch(83.6% 0.127 262.3)",
+          "oklch(95.0% 0.115 262.3)"
+        ]
+      },
+      "row-active": {
+        "role": "neutral",
+        "displayName": "Row Selected",
+        "canonical": "var(--ui-row-active-background)",
+        "lightSample": "#0b41af20",
+        "tonalRamp": [
+          "oklch(15.0% 0.153 262.4)",
+          "oklch(26.4% 0.166 262.4)",
+          "oklch(37.9% 0.178 262.4)",
+          "oklch(49.3% 0.175 262.4)",
+          "oklch(60.7% 0.163 262.4)",
+          "oklch(72.1% 0.150 262.4)",
+          "oklch(83.6% 0.138 262.4)",
+          "oklch(95.0% 0.125 262.4)"
+        ]
+      },
+      "alert": {
+        "role": "error",
+        "displayName": "Alert Red",
+        "canonical": "var(--ui-red)",
+        "lightSample": "#cf2d56",
+        "tonalRamp": [
+          "oklch(15.0% 0.148 12.3)",
+          "oklch(26.4% 0.161 12.3)",
+          "oklch(37.9% 0.175 12.3)",
+          "oklch(49.3% 0.188 12.3)",
+          "oklch(60.7% 0.192 12.3)",
+          "oklch(72.1% 0.178 12.3)",
+          "oklch(83.6% 0.165 12.3)",
+          "oklch(95.0% 0.151 12.3)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "overline": {
+        "displayName": "Overline",
+        "purpose": "Uppercase group labels with a count; the PROMPT and STARTED labels."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Receipt, meta line, row values, day counts, keyboard hints."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Set by host Button, SegmentedControl and Badge; nothing else uses it."
+      },
+      "row": {
+        "displayName": "Row",
+        "purpose": "Idea list row titles; Hermes's own list size."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Why paragraph, setup copy, prompt body, rule text, undo message."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Page title, setup step titles, dialog titles."
+      },
+      "quote": {
+        "displayName": "Quote",
+        "purpose": "The user's own words, italic in curly quotes. The second reading moment."
+      },
+      "idea-title": {
+        "displayName": "Idea Title",
+        "purpose": "The selected idea's title. The reading moment; one per view."
+      }
+    },
+    "shadows": [
+      {
+        "name": "none",
+        "value": "none",
+        "purpose": "Idea Board defines no shadows; host popovers and dialogs bring their own."
+      },
+      {
+        "name": "dot-ring",
+        "value": "inset 0 0 0 1px var(--ui-stroke-tertiary)",
+        "purpose": "Empty day dots and unfinished step markers; a ring, not a shadow."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-change",
+        "value": "100ms ease",
+        "purpose": "Host Button hover and focus; Idea Board adds no motion of its own."
+      },
+      {
+        "name": "undo-window",
+        "value": "10s",
+        "purpose": "How long the undo bar stays after a dismiss or snooze."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "760px",
+        "purpose": "Provisional: below this page width the list stacks above the detail (not built)."
+      }
+    ],
+    "hostSamples": {
+      "date": "2026-11-05",
+      "theme": "Hermes Desktop default light",
+      "page": "Scheduled jobs (cron overlay)",
+      "measured": {
+        "pageTitle": "14px/600",
+        "listRow": "12.48px/500",
+        "overline": "9.6px/500 uppercase 0.48px",
+        "meta": "11.2px",
+        "button": "12px/500, 2.5px radius, 4px 10px",
+        "rowRadius": "2px",
+        "promptBlock": "4px radius, 10px padding"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one blue action per view: Start in a new chat, Schedule it.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M2 3h12v8H6l-3 3v-3H2z\"/></svg>Start in a new chat</button>",
+      "css": ".ds-btn-primary { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: inline-flex; align-items: center; gap: 6px; background: var(--ui-accent, #0053fd); color: var(--color-primary-foreground, #fff); border: 0; border-radius: 2.5px; padding: 4px 10px; font-size: 0.75rem; font-weight: 500; line-height: 16px; cursor: pointer; transition: background 100ms; } .ds-btn-primary:hover { background: color-mix(in srgb, var(--ui-accent, #0053fd) 90%, transparent); } .ds-btn-primary:focus-visible { outline: 3px solid color-mix(in srgb, var(--ui-accent, #0053fd) 50%, transparent); outline-offset: 1px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Not now, Done, What I've learned (n).",
+      "html": "<button class=\"ds-btn-secondary\">Not now</button>",
+      "css": ".ds-btn-secondary { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); background: var(--ui-bg-quaternary, #0d3ea116); color: var(--ui-text-primary, #1f2328f0); border: 0; border-radius: 2.5px; padding: 4px 10px; font-size: 0.75rem; font-weight: 500; line-height: 16px; cursor: pointer; transition: background 100ms; } .ds-btn-secondary:hover { background: var(--chrome-action-hover, #0c40ab19); } .ds-btn-secondary:focus-visible { outline: 3px solid color-mix(in srgb, var(--ui-accent, #0053fd) 50%, transparent); }"
+    },
+    {
+      "name": "Text Action",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Inline actions: Open chat, Show all, Copy prompt, Undo.",
+      "html": "<button class=\"ds-btn-text\">Open chat</button>",
+      "css": ".ds-btn-text { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); background: none; border: 0; padding: 0; color: var(--ui-text-tertiary, #1f23288a); font-size: 0.7rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; } .ds-btn-text:hover { color: var(--ui-text-primary, #1f2328f0); } .ds-btn-text:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); outline-offset: 2px; }"
+    },
+    {
+      "name": "Idea List",
+      "kind": "nav",
+      "refersTo": "list-row",
+      "description": "Grouped idea list: overline with count, flat rows, tinted selection.",
+      "html": "<div class=\"ds-list\"><div class=\"ds-overline\">Put on autopilot · 2</div><button class=\"ds-row is-selected\"><span class=\"ds-row-title\">Send an evening Applystead scorecard</span><span class=\"ds-row-value\">≈ 2.2 h/month</span></button><button class=\"ds-row\"><span class=\"ds-row-title\">Build a weekly job-search ledger</span><span class=\"ds-row-value\">≈ 2.0 h/month</span></button></div>",
+      "css": ".ds-list { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 2px; width: 320px; } .ds-overline { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ui-text-tertiary, #1f23288a); padding-bottom: 4px; } .ds-row { all: unset; display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; border-radius: 2px; cursor: pointer; } .ds-row:hover { background: var(--ui-row-hover-background, #0d3fa412); } .ds-row.is-selected { background: var(--ui-row-active-background, #0b41af20); } .ds-row:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); outline-offset: -2px; } .ds-row-title { font-size: 0.78rem; font-weight: 500; line-height: 1.5; color: var(--ui-text-primary, #1f2328f0); } .ds-row-value { font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); }"
+    },
+    {
+      "name": "Evidence with Day Ribbon",
+      "kind": "custom",
+      "refersTo": "quote",
+      "description": "Signature: the user's words, dated by fourteen dots for the last two weeks.",
+      "html": "<div class=\"ds-evidence\"><div class=\"ds-quote\">“How many applications today?”</div><div class=\"ds-ev-line\"><span class=\"ds-ribbon\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class=\"on\"></i><i></i><i></i><i class=\"on\"></i><i></i></span><span>2 days in the last two weeks</span><button class=\"ds-ev-open\">Open chat</button></div></div>",
+      "css": ".ds-evidence { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 4px; } .ds-quote { font-size: 0.9375rem; font-style: italic; line-height: 1.5; color: var(--ui-text-primary, #1f2328f0); } .ds-ev-line { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); } .ds-ribbon { display: inline-flex; gap: 3px; } .ds-ribbon i { width: 6px; height: 6px; border-radius: 9999px; box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary, #0a44bb25); } .ds-ribbon i.on { background: var(--ui-accent, #0053fd); box-shadow: none; } .ds-ev-open { all: unset; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; } .ds-ev-open:hover { color: var(--ui-text-primary, #1f2328f0); } .ds-ev-open:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); }"
+    },
+    {
+      "name": "Idea Title",
+      "kind": "custom",
+      "refersTo": "idea-title",
+      "description": "The reading moment: title plus one meta line under it.",
+      "html": "<div class=\"ds-idea\"><div class=\"ds-idea-title\">Send an evening Applystead scorecard</div><div class=\"ds-meta\">Put on autopilot · daily 21:30 · ≈ 2.2 h/month</div></div>",
+      "css": ".ds-idea { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 8px; max-width: 720px; } .ds-idea-title { font-size: 1.25rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; color: var(--ui-text-primary, #1f2328f0); } .ds-meta { font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); }"
+    },
+    {
+      "name": "Prompt Block",
+      "kind": "card",
+      "refersTo": "prompt-block",
+      "description": "The message that will go into a new chat; matches Hermes's PROMPT block shape, in the sans.",
+      "html": "<div class=\"ds-prompt\"><div class=\"ds-prompt-label\">Prompt · goes into a new chat</div><div class=\"ds-prompt-body\">I keep asking how many applications went out today. Set up one evening scorecard so I stop asking.</div></div>",
+      "css": ".ds-prompt { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 6px; max-width: 68ch; } .ds-prompt-label { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ui-text-tertiary, #1f23288a); } .ds-prompt-body { background: var(--ui-bg-quinary, #0f3b940f); color: var(--ui-text-secondary, #1f2328bd); border-radius: 4px; padding: 10px; font-size: 0.8125rem; line-height: 1.5; white-space: pre-wrap; }"
+    },
+    {
+      "name": "Undo Bar",
+      "kind": "custom",
+      "refersTo": "undo-bar",
+      "description": "Ten seconds after a dismiss or snooze, at the top of the detail column.",
+      "html": "<div class=\"ds-undo\"><span>Dismissed. New rule: no ideas about pay floors.</span><button>Undo</button></div>",
+      "css": ".ds-undo { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; align-items: center; gap: 12px; background: var(--ui-bg-quaternary, #0d3ea116); color: var(--ui-text-secondary, #1f2328bd); border-radius: 4px; padding: 8px 12px; font-size: 0.8125rem; max-width: 720px; } .ds-undo span { flex: 1; } .ds-undo button { all: unset; font-weight: 600; font-size: 0.75rem; text-decoration: underline; text-underline-offset: 4px; color: var(--ui-text-tertiary, #1f23288a); cursor: pointer; } .ds-undo button:hover { color: var(--ui-text-primary, #1f2328f0); } .ds-undo button:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); }"
+    },
+    {
+      "name": "Setup Step",
+      "kind": "custom",
+      "refersTo": "step-marker",
+      "description": "Numbered step marker, filled blue with a check when done; Title-type step name.",
+      "html": "<div class=\"ds-steps\"><div class=\"ds-step\"><span class=\"ds-mark done\">✓</span><span class=\"ds-step-title\">What it reads</span></div><div class=\"ds-step\"><span class=\"ds-mark\">2</span><span class=\"ds-step-title\">Which model writes the ideas</span></div></div>",
+      "css": ".ds-steps { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; } .ds-step { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-top: 1px solid var(--ui-stroke-tertiary, #0a44bb25); } .ds-mark { width: 18px; height: 18px; border-radius: 9999px; display: grid; place-items: center; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary, #0a44bb25); } .ds-mark.done { background: var(--ui-accent, #0053fd); color: var(--color-primary-foreground, #fff); box-shadow: none; } .ds-step-title { font-size: 0.875rem; font-weight: 600; color: var(--ui-text-primary, #1f2328f0); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Field Notebook",
+    "overview": "Idea Board is a field notebook kept inside Hermes Desktop. Each entry is dated, quotes the user in their own words, names the tools it would use, and ends with an offer that is ready to run. The notebook is quiet and factual: it never sells, never decorates, and never claims anything it can't show the date and the words for.\n\nThe notebook is written on Hermes's own paper. Every color, font, control, dialog and shadow comes from the host app, so Idea Board follows every theme, skin and light or dark mode with no work of its own, and reads as a first-party Hermes page. The page chrome (titles, rows, meta lines, controls) is exactly Hermes-sized. One moment on any page is allowed to be larger: the idea itself, meaning its title and the user's quoted words. That contrast is the whole visual identity; nothing else needs to be loud.\n\nDensity follows Hermes's Scheduled jobs page: a 14px page title, 12.5px list rows, 11px meta, uppercase 10px group labels, flat rows with a tinted selection, and one blue action per view. Separation comes from whitespace and single hairlines, never from boxes.",
+    "keyCharacteristics": [
+      "Borrowed ink: host variables only; no literal colors, fonts or shadows in plugin code.",
+      "Hermes-sized chrome with one larger reading moment (idea title 20px, quotes 15px).",
+      "Every observation is dated (the 14-day ribbon, the run receipt).",
+      "Flat and hairline-separated; tonal fills mark state, not structure.",
+      "One filled blue action per view."
+    ],
+    "rules": [
+      {
+        "name": "The Borrowed Ink Rule",
+        "body": "Every color in plugin code is `var(--ui-…)`. A hex, rgb or named color in `plugin.js` is a bug, because it breaks the user's theme.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Blue Rule",
+        "body": "At most one filled blue control per view. Selection uses the row tint, not blue; links and text actions stay tertiary until hovered.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Reading Moment Rule",
+        "body": "Only the idea title and quotes are larger than Hermes's 14px page title. If a new element wants to be big, it is the wrong element.",
+        "section": "typography"
+      },
+      {
+        "name": "The Eight Roles Rule",
+        "body": "Plugin code sets font sizes only from the roles above (0.6, 0.7, 0.75, 0.78, 0.8125, 0.875, 0.9375 and 1.25rem). No half-pixel one-offs.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Sections are separated by whitespace or one 1px hairline. No boxes around sections, no card-in-card, no colored side stripes.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** write every color as a host variable (`var(--ui-text-tertiary)`, `var(--ui-row-active-background)`).",
+      "**Do** use Row Hover and Row Selected for list states, exactly as Hermes's own lists do.",
+      "**Do** keep the idea title (20px) and quotes (15px) as the only text larger than 14px.",
+      "**Do** date every observation: the ribbon for quotes, the receipt for runs (\"Last run Wed 5:41 PM · read 60 chats\").",
+      "**Do** keep one filled blue button per view and put it first in its row.",
+      "**Do** keep the page frame (24px/32px padding, header, hairline, self-scrolling body) on every surface, including setup and empty states.",
+      "**Do** take README and demo screenshots in Hermes's default light theme at 1280×800, with real ideas, never invented ones."
+    ],
+    "donts": [
+      "**Don't** write a hex, rgb or named color, a font-family, or a box-shadow in `plugin.js`.",
+      "**Don't** reference `--ui-text-danger`; it doesn't exist in Hermes. Use `--ui-red` for errors.",
+      "**Don't** use font sizes outside the eight roles (no 11.5, 13.5 or 22px one-offs; 12.5px comes only from the Row role).",
+      "**Don't** box sections, nest cards, or add colored side stripes; use a hairline or whitespace.",
+      "**Don't** use the blue fill for selection or for more than one action in a view.",
+      "**Don't** add icons, emoji or color to capability badges or chat replies for decoration.",
+      "**Don't** let a primary action sit below the fold; the body scrolls, the frame doesn't."
+    ]
+  }
+}

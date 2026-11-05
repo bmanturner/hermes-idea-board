@@ -63,6 +63,8 @@ Success means the user starts ideas from the board, and the dismiss rate falls o
 ## Brand Commitments
 
 - Name: Idea Board (Brendan, 2026-11-04).
+- Voice (Brendan, 2026-11-05): first person, as the user's own agent, on every surface: board, setup, pop-ups, chat replies, README ("I read 60 chats last night", "What I've learned"). The agent never names itself, because users name their agents; "Idea Board" appears only as a label (page title, sidebar row, palette entries, settings). The prompt placed in the composer is the user's message to their agent, so its "I" is the user. README install and settings steps are plain imperatives.
+- Look (Brendan, 2026-11-05): Hermes-sized everywhere except the idea itself (its title and the user's quoted words read larger); North Star "The Field Notebook". Visual rules live in DESIGN.md.
 
 ## Evidence on Hand
 

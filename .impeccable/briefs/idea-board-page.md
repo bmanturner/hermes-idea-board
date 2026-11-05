@@ -20,7 +20,8 @@ Signature move: the evidence day ribbon. Fourteen small dots for the last two we
 
 FINISH
 - The meta line sits under the title (no eyebrow above a heading).
-- Prompt preview uses a 1px token hairline, not a thick or coloured rule.
+- Prompt preview: a quiet-fill block with a "PROMPT · GOES INTO A NEW CHAT" overline, matching Hermes's Scheduled jobs prompt block (DESIGN.md, 2026-11-05; supersedes the hairline treatment).
+- Type, color, spacing and voice follow DESIGN.md and PRODUCT.md Brand Commitments (2026-11-05).
 - States: loading (`Loader`), backend off (explains both switches: Settings → Plugins and `plugins.enabled`), never run (Generate now), empty board after a run, error from last run (shown in the receipt), dismiss menu with reason chips + optional note, undo after dismiss, rules drawer (edit, delete), start failure (prompt copied to clipboard instead).
 - Keyboard: ↑/↓ moves the selection, Enter or S starts, D opens dismiss, N snoozes.
 - Rejected looks: one-idea-at-a-time deck (option 2) and kind columns (option 3).
