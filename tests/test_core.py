@@ -241,6 +241,28 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(rep.status, "error")
         self.assertEqual((self.store.last_run() or {})["error"], "RuntimeError: provider down")
 
+    def test_transient_provider_errors_are_retried_and_others_are_not(self):
+        calls, waits = [], []
+
+        def flaky():
+            calls.append(1)
+            if len(calls) < 3:
+                raise RuntimeError("APIStatusError: {'type': 'overloaded_error', 'message': 'Overloaded'}")
+            return "ok"
+        self.assertEqual(pipeline.retrying(flaky, sleep=waits.append), "ok")
+        self.assertEqual((len(calls), waits), (3, [15, 45]))
+
+        def broken():
+            raise ValueError("schema mismatch")
+        with self.assertRaises(ValueError):
+            pipeline.retrying(broken, sleep=waits.append)
+        self.assertEqual(waits, [15, 45])  # no waiting on a real error
+
+        def always_overloaded():
+            raise RuntimeError("529 Overloaded")
+        with self.assertRaises(RuntimeError):
+            pipeline.retrying(always_overloaded, waits=(1, 2), sleep=lambda s: None)
+
     def test_cut_off_run_is_closed_and_a_live_run_is_not_the_last_run(self):
         pipeline.run(self.pkt, fake_llm([cand()]), self.store, now=fixtures.NOW)
         ok = self.store.last_run() or {}

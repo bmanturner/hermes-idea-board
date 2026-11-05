@@ -48,10 +48,10 @@ def _setting(key: str, default: int) -> int:
 
 
 def _llm(stage: str, instructions: str, body: str, schema: dict, max_tokens: int) -> pipeline.LlmResult:
-    res = _CTX.llm.complete_structured(
+    res = pipeline.retrying(lambda: _CTX.llm.complete_structured(
         instructions=instructions, input=[{"type": "text", "text": body}], json_schema=schema,
         schema_name=f"idea_board_{stage}", task=TASK, purpose=f"idea_board.{stage}", max_tokens=max_tokens,
-        timeout=300)
+        timeout=300))
     usage = getattr(res, "usage", None)
     return pipeline.LlmResult(parsed=res.parsed, input_tokens=getattr(usage, "input_tokens", 0) or 0,
                               output_tokens=getattr(usage, "output_tokens", 0) or 0,

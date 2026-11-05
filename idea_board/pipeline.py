@@ -6,6 +6,7 @@ script the model. In Hermes it wraps ``ctx.llm.complete_structured(task="idea_bo
 from __future__ import annotations
 
 import datetime as dt
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
@@ -29,6 +30,29 @@ class LlmResult:
 
 
 LlmFn = Callable[[str, str, str, dict, int], LlmResult]
+
+# Provider hiccups worth another try: overloaded, rate limited, server errors, timeouts, dropped links.
+_TRANSIENT = re.compile(r"overloaded|rate.?limit|\b(429|529)\b|(status|http|code|error)\D{0,6}(500|502|503|504)\b|"
+                        r"internal server error|bad gateway|service unavailable|time(d)? ?out|temporarily|"
+                        r"connection (reset|error|aborted)", re.I)
+RETRY_WAITS = (15, 45)
+
+
+def is_transient(exc: BaseException) -> bool:
+    return bool(_TRANSIENT.search(f"{type(exc).__name__} {exc}"))
+
+
+def retrying(call: Callable[[], Any], *, waits: tuple[float, ...] = RETRY_WAITS,
+             sleep: Callable[[float], None] = time.sleep) -> Any:
+    """Run ``call``; on a transient provider error wait and try again (len(waits) retries). Anything else,
+    or the last failure, raises, and the run records it."""
+    for wait in (*waits, None):
+        try:
+            return call()
+        except Exception as exc:
+            if wait is None or not is_transient(exc):
+                raise
+            sleep(wait)
 
 
 @dataclass
