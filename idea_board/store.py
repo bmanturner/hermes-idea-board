@@ -8,9 +8,37 @@ from __future__ import annotations
 import json
 import sqlite3
 import time
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Iterable
 
 from .text import content_tokens, topic_match
+
+@lru_cache(maxsize=1)
+def _connector_names() -> dict[str, str]:
+    try:
+        path = Path(__file__).resolve().parent.parent / "data" / "connectors.json"
+        return {c["slug"]: c["name"] for c in json.loads(path.read_text())["connectors"]}
+    except Exception:
+        return {}
+
+
+def cap_label(cap_id: str) -> str:
+    """A capability id as a person would say it in a rule: 'connector:granola_mcp' → 'Granola',
+    'toolset:browser' → 'the browser tools', 'skill:pdf' → 'the pdf skill'."""
+    kind, _, name = str(cap_id).partition(":")
+    if not name:
+        return str(cap_id)
+    if kind == "connector":
+        return _connector_names().get(name) or name.removesuffix("_mcp").replace("_", " ").title()
+    if kind == "toolset":
+        return f"the {name.replace('_', ' ')} tools"
+    if kind == "skill":
+        return f"the {name} skill"
+    if kind == "platform":
+        return name.capitalize()
+    return name  # MCP servers keep the name the user gave them
+
 
 STALE_RUN_SECONDS = 30 * 60
 STALE_RUN_ERROR = "it stopped before finishing (Hermes may have restarted); the next run starts fresh"
@@ -217,7 +245,7 @@ class Store:
             "not_topic": f"I'll stay off the topic “{topic}”.",
             "dont_automate": f"I won't put “{topic}” on a schedule.",
             "too_risky": f"I won't suggest anything that acts on its own for “{topic}”.",
-            "wrong_tool": f"I won't use {main_cap or 'that tool'} for “{topic}”.",
+            "wrong_tool": f"I won't use {cap_label(main_cap) if main_cap else 'that tool'} for “{topic}”.",
         }[code]
         if note.strip():
             text += f" You said: “{note.strip()[:160]}”"
@@ -242,7 +270,7 @@ class Store:
             if (other["reason_code"] == code and other["scope"] == "topic" and m.get(key) == rule["match"][key]
                     and not topic_match(m.get("topic", ""), rule["match"]["topic"])):
                 wide = {"reason_code": code, "scope": key, "match": {key: rule["match"][key]},
-                        "text": (f"I won't use {rule['match'][key]} for ideas like these." if key == "capability"
+                        "text": (f"I won't use {cap_label(rule['match'][key])} for ideas like these." if key == "capability"
                                  else "I won't put things on a schedule unless you ask."),
                         "source_cards": sorted(set(other["source_cards"]) | set(rule["source_cards"]))}
                 if not any(r["scope"] == key and r["match"] == wide["match"] for r in self.rules()):

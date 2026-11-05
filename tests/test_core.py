@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 
 import fixtures  # noqa: E402
 from idea_board import packet, pipeline, prompts, safety, signals  # noqa: E402
+from idea_board import store as store_mod  # noqa: E402
 from idea_board.store import Store  # noqa: E402
 from idea_board.text import clean_user_text  # noqa: E402
 
@@ -118,12 +119,20 @@ class StoreTests(unittest.TestCase):
         s = new_store()
         a = self.card(s, topic="invoices", uses=["toolset:browser"])
         s.dismiss(a, "wrong_tool")
+        self.assertTrue(s.rules()[0]["text"].startswith("I won't use the browser tools for “invoices”."))
         self.assertIsNotNone(s.blocking_rule({"topic": "invoices", "kind": "once", "uses": ["toolset:browser"]}))
         self.assertIsNone(s.blocking_rule({"topic": "travel", "kind": "once", "uses": ["toolset:browser"]}))
         b = self.card(s, title="Compare flight prices", topic="travel", uses=["toolset:browser"])
         res = s.dismiss(b, "wrong_tool")
         self.assertIsNotNone(res["widened"])
         self.assertIsNotNone(s.blocking_rule({"topic": "groceries", "kind": "once", "uses": ["toolset:browser"]}))
+
+    def test_rules_name_tools_the_way_people_do(self):
+        self.assertEqual(store_mod.cap_label("connector:granola_mcp"), "Granola")
+        self.assertEqual(store_mod.cap_label("connector:some_new_thing_mcp"), "Some New Thing")
+        self.assertEqual(store_mod.cap_label("mcp:Fastmail"), "Fastmail")
+        self.assertEqual(store_mod.cap_label("skill:pdf"), "the pdf skill")
+        self.assertEqual(store_mod.cap_label("toolset:code_execution"), "the code execution tools")
 
     def test_snooze_reopens(self):
         s = new_store()
