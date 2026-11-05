@@ -90,7 +90,7 @@ I use public plugin APIs everywhere except three Hermes internals that have no p
 | `hermes_cli.tools_config._get_platform_tools` and `toolsets.resolve_toolset` | Which toolsets are on for chats, so ideas only use tools you can actually call | I fall back to every installed toolset minus `agent.disabled_toolsets`; lazily loaded MCP servers stay listed |
 | `cron.suggestions.load_suggestions` | Hermes's own suggested jobs, so I don't suggest them again | I skip that duplicate check and say so in the run's notes |
 
-`tests/test_compat.py` breaks each one on purpose and checks the board keeps working. A request for public versions is open upstream (link added when filed).
+`tests/test_compat.py` breaks each one on purpose and checks the board keeps working. A request for public versions is open upstream: [NousResearch/hermes-agent#149576](https://github.com/NousResearch/hermes-agent/issues/149576).
 
 ## Development
 
