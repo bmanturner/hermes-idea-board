@@ -12,6 +12,9 @@ from typing import Any, Iterable
 
 from .text import content_tokens, topic_match
 
+STALE_RUN_SECONDS = 30 * 60
+STALE_RUN_ERROR = "it stopped before finishing (Hermes may have restarted); the next run starts fresh"
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
 CREATE TABLE IF NOT EXISTS runs (
@@ -70,7 +73,17 @@ class Store:
         self.conn.commit()
 
     # ---- runs -------------------------------------------------------------------------------
+    def _close_stale_runs(self) -> None:
+        """A run takes minutes. One still 'running' after STALE_RUN_SECONDS was cut off (Hermes
+        restarted or the process died), so record it as failed instead of running forever."""
+        cur = self.conn.execute(
+            "UPDATE runs SET status = 'error', finished_at = started_at, error = ? "
+            "WHERE status = 'running' AND started_at < ?", (STALE_RUN_ERROR, time.time() - STALE_RUN_SECONDS))
+        if cur.rowcount:
+            self.conn.commit()
+
     def start_run(self, trigger: str) -> int:
+        self._close_stale_runs()
         cur = self.conn.execute("INSERT INTO runs (started_at, status, trigger) VALUES (?, 'running', ?)",
                                 (time.time(), trigger))
         self.conn.commit()
@@ -86,7 +99,14 @@ class Store:
         self.conn.commit()
 
     def last_run(self) -> dict[str, Any] | None:
-        row = self.conn.execute("SELECT * FROM runs ORDER BY id DESC LIMIT 1").fetchone()
+        """The newest run that finished (ok or failed); a run in progress is ``active_run``."""
+        self._close_stale_runs()
+        row = self.conn.execute("SELECT * FROM runs WHERE status != 'running' ORDER BY id DESC LIMIT 1").fetchone()
+        return dict(row) if row else None
+
+    def active_run(self) -> dict[str, Any] | None:
+        self._close_stale_runs()
+        row = self.conn.execute("SELECT * FROM runs WHERE status = 'running' ORDER BY id DESC LIMIT 1").fetchone()
         return dict(row) if row else None
 
     # ---- cards ------------------------------------------------------------------------------

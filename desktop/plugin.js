@@ -233,9 +233,10 @@ function ScheduleStatus({ jobQuery, setup, onSchedule }) {
   return jsx(Button, { variant: 'textStrong', size: 'inline', onClick: onSchedule, children: 'Not scheduled · Schedule' })
 }
 
-function Receipt({ run, jobQuery, setup, onSchedule }) {
+function Receipt({ run, running, jobQuery, setup, onSchedule }) {
   const change = jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => host.navigate(MODEL_SETTINGS), children: 'Change model' }, 'm')
   const status = jsx(ScheduleStatus, { jobQuery, setup, onSchedule }, 'sched')
+  if (running) return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [status, jsx('span', { children: 'I’m reading your chats now; new ideas land here in a few minutes' })])
   if (!run) return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [status, jsx('span', { children: 'No run yet' })])
   if (run.status === 'error') {
     return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [
@@ -878,7 +879,7 @@ function Header({ data, jobQuery, inSetup, onRules, onSetup, onSchedule }) {
       jsx('h1', { style: { ...T.title, color: C.p, margin: 0 }, children: 'Idea Board' }),
       inSetup
         ? txt('meta', C.t, setupDone ? 'Setup' : 'Setup · about two minutes · I only run once you schedule me or ask')
-        : data && jsx(Receipt, { run: data.last_run, jobQuery, setup: data.setup, onSchedule })
+        : data && jsx(Receipt, { run: data.last_run, running: data.running, jobQuery, setup: data.setup, onSchedule })
     ]),
     setupDone && !inSetup &&
       row({ gap: 8, marginLeft: 'auto' }, [

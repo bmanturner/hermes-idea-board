@@ -152,6 +152,7 @@ def board():
         "rules": [{"id": r["id"], "text": r["text"], "scope": r["scope"], "hits": r["hits"],
                    "created_at": r["created_at"]} for r in s.rules()],
         "last_run": _run_out(s.last_run()),
+        "running": s.active_run() is not None,
         "reasons": [{"code": k, "label": v} for k, v in store_mod.REASONS.items()],
         "setup": _setup(s),
         "connectors": _connectors_out(s),

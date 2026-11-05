@@ -236,6 +236,19 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(rep.status, "error")
         self.assertEqual((self.store.last_run() or {})["error"], "RuntimeError: provider down")
 
+    def test_cut_off_run_is_closed_and_a_live_run_is_not_the_last_run(self):
+        pipeline.run(self.pkt, fake_llm([cand()]), self.store, now=fixtures.NOW)
+        ok = self.store.last_run() or {}
+        live = self.store.start_run("nightly")  # in progress right now
+        self.assertEqual((self.store.last_run() or {})["id"], ok["id"])
+        self.assertEqual((self.store.active_run() or {})["id"], live)
+        # Hermes restarted mid-run: the row is still 'running' long after any run could take
+        self.store.conn.execute("UPDATE runs SET started_at = started_at - 3600 WHERE id = ?", (live,))
+        self.assertIsNone(self.store.active_run())
+        last = self.store.last_run() or {}
+        self.assertEqual((last["id"], last["status"]), (live, "error"))
+        self.assertIn("stopped before finishing", last["error"])
+
 
 if __name__ == "__main__":
     unittest.main()
