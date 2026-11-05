@@ -62,6 +62,19 @@ class ApiTests(unittest.TestCase):
         with self.assertRaises(api.HTTPException):
             api.edit_rule(1, api.RuleInput(text="  "))
 
+    def test_setup_defaults_and_choices(self):
+        s = api.board()["setup"]
+        self.assertFalse(s["done"])
+        self.assertEqual((s["history_days"], s["max_cards"], s["schedule"]), (14, 6, None))
+        self.assertIn("follows_main", s["model"])
+        out = api.setup(api.SetupInput(history_days=30, max_cards=3, schedule="manual"))["setup"]
+        self.assertEqual((out["history_days"], out["max_cards"], out["schedule"]), (30, 3, "manual"))
+        self.assertEqual(self.store.get_meta("history_days"), 30)
+        with self.assertRaises(api.HTTPException):
+            api.setup(api.SetupInput(max_cards=50))
+        self.assertTrue(api.setup(api.SetupInput(done=True))["setup"]["done"])
+        self.assertTrue(api.board()["setup"]["done"])
+
     def test_snooze_and_rule_edit(self):
         cid = api.board()["cards"][0]["id"]
         api.snooze(cid, api.SnoozeInput(days=3))

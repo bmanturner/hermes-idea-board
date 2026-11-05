@@ -26,7 +26,7 @@ The prompt on a card was written by a model that read your chats, and you send i
 - **Reads:** your chats from the last 14 days (scheduled-job runs, subagents, hidden and group chats are skipped), this profile's tools, skills, connectors, platforms and scheduled jobs, and `memories/USER.md`.
 - **Stores:** ideas, dismissals, rules and run history in `<HERMES_HOME>/plugin-data/idea-board/data.db`. Nothing leaves your machine except the two model calls per run.
 - **Costs:** two model calls per run (ideation and critique). A run over two weeks of heavy use was about 70k tokens. The board shows the model and tokens for every run. Pick a cheaper model in **Settings → Models → Auxiliary → Idea Board** (or `auxiliary.idea_board` in `config.yaml`); until you do, it uses your main model.
-- **Runs:** only when you schedule it, or when you click *Generate ideas now* / send `/idea-board generate`.
+- **Runs:** only when you schedule it in setup, or when you ask (the board's *Make my first ideas* / *Generate ideas now*, or `/idea-board generate`).
 
 ## Install
 
@@ -38,13 +38,20 @@ Then in Hermes Desktop, turn on **Idea Board** in **Settings → Plugins**. It a
 
 **Desktop connected to a remote Hermes** (e.g. a laptop talking to a home server): install the agent half on the server as above, then on the laptop use **Settings → Plugins → Install from Git** with `https://github.com/bmanturner/hermes-idea-board` and the **Desktop** target checked. The desktop half of a plugin installed on a remote server can't be read from another machine.
 
-### Schedule the nightly run
+### First run: setup
 
-Use the *Idea Board nightly ideas* blueprint (Desktop Cron page, or `/blueprint idea-board:nightly`). It runs at 03:30 by default and replies silently. For a first board right away, click **Generate ideas now** on the empty board, or send `/idea-board generate` in any chat.
+Open **Idea Board** in the sidebar. Until you finish setup, the page shows a short setup instead of the board, and nothing runs:
+
+1. **What it reads**: how many days of chats each run reads (7, 14 or 30) and how many new ideas a run may add (3, 6 or 10).
+2. **Which model writes the ideas**: shows the model in use and its token cost on your last run, with a link to choose a smaller one for Idea Board alone.
+3. **When it runs**: *Every night* at a time you pick (creates a scheduled job only when you press *Schedule it*), or *Only when I ask*.
+4. **Your first ideas**: opens a new chat with `/idea-board generate` ready; you press send.
+
+Reopen it any time with **Setup** at the top of the board. The *Idea Board nightly ideas* blueprint (Desktop Cron page, `/blueprint idea-board:nightly`) schedules the same job from outside the board.
 
 ### Settings
 
-`plugins.entries.idea-board.settings` (or the form in Settings → Plugins):
+Setup stores your choices in the plugin's own data. Without setup, these keys in `plugins.entries.idea-board.settings` (or the form in Settings → Plugins) apply:
 
 | Key | Default | Meaning |
 |---|---|---|

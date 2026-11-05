@@ -21,6 +21,7 @@ import {
   Loader,
   PALETTE_AREA,
   ROUTES_AREA,
+  SegmentedControl,
   SIDEBAR_NAV_AREA,
   Textarea,
   host,
@@ -376,6 +377,193 @@ function RulesDialog({ open, onClose, rules }) {
   })
 }
 
+
+// ---- setup (onboarding) ----------------------------------------------------------------------
+// Shown until the user finishes it. Nothing is scheduled until they press "Schedule it".
+const JOB_NAME = 'Idea Board nightly'
+const JOB_PROMPT = 'Call the idea_board_run tool once. Do nothing else, then reply [SILENT].'
+const TIMES = [
+  { id: '0 2 * * *', label: '2:00 AM' },
+  { id: '30 3 * * *', label: '3:30 AM' },
+  { id: '0 5 * * *', label: '5:00 AM' }
+]
+const timeLabel = cron => (TIMES.find(t => t.id === cron) || {}).label || cron
+const profileName = () => {
+  try {
+    return host.state.profile.get() || undefined
+  } catch {
+    return undefined
+  }
+}
+
+async function cronRequest(params) {
+  return host.request('cron.manage', { ...params, profile: profileName() })
+}
+
+function useNightlyJob() {
+  return useQuery({
+    queryKey: [ID, 'job', profileName()],
+    queryFn: async () => {
+      const res = await cronRequest({ action: 'list', include_disabled: true })
+      return (res.jobs || []).find(j => j.name === JOB_NAME) || null
+    },
+    retry: 0
+  })
+}
+
+function Step({ n, done, title, children }) {
+  return jsxs('section', {
+    style: { display: 'grid', gridTemplateColumns: '28px minmax(0, 1fr)', gap: 12, padding: '18px 0', borderTop: `1px solid ${C.line}` },
+    children: [
+      jsx('div', {
+        'aria-hidden': true,
+        style: {
+          width: 22, height: 22, borderRadius: 11, display: 'grid', placeItems: 'center', fontSize: 11.5,
+          color: done ? 'var(--ui-bg-editor, transparent)' : C.t,
+          background: done ? C.accent : 'transparent',
+          boxShadow: done ? 'none' : `inset 0 0 0 1px ${C.line}`
+        },
+        children: done ? jsx(Codicon, { name: 'check' }) : n
+      }),
+      col({ gap: 10, minWidth: 0 }, [txt(15, C.p, title, { fontWeight: 600 }), ...children].map((c, i) => jsx('div', { children: c }, i)))
+    ]
+  })
+}
+
+function Field({ label, children }) {
+  return row({ gap: 12, flexWrap: 'wrap' }, [txt(13, C.s, label, { minWidth: 150 }), children].map((c, i) => jsx('div', { children: c }, i)))
+}
+
+function SetupView({ data, onDone }) {
+  const qc = useQueryClient()
+  const setup = data.setup
+  const job = useNightlyJob()
+  const [keepMain, setKeepMain] = useState(false)
+  const [mode, setMode] = useState(setup.schedule === 'manual' ? 'manual' : 'nightly')
+  const [time, setTime] = useState('30 3 * * *')
+  const [firstAsked, setFirstAsked] = useState(false)
+  const [reviewed, setReviewed] = useState(false)
+  const save = useMutation({
+    mutationFn: body => rest('/setup', { method: 'POST', body }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: BOARD_KEY }),
+    onError: e => host.notify({ kind: 'error', message: `Couldn't save: ${e.message || e}` })
+  })
+  const schedule = useMutation({
+    mutationFn: () => cronRequest({ action: 'add', name: JOB_NAME, schedule: time, prompt: JOB_PROMPT, deliver: 'local' }),
+    onSuccess: res => {
+      if (res && res.error) throw new Error(res.error)
+      save.mutate({ schedule: `nightly ${time}` })
+      qc.invalidateQueries({ queryKey: [ID, 'job'] })
+    },
+    onError: e => host.notify({ kind: 'error', message: `Couldn't schedule the nightly run: ${e.message || e}` })
+  })
+
+  // Refresh the model line when the user comes back from Settings.
+  useEffect(() => {
+    const onFocus = () => qc.invalidateQueries({ queryKey: BOARD_KEY })
+    window.addEventListener('focus', onFocus)
+    const t = setInterval(onFocus, 5000)
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      clearInterval(t)
+    }
+  }, [qc])
+
+  const model = setup.model || {}
+  const modelDone = !model.follows_main || keepMain
+  const nightly = job.data
+  const scheduleDone = Boolean(nightly) || setup.schedule === 'manual'
+  const hasIdeas = data.cards.length > 0
+  const tokens = data.last_run ? Math.round(((data.last_run.input_tokens || 0) + (data.last_run.output_tokens || 0)) / 1000) : null
+
+  return jsx('div', { style: { flex: 1, minHeight: 0, overflow: 'auto' }, children: col({ gap: 0, maxWidth: 720, paddingBottom: 40 }, [
+    txt(14, C.s,
+      'Idea Board reads your recent chats and what this profile can do, then suggests things Hermes could take off your plate. ' +
+      'Nothing runs until you set it up here, and nothing is ever sent for you: an idea goes into a new chat and you press send.',
+      { maxWidth: '68ch', paddingBottom: 6 }),
+
+    jsx(Step, {
+      n: 1, done: reviewed || Boolean(setup.done), title: 'What it reads',
+      children: [
+        txt(13, C.t, 'Your own messages from recent chats (not scheduled jobs, subagents or group chats), plus the tools, skills, connected apps and scheduled jobs this profile has. Ideas, dismissals and rules stay in this profile’s plugin data.', { maxWidth: '68ch' }),
+        jsx(Field, { label: 'Chats to read', children: jsx(SegmentedControl, {
+          value: String(setup.history_days),
+          options: [{ id: '7', label: 'Last 7 days' }, { id: '14', label: 'Last 14 days' }, { id: '30', label: 'Last 30 days' }],
+          onChange: v => { setReviewed(true); save.mutate({ history_days: Number(v) }) }
+        }) }),
+        jsx(Field, { label: 'New ideas per run', children: jsx(SegmentedControl, {
+          value: String(setup.max_cards),
+          options: [{ id: '3', label: '3' }, { id: '6', label: '6' }, { id: '10', label: '10' }],
+          onChange: v => { setReviewed(true); save.mutate({ max_cards: Number(v) }) }
+        }) })
+      ]
+    }),
+
+    jsx(Step, {
+      n: 2, done: modelDone, title: 'Which model writes the ideas',
+      children: [
+        txt(13, C.t,
+          model.follows_main
+            ? `Right now: ${model.name || 'your main model'}, your main model. Each run makes two model calls${tokens ? `; your last run used about ${tokens}k tokens` : ''}. A smaller model is usually enough.`
+            : `Right now: ${model.name}, chosen for Idea Board. Each run makes two model calls${tokens ? `; your last run used about ${tokens}k tokens` : ''}.`,
+          { maxWidth: '68ch' }),
+        row({ gap: 8, flexWrap: 'wrap' }, [
+          jsx(Button, {
+            variant: 'secondary', size: 'sm',
+            onClick: () => host.navigate('/settings?tab=config:model&aux=idea_board'),
+            children: model.follows_main ? 'Choose a model for Idea Board' : 'Change model'
+          }, 'c'),
+          model.follows_main && !keepMain &&
+            jsx(Button, { variant: 'text', size: 'sm', onClick: () => setKeepMain(true), children: 'Keep my main model' }, 'k')
+        ])
+      ]
+    }),
+
+    jsx(Step, {
+      n: 3, done: scheduleDone, title: 'When it runs',
+      children: nightly
+        ? [
+            txt(13, C.t, `Scheduled every night at ${timeLabel(nightly.schedule) || nightly.schedule}${nightly.state && nightly.state !== 'scheduled' ? ` (${nightly.state})` : ''}. It runs quietly and posts nothing; new ideas appear here.`, { maxWidth: '68ch' }),
+            jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => api.runAction('nav.cron'), children: 'Pause or remove it on Scheduled jobs' })
+          ]
+        : [
+            jsx(SegmentedControl, {
+              value: mode, sizing: 'content',
+              options: [{ id: 'nightly', label: 'Every night' }, { id: 'manual', label: 'Only when I ask' }],
+              onChange: v => {
+                setMode(v)
+                if (v === 'manual') save.mutate({ schedule: 'manual' })
+              }
+            }),
+            mode === 'nightly'
+              ? col({ gap: 10 }, [
+                  jsx(Field, { label: 'Time', children: jsx(SegmentedControl, { value: time, options: TIMES, onChange: setTime }) }, 't'),
+                  txt(13, C.t, 'Creates a scheduled job in this profile. It reads, thinks and saves ideas here; it never messages you or acts on anything.', { maxWidth: '68ch' }),
+                  row({ gap: 8 }, [
+                    jsx(Button, { size: 'sm', disabled: schedule.isPending, onClick: () => schedule.mutate(), children: schedule.isPending ? 'Scheduling…' : `Schedule it for ${timeLabel(time)}` }, 's')
+                  ])
+                ].map((c, i) => jsx('div', { children: c }, i)))
+              : txt(13, C.t, 'Make ideas whenever you like from this page, or by sending /idea-board generate in any chat.', { maxWidth: '68ch' })
+          ]
+    }),
+
+    jsx(Step, {
+      n: 4, done: hasIdeas || firstAsked, title: 'Your first ideas',
+      children: hasIdeas
+        ? [txt(13, C.t, `You already have ${data.cards.length} idea${data.cards.length === 1 ? '' : 's'} waiting.`)]
+        : [
+            txt(13, C.t, 'Opens a new chat with /idea-board generate ready. Press send; ideas land on this page in a minute or two.', { maxWidth: '68ch' }),
+            jsx(Button, { variant: 'secondary', size: 'sm', onClick: () => { setFirstAsked(true); generateNow() }, children: 'Make my first ideas' })
+          ]
+    }),
+
+    row({ gap: 12, paddingTop: 18, borderTop: `1px solid ${C.line}` }, [
+      jsx(Button, { onClick: () => save.mutate({ done: true }, { onSuccess: onDone }), children: hasIdeas ? 'Show my ideas' : 'Finish setup' }, 'd'),
+      txt(12, C.t, 'You can change any of this later from Setup.', null)
+    ].map((c, i) => (c && c.key ? c : jsx('div', { children: c }, i))))
+  ].map((c, i) => jsx('div', { children: c }, i))) })
+}
+
 // ---- page --------------------------------------------------------------------------------------
 function ListRow({ card, selected, onSelect }) {
   return jsx('button', {
@@ -449,14 +637,17 @@ function Empty({ title, description, action }) {
   ])
 }
 
-function Header({ data, onRules }) {
+function Header({ data, onRules, onSetup }) {
   return row({ justifyContent: 'space-between', alignItems: 'flex-end', gap: 16, paddingBottom: 14, borderBottom: `1px solid ${C.line}` }, [
     col({ gap: 6 }, [
       txt(20, C.p, 'Idea Board', { fontWeight: 600 }),
-      jsx(Receipt, { run: data && data.last_run })
+      data && data.setup && !data.setup.done ? txt(12, C.t, 'Set up · about two minutes', null) : jsx(Receipt, { run: data && data.last_run })
     ].map((c, i) => jsx('div', { children: c }, i))),
-    data &&
-      jsx(Button, { variant: 'secondary', size: 'sm', onClick: onRules, children: `What I've learned (${data.rules.length})` }, 'rules')
+    data && data.setup && data.setup.done &&
+      row({ gap: 8 }, [
+        jsx(Button, { variant: 'text', size: 'sm', onClick: onSetup, children: 'Setup' }, 'setup'),
+        jsx(Button, { variant: 'secondary', size: 'sm', onClick: onRules, children: `What I've learned (${data.rules.length})` }, 'rules')
+      ])
   ].map((c, i) => jsx('div', { children: c }, i)))
 }
 
@@ -472,6 +663,7 @@ function BoardPage() {
   const [noteFor, setNoteFor] = useState(null)
   const [rulesOpen, setRulesOpen] = useState(false)
   const [undo, setUndo] = useState(null)
+  const [showSetup, setShowSetup] = useState(false)
   const rootRef = useRef(null)
   const data = board.data
   const cards = data ? data.cards : []
@@ -551,6 +743,8 @@ function BoardPage() {
         'Turn on Idea Board in Settings → Plugins, and enable its agent half: hermes plugins enable idea-board. Then restart the gateway.',
       action: jsx(Button, { variant: 'secondary', onClick: () => host.navigate('/settings/plugins'), children: 'Open Plugins' })
     })
+  } else if (data.setup && (!data.setup.done || showSetup)) {
+    body = jsx(SetupView, { data, onDone: () => setShowSetup(false) })
   } else if (!cards.length) {
     body = jsx(Empty, {
       title: data.last_run ? 'No new ideas right now' : 'No ideas yet',
@@ -595,7 +789,7 @@ function BoardPage() {
     onKeyDown,
     style: { height: '100%', display: 'flex', flexDirection: 'column', padding: '24px 36px 0', gap: 16, minHeight: 0, outline: 'none' },
     children: [
-      jsx(Header, { data, onRules: () => setRulesOpen(true) }),
+      jsx(Header, { data, onRules: () => setRulesOpen(true), onSetup: () => setShowSetup(true) }),
       jsx('div', { style: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }, children: body }),
       data && jsx(NoteDialog, { card: noteFor, reasons: data.reasons, onClose: () => setNoteFor(null), onDismiss }, noteFor ? noteFor.id : 'none'),
       data && jsx(RulesDialog, { open: rulesOpen, onClose: () => setRulesOpen(false), rules: data.rules })

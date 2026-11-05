@@ -55,6 +55,20 @@ class Store:
         self.conn.executescript(SCHEMA)
         self.conn.commit()
 
+    # ---- meta (setup choices) ----------------------------------------------------------------
+    def get_meta(self, key: str, default: Any = None) -> Any:
+        row = self.conn.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+        if not row:
+            return default
+        try:
+            return json.loads(row["value"])
+        except (TypeError, ValueError):
+            return row["value"]
+
+    def set_meta(self, key: str, value: Any) -> None:
+        self.conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", (key, json.dumps(value)))
+        self.conn.commit()
+
     # ---- runs -------------------------------------------------------------------------------
     def start_run(self, trigger: str) -> int:
         cur = self.conn.execute("INSERT INTO runs (started_at, status, trigger) VALUES (?, 'running', ?)",

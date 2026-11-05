@@ -31,6 +31,13 @@ def _store() -> Store:
 
 
 def _setting(key: str, default: int) -> int:
+    """The user's choice from the board's setup (plugin data) wins, then plugin config, then default."""
+    try:
+        chosen = _store().get_meta(key)
+        if chosen is not None:
+            return int(chosen)
+    except Exception:
+        pass
     try:
         value = (_CTX.get_config() or {}).get(key, default)
         return int(value)

@@ -96,6 +96,44 @@ class RuleInput(BaseModel):
     text: str
 
 
+class SetupInput(BaseModel):
+    history_days: int | None = None
+    max_cards: int | None = None
+    schedule: str | None = None
+    done: bool | None = None
+
+
+SETUP_DEFAULTS = {"history_days": 14, "max_cards": 6}
+ALLOWED = {"history_days": (7, 14, 30), "max_cards": (3, 6, 10)}
+
+
+def _model_info() -> dict[str, Any]:
+    """Which model writes the ideas: Idea Board's own slot if the user set one, else the main model."""
+    try:
+        from hermes_cli.config import load_config
+
+        cfg = load_config() or {}
+    except Exception:
+        return {"name": None, "follows_main": True}
+    aux = ((cfg.get("auxiliary") or {}).get("idea_board") or {})
+    main = cfg.get("model")
+    main_name = (main.get("default") or main.get("model")) if isinstance(main, dict) else main
+    model = str(aux.get("model") or "").strip()
+    if model:
+        return {"name": model, "follows_main": False}
+    return {"name": main_name or None, "follows_main": True}
+
+
+def _setup(s) -> dict[str, Any]:
+    return {
+        "done": bool(s.get_meta("setup_done", False)),
+        "history_days": int(s.get_meta("history_days", SETUP_DEFAULTS["history_days"])),
+        "max_cards": int(s.get_meta("max_cards", SETUP_DEFAULTS["max_cards"])),
+        "schedule": s.get_meta("schedule", None),
+        "model": _model_info(),
+    }
+
+
 @router.get("/health")
 def health():
     return {"ok": True}
@@ -115,7 +153,24 @@ def board():
                    "created_at": r["created_at"]} for r in s.rules()],
         "last_run": _run_out(s.last_run()),
         "reasons": [{"code": k, "label": v} for k, v in store_mod.REASONS.items()],
+        "setup": _setup(s),
     }
+
+
+@router.post("/setup")
+def setup(body: SetupInput):
+    s = _store()
+    for key, allowed in ALLOWED.items():
+        value = getattr(body, key, None)
+        if value is not None:
+            if int(value) not in allowed:
+                raise HTTPException(status_code=400, detail=f"{key} must be one of {list(allowed)}")
+            s.set_meta(key, int(value))
+    if body.schedule is not None:
+        s.set_meta("schedule", str(body.schedule)[:80] or None)
+    if body.done is not None:
+        s.set_meta("setup_done", bool(body.done))
+    return {"ok": True, "setup": _setup(s)}
 
 
 def _require(s, card_id: str) -> dict[str, Any]:
