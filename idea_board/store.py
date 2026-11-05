@@ -193,14 +193,14 @@ class Store:
         elif code == "wrong_tool" and main_cap:
             match["capability"] = main_cap
         text = {
-            "not_relevant": f"Not relevant: ideas about “{topic}”",
-            "not_topic": f"Not this topic: “{topic}”",
-            "dont_automate": f"Don't put “{topic}” on a schedule",
-            "too_risky": f"Nothing that acts on its own for “{topic}”",
-            "wrong_tool": f"Don't use {main_cap or 'that tool'} for “{topic}”",
+            "not_relevant": f"I won't suggest ideas about “{topic}”.",
+            "not_topic": f"I'll stay off the topic “{topic}”.",
+            "dont_automate": f"I won't put “{topic}” on a schedule.",
+            "too_risky": f"I won't suggest anything that acts on its own for “{topic}”.",
+            "wrong_tool": f"I won't use {main_cap or 'that tool'} for “{topic}”.",
         }[code]
         if note.strip():
-            text += f" (you said: {note.strip()[:160]})"
+            text += f" You said: “{note.strip()[:160]}”"
         return {"reason_code": code, "scope": "topic", "match": match, "text": text, "source_cards": [card["id"]]}
 
     def _add_rule(self, rule: dict[str, Any]) -> int:
@@ -222,8 +222,8 @@ class Store:
             if (other["reason_code"] == code and other["scope"] == "topic" and m.get(key) == rule["match"][key]
                     and not topic_match(m.get("topic", ""), rule["match"]["topic"])):
                 wide = {"reason_code": code, "scope": key, "match": {key: rule["match"][key]},
-                        "text": (f"Don't use {rule['match'][key]} for ideas like these" if key == "capability"
-                                 else "Don't put things on a schedule unless I ask"),
+                        "text": (f"I won't use {rule['match'][key]} for ideas like these." if key == "capability"
+                                 else "I won't put things on a schedule unless you ask."),
                         "source_cards": sorted(set(other["source_cards"]) | set(rule["source_cards"]))}
                 if not any(r["scope"] == key and r["match"] == wide["match"] for r in self.rules()):
                     return self._add_rule(wide)

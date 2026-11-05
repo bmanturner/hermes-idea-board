@@ -45,8 +45,8 @@ const C = {
   p: 'var(--ui-text-primary)',
   s: 'var(--ui-text-secondary)',
   t: 'var(--ui-text-tertiary)',
-  q: 'var(--ui-text-quaternary)',
   line: 'var(--ui-stroke-tertiary)',
+  ring: 'var(--ui-stroke-secondary)',
   accent: 'var(--ui-accent)',
   alert: 'var(--ui-red)'
 }
@@ -76,7 +76,7 @@ const STYLE = `
 .ib-row[disabled] { cursor: default; }
 .ib-row[disabled]:hover { background: transparent; }
 .ib-step { flex-direction: row; align-items: flex-start; gap: 8px; }
-.ib-mark { flex: none; box-sizing: border-box; width: 18px; height: 18px; margin-top: 1px; border-radius: 9999px; display: grid; place-items: center; font-size: 0.7rem; line-height: 1; color: var(--ui-text-tertiary); box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary); }
+.ib-mark { flex: none; box-sizing: border-box; width: 18px; height: 18px; margin-top: 1px; border-radius: 9999px; display: grid; place-items: center; font-size: 0.7rem; line-height: 1; color: var(--ui-text-tertiary); box-shadow: inset 0 0 0 1px var(--ui-stroke-secondary); }
 .ib-mark.is-done { background: var(--ui-accent); color: var(--dt-primary-foreground); box-shadow: none; }
 .ib-prompt { background: var(--ui-bg-quinary); color: var(--ui-text-secondary); border-radius: 4px; padding: 10px; font-size: 0.8125rem; line-height: 1.5; }
 .ib-prompt-text { white-space: pre-wrap; overflow: hidden; }
@@ -96,10 +96,11 @@ const KINDS = [
 ]
 const KIND = Object.fromEntries(KINDS.map(k => [k.kind, k]))
 const CAP_ICON = { mcp: 'plug', skill: 'book', toolset: 'tools', platform: 'comment-discussion', connector: 'link' }
+// What the agent promises before the user starts an idea. Shown beside the Start button.
 const RISK = {
-  none: 'I’ll only read and draft',
-  'drafts-for-approval': 'I’ll prepare a draft for your OK',
-  'external-action': 'I’ll act only after your yes'
+  none: 'I’ll show you a plan first, then only read and draft.',
+  'drafts-for-approval': 'I’ll show you a plan first and prepare drafts for your OK.',
+  'external-action': 'I’ll show you a plan first and act only after your yes.'
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
@@ -139,7 +140,10 @@ async function generateNow() {
   if (!ok) host.notify({ kind: 'error', message: 'I couldn’t open a new chat. Open one and send /idea-board generate.' })
 }
 
-const failed = what => e => host.notify({ kind: 'error', message: `I couldn’t ${what}: ${(e && e.message) || e}` })
+const failed = what => e => {
+  const detail = String((e && e.message) || e || '').slice(0, 80)
+  host.notify({ kind: 'error', message: `I couldn’t ${what}${detail ? ` (${detail})` : ''}. Try again in a moment.` })
+}
 
 // ---- small pieces ----------------------------------------------------------------------------
 const kids = list =>
@@ -151,6 +155,20 @@ const row = (style, children) => box({ display: 'flex', alignItems: 'center' }, 
 const col = (style, children) => box({ display: 'flex', flexDirection: 'column' }, style, children)
 const txt = (role, color, children, style) => jsx('div', { style: { ...T[role], color, ...style }, children })
 const icon = (name, style) => jsx(Codicon, { name, size: '1em', style })
+const heading = (level, role, color, children, style) => jsx(`h${level}`, { style: { ...T[role], color, margin: 0, ...style }, children })
+
+// "daily 21:30 America/Chicago" -> "daily at 9:30 PM" (the zone is dropped when it's the user's own).
+function friendlySchedule(s) {
+  const m = String(s || '').match(/^(.*?)\s*(?:at\s+)?(\d{1,2}):(\d{2})(?:\s+([A-Za-z_]+\/[A-Za-z_\/]+))?$/)
+  if (!m) return s
+  const [, days, hh, mm, zone] = m
+  const t = new Date(2000, 0, 1, Number(hh), Number(mm)).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+  let local = ''
+  try {
+    local = Intl.DateTimeFormat().resolvedOptions().timeZone
+  } catch {}
+  return `${days ? `${days} at ` : ''}${t}${zone && zone !== local ? ` ${zone.replace(/_/g, ' ')}` : ''}`
+}
 
 function when(ts) {
   if (!ts) return ''
@@ -189,7 +207,7 @@ function DayRibbon({ days }) {
           height: 6,
           borderRadius: 9999,
           background: hit.has(d) ? C.accent : 'transparent',
-          boxShadow: hit.has(d) ? 'none' : `inset 0 0 0 1px ${C.line}`
+          boxShadow: hit.has(d) ? 'none' : `inset 0 0 0 1px ${C.ring}`
         }
       }, d)
     )
@@ -199,23 +217,35 @@ function DayRibbon({ days }) {
 const Overline = ({ children, iconName, style }) =>
   row({ ...T.overline, gap: 6, color: C.t, ...style }, [iconName && icon(iconName), jsx('span', { children })])
 
-function Receipt({ run }) {
+function ScheduleStatus({ jobQuery, setup, onSchedule }) {
+  // Say nothing rather than guess when the scheduled-jobs list can't be read.
+  if (!jobQuery || !jobQuery.isSuccess) return null
+  const job = jobQuery.data
+  if (job) {
+    const paused = job.enabled === false || job.state === 'paused'
+    return jsx('span', { style: { color: C.s }, children: paused ? 'Nightly run paused' : `I run nightly at ${timeLabel(job.schedule)}` })
+  }
+  if (setup && setup.schedule === 'manual') return jsx('span', { style: { color: C.s }, children: 'I run when you ask' })
+  return jsx(Button, { variant: 'textStrong', size: 'inline', onClick: onSchedule, children: 'Not scheduled · Schedule' })
+}
+
+function Receipt({ run, jobQuery, setup, onSchedule }) {
   const change = jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => host.navigate(MODEL_SETTINGS), children: 'Change model' }, 'm')
-  if (!run) return txt('meta', C.t, 'No run yet.')
+  const status = jsx(ScheduleStatus, { jobQuery, setup, onSchedule }, 'sched')
+  if (!run) return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [status, jsx('span', { children: 'No run yet' })])
   if (run.status === 'error') {
-    return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.alert }, [
-      jsx('span', { children: `Last run ${when(run.finished_at)} failed: ${run.error || 'unknown error'}` }),
+    return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [
+      status,
+      jsx('span', { style: { color: C.alert }, children: `My last run, ${when(run.finished_at)}, failed: ${String(run.error || 'unknown error').slice(0, 120)}` }),
       change
     ])
   }
   const parts = [
     `Last run ${when(run.finished_at)}`,
-    `I read ${plural(run.sessions_read, 'chat')}`,
-    `found ${plural(run.evidence, 'signal')}`,
-    `drafted ${run.candidates}, kept ${run.kept}`,
+    `I read ${plural(run.sessions_read, 'chat')} and kept ${run.kept} of ${plural(run.candidates, 'idea')}`,
     `${run.model || 'default model'} · ${tokensK(run)}k tokens`
   ]
-  return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [...parts.map(p => jsx('span', { children: p })), change])
+  return row({ ...T.meta, gap: 12, flexWrap: 'wrap', color: C.t }, [status, ...parts.map(p => jsx('span', { children: p })), change])
 }
 
 function Caps({ uses }) {
@@ -245,16 +275,22 @@ function Evidence({ items: raw }) {
         row({ ...T.meta, gap: 8, color: C.t, flexWrap: 'wrap' }, [
           jsx(DayRibbon, { days: e.days }),
           jsx('span', { children: e.days.length > 1 ? `${e.days.length} days in the last two weeks` : 'once' }),
-          e.session_ids[0] &&
-            jsx(Button, {
-              variant: 'textStrong',
-              size: 'inline',
-              onClick: () => host.openSession(e.session_ids[0]),
-              children: e.session_ids.length > 1 ? `Open chat (1 of ${e.session_ids.length})` : 'Open chat'
-            }, 'o')
+          ...chatLinks(e.session_ids)
         ])
       ])
     )
+  )
+}
+
+function chatLinks(ids) {
+  const list = (ids || []).slice(0, 3)
+  return list.map((id, i) =>
+    jsx(Button, {
+      variant: 'textStrong',
+      size: 'inline',
+      onClick: () => host.openSession(id),
+      children: list.length === 1 ? 'Open chat' : `Open chat ${i + 1}`
+    }, `o${id}`)
   )
 }
 
@@ -263,10 +299,10 @@ function MetaLine({ card }) {
   return row({ ...T.meta, gap: 6, color: C.t, flexWrap: 'wrap' }, [
     icon(k.icon),
     jsx('span', { children: k.label }),
-    card.schedule && jsx('span', { children: `· ${card.schedule}` }),
+    card.schedule && jsx('span', { children: `· ${friendlySchedule(card.schedule)}` }),
     jsx('span', { style: { color: C.s }, children: `· ${card.value_note}` }),
-    card.expires && jsx(Badge, { variant: 'warn', size: 'xs', children: `by ${shortDate(card.expires)}` }, 'e'),
-    card.stretch && jsx(Badge, { variant: 'default', size: 'xs', children: 'Stretch' }, 'x')
+    card.expires && jsxs(Badge, { variant: 'muted', size: 'xs', title: 'Worth doing before this date', children: [icon('calendar', { marginRight: 4 }), `by ${shortDate(card.expires)}`] }, 'e'),
+    card.stretch && jsx(Badge, { variant: 'muted', size: 'xs', title: 'An ambitious idea that chains several tools', children: 'Stretch' }, 'x')
   ])
 }
 
@@ -276,10 +312,9 @@ function PromptPreview({ card }) {
     .replace(/^\[Idea Board · [^\]]+\][^\n]*\n[^\n]*\n\n/, '')
     .replace(/\n\n— Idea Board · IB-\d+\s*$/, '')
   return col({ gap: 6, maxWidth: PROSE }, [
-    jsx(Overline, { children: 'Prompt · goes into a new chat' }),
+    jsx(Overline, { children: 'Your message · goes into a new chat' }),
     jsx('div', { className: 'ib-prompt', children: jsx('div', { className: open ? 'ib-prompt-text' : 'ib-prompt-text is-clamped', children: body }) }),
-    row({ ...T.meta, gap: 12, color: C.q, flexWrap: 'wrap' }, [
-      jsx('span', { children: `${RISK[card.risk] || RISK.none} · I’ll show you a plan first` }),
+    row({ ...T.meta, gap: 12, color: C.t, flexWrap: 'wrap' }, [
       jsx(Button, { variant: 'text', size: 'inline', onClick: () => setOpen(!open), children: open ? 'Show less' : 'Show all' }, 't'),
       jsx(Button, {
         variant: 'text',
@@ -331,20 +366,27 @@ function NoteDialog({ card, reasons, onClose, onDismiss }) {
           ]
         }),
         col({ gap: 12 }, [
-          row(
-            { gap: 6, flexWrap: 'wrap' },
-            reasons
+          jsx('div', {
+            role: 'radiogroup',
+            'aria-label': 'Reason',
+            style: { display: 'flex', flexDirection: 'column', gap: 2 },
+            children: reasons
               .filter(r => r.code !== 'wrong_timing')
               .map(r =>
-                jsx(Button, {
-                  variant: r.code === reason ? 'default' : 'secondary',
-                  size: 'sm',
-                  'aria-pressed': r.code === reason,
+                jsxs('button', {
+                  type: 'button',
+                  role: 'radio',
+                  'aria-checked': r.code === reason,
+                  className: r.code === reason ? 'ib-row is-selected' : 'ib-row',
+                  style: { flexDirection: 'row', alignItems: 'center', gap: 8, ...T.row, color: C.p },
                   onClick: () => setReason(r.code),
-                  children: r.label
+                  children: [
+                    jsx('span', { style: { width: '1em', display: 'inline-flex', color: C.accent }, children: r.code === reason ? icon('check') : null }),
+                    r.label
+                  ]
                 }, r.code)
               )
-          ),
+          }),
           jsx(Textarea, {
             value: note,
             onChange: e => setNote(e.target.value),
@@ -373,6 +415,7 @@ function NoteDialog({ card, reasons, onClose, onDismiss }) {
 function RulesDialog({ open, onClose, rules }) {
   const qc = useQueryClient()
   const [editing, setEditing] = useState(null)
+  const [confirming, setConfirming] = useState(null)
   const [draft, setDraft] = useState('')
   const save = useMutation({
     mutationFn: ({ id, text }) => rest(`/rules/${id}`, { method: 'PATCH', body: { text } }),
@@ -408,13 +451,19 @@ function RulesDialog({ open, onClose, rules }) {
                     editing === r.id
                       ? jsx(Textarea, { value: draft, onChange: e => setDraft(e.target.value), rows: 2, autoFocus: true }, 'ta')
                       : txt('body', C.p, r.text),
-                    row({ ...T.meta, gap: 12, color: C.t }, [
-                      jsx('span', { children: r.hits ? `kept ${plural(r.hits, 'idea')} off the board` : 'not used yet' }),
-                      editing === r.id
-                        ? jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => save.mutate({ id: r.id, text: draft }), children: 'Save' }, 's')
-                        : jsx(Button, { variant: 'text', size: 'inline', onClick: () => { setEditing(r.id); setDraft(r.text) }, children: 'Edit' }, 'e'),
-                      jsx(Button, { variant: 'text', size: 'inline', onClick: () => remove.mutate(r.id), children: 'Delete' }, 'd')
-                    ])
+                    confirming === r.id
+                      ? row({ ...T.meta, gap: 12, color: C.t }, [
+                          jsx('span', { children: 'Delete this rule? I may suggest these ideas again.' }),
+                          jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => { setConfirming(null); remove.mutate(r.id) }, children: 'Delete' }, 'y'),
+                          jsx(Button, { variant: 'text', size: 'inline', onClick: () => setConfirming(null), children: 'Keep' }, 'n')
+                        ])
+                      : row({ ...T.meta, gap: 12, color: C.t }, [
+                          jsx('span', { children: r.hits ? `kept ${plural(r.hits, 'idea')} off the board` : 'not used yet' }),
+                          editing === r.id
+                            ? jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => save.mutate({ id: r.id, text: draft }), children: 'Save' }, 's')
+                            : jsx(Button, { variant: 'text', size: 'inline', onClick: () => { setEditing(r.id); setDraft(r.text) }, children: 'Edit' }, 'e'),
+                          jsx(Button, { variant: 'text', size: 'inline', onClick: () => setConfirming(r.id), children: 'Delete' }, 'd')
+                        ])
                   ])
                 }, r.id)
               )
@@ -470,9 +519,13 @@ function SampleIdea({ card, example }) {
   const days = example ? lastDays(14).filter((_, i) => i === 2 || i === 7 || i === 12) : ev && ev.days
   return col({ gap: 8, paddingTop: 16, borderTop: `1px solid ${C.line}` }, [
     jsx(Overline, { children: example ? 'Example · yours come from your own chats' : 'An idea from your chats' }),
-    txt('ideaTitle', C.p, card.title),
+    heading(3, 'ideaTitle', C.p, card.title),
     ev && jsx(Quote, { item: ev }),
-    row({ ...T.meta, gap: 8, color: C.t, flexWrap: 'wrap' }, [ev && jsx(DayRibbon, { days }), jsx('span', { children: card.value_note })])
+    row({ ...T.meta, gap: 8, color: C.t, flexWrap: 'wrap' }, [
+      ev && jsx(DayRibbon, { days }),
+      jsx('span', { children: card.value_note }),
+      ...(example || !ev ? [] : chatLinks(ev.session_ids))
+    ])
   ])
 }
 
@@ -485,15 +538,16 @@ function StepRow({ n, title, value, done, selected, onSelect }) {
     type: 'button',
     className: `ib-row ib-step${selected ? ' is-selected' : ''}`,
     'aria-current': selected ? 'step' : undefined,
+    'aria-label': `Step ${n}, ${title}: ${value}${done ? ', done' : ''}`,
     onClick: onSelect,
     children: [
-      jsx('span', { className: done ? 'ib-mark is-done' : 'ib-mark', 'aria-label': done ? 'done' : `step ${n}`, children: done ? icon('check') : n }),
+      jsx('span', { className: done ? 'ib-mark is-done' : 'ib-mark', 'aria-hidden': true, children: done ? icon('check') : n }),
       col({ gap: 2, minWidth: 0 }, [txt('row', C.p, title), txt('meta', C.t, value)])
     ]
   })
 }
 
-function SetupView({ data, onDone }) {
+function SetupView({ data, onDone, initialStep }) {
   const qc = useQueryClient()
   const setup = data.setup
   const job = useNightlyJob()
@@ -538,19 +592,21 @@ function SetupView({ data, onDone }) {
   const tokens = data.last_run ? tokensK(data.last_run) : null
   const done = {
     1: reviewed,
-    2: !model.follows_main || keepMain,
+    2: !model.follows_main || keepMain || Boolean(setup.done),
     3: Boolean(nightly) || setup.schedule === 'manual',
     4: hasIdeas || firstAsked
   }
   const doneCount = Object.values(done).filter(Boolean).length
   const allDone = doneCount === 4
-  const [step, setStep] = useState(() => [1, 2, 3, 4].find(n => !done[n]) || 1)
+  const [step, setStep] = useState(() => initialStep || [1, 2, 3, 4].find(n => !done[n]) || 1)
   const next = () => {
     if (step === 1) setReviewed(true)
     if (step === 2 && model.follows_main) setKeepMain(true)
     setStep(Math.min(4, step + 1))
   }
-  const finish = () => save.mutate({ done: true }, { onSuccess: onDone })
+  const finish = () => (setup.done ? onDone() : save.mutate({ done: true }, { onSuccess: onDone }))
+  // The One Blue Rule: Finish turns blue only when the open step has no blue action of its own.
+  const stepHasPrimary = (step === 3 && !nightly && mode === 'nightly') || (step === 4 && !hasIdeas && !firstAsked)
   const modelName = model.name || 'your main model'
   const costLine = `Each run makes two model calls${tokens ? `; your last run used about ${tokens}k tokens` : ''}.`
 
@@ -629,10 +685,15 @@ function SetupView({ data, onDone }) {
         ],
     4: hasIdeas
       ? [txt('body', C.s, `You already have ${plural(cards.length, 'idea')} waiting. Finish setup to see them.`, { maxWidth: PROSE })]
-      : [
-          txt('body', C.s, 'I’ll open a new chat with /idea-board generate ready. Press send, and ideas land here in a minute or two.', { maxWidth: PROSE }),
-          row({}, [jsx(Button, { onClick: () => { setFirstAsked(true); generateNow() }, children: 'Make my first ideas' }, 'g')])
-        ]
+      : firstAsked
+        ? [
+            txt('body', C.s, 'I opened a chat with /idea-board generate ready. Press send there, and ideas land here in a minute or two.', { maxWidth: PROSE }),
+            row({}, [jsx(Button, { variant: 'secondary', onClick: generateNow, children: 'Open that chat again' }, 'g')])
+          ]
+        : [
+            txt('body', C.s, 'I’ll open a new chat with /idea-board generate ready. Press send there, and ideas land here in a minute or two.', { maxWidth: PROSE }),
+            row({}, [jsx(Button, { onClick: () => { setFirstAsked(true); generateNow() }, children: 'Open a chat to make ideas' }, 'g')])
+          ]
   }[step]
 
   return jsxs('div', {
@@ -647,12 +708,12 @@ function SetupView({ data, onDone }) {
           ]),
           col({ gap: 8, alignItems: 'flex-start' }, [
             jsx(Button, {
-              variant: allDone || setup.done ? 'default' : 'secondary',
+              variant: allDone && !setup.done && !stepHasPrimary ? 'default' : 'secondary',
               disabled: save.isPending,
               onClick: finish,
               children: setup.done ? 'Back to my ideas' : hasIdeas ? 'Finish and show my ideas' : 'Finish setup'
             }),
-            txt('meta', C.t, setup.done ? 'Changes save as you make them.' : 'You can change any of this later from Setup.')
+            txt('meta', C.t, setup.done ? 'Changes save as you make them.' : !done[3] ? 'Nothing runs on its own until you schedule it.' : 'You can change any of this later from Setup.')
           ])
         ])
       }),
@@ -660,9 +721,12 @@ function SetupView({ data, onDone }) {
         className: 'ib-detail-col',
         children: kids([
           col({ gap: 12, maxWidth: 720 }, [
-            col({ gap: 2 }, [jsx(Overline, { children: `Step ${step} of 4` }), txt('title', C.p, steps[step - 1].title)]),
+            col({ gap: 2 }, [jsx(Overline, { children: `Step ${step} of 4` }), heading(2, 'title', C.p, steps[step - 1].title)]),
             ...detail,
-            step < 4 && row({ paddingTop: 4 }, [jsx(Button, { variant: 'secondary', onClick: next, children: 'Next' }, 'n')])
+            step < 4 &&
+              row({ paddingTop: 4 }, [
+                jsx(Button, { variant: step === 3 && !done[3] && mode === 'nightly' ? 'text' : 'secondary', onClick: next, children: step === 3 && !done[3] && mode === 'nightly' ? 'Skip for now' : 'Next' }, 'n')
+              ])
           ]),
           step === 1 && col({ maxWidth: 720, paddingTop: 12 }, [jsx(SampleIdea, { card: hasIdeas ? cards[0] : EXAMPLE_IDEA, example: !hasIdeas })])
         ])
@@ -685,17 +749,20 @@ function ListRow({ card, selected, onSelect }) {
 
 function Detail({ card, reasons, onStart, onSnooze, onDismiss, onNote }) {
   return col({ gap: 16, maxWidth: 720 }, [
-    col({ gap: 8 }, [txt('ideaTitle', C.p, card.title), jsx(MetaLine, { card })]),
+    col({ gap: 8 }, [heading(2, 'ideaTitle', C.p, card.title), jsx(MetaLine, { card })]),
     txt('body', C.s, card.why, { maxWidth: PROSE }),
     jsx(Evidence, { items: card.evidence }),
     jsx(Caps, { uses: card.uses }),
     jsx(PromptPreview, { card }),
-    row({ gap: 8, flexWrap: 'wrap', paddingTop: 8 }, [
-      jsxs(Button, { onClick: () => onStart(card), children: [icon('comment', { marginRight: 6 }), 'Start in a new chat'] }, 's'),
-      jsx(Button, { variant: 'secondary', onClick: () => onSnooze(card), children: 'Not now' }, 'n'),
-      jsx(DismissMenu, { card, reasons, onDismiss, onNote }, 'd')
+    col({ gap: 6, paddingTop: 8 }, [
+      row({ gap: 8, flexWrap: 'wrap' }, [
+        jsxs(Button, { onClick: () => onStart(card), children: [icon('comment', { marginRight: 6 }), 'Start in a new chat'] }, 's'),
+        jsx(Button, { variant: 'secondary', onClick: () => onSnooze(card), children: 'Not now' }, 'n'),
+        jsx(DismissMenu, { card, reasons, onDismiss, onNote }, 'd')
+      ]),
+      txt('meta', C.t, `You read it and press send. ${RISK[card.risk] || RISK.none}`)
     ]),
-    row({ ...T.meta, gap: 12, color: C.q, flexWrap: 'wrap' }, [
+    row({ ...T.meta, gap: 12, color: C.t, flexWrap: 'wrap' }, [
       jsxs('span', { children: [jsx(Kbd, { children: '↑' }), ' ', jsx(Kbd, { children: '↓' }), ' move'] }),
       jsxs('span', { children: [jsx(Kbd, { children: 'Enter' }), ' start'] }),
       jsxs('span', { children: [jsx(Kbd, { children: 'N' }), ' not now'] }),
@@ -725,24 +792,31 @@ function Started({ cards }) {
   ])
 }
 
-function Empty({ title, description, action }) {
+function Empty({ title, description, extra, action }) {
   return col({ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingBottom: 80 }, [
     jsx(EmptyState, { title, description, className: 'min-h-0' }),
+    extra,
     action
   ])
 }
 
-function Header({ data, inSetup, onRules, onSetup }) {
+const code = text =>
+  jsx('code', {
+    style: { ...T.meta, fontFamily: 'var(--font-mono)', padding: '1px 4px', borderRadius: 2, background: 'var(--ui-inline-code-background)', color: 'var(--ui-inline-code-foreground)' },
+    children: text
+  })
+
+function Header({ data, jobQuery, inSetup, onRules, onSetup, onSchedule }) {
   const setupDone = Boolean(data && data.setup && data.setup.done)
   return row({ justifyContent: 'space-between', alignItems: 'flex-end', gap: 16, paddingBottom: 12, borderBottom: `1px solid ${C.line}`, flexWrap: 'wrap' }, [
-    col({ gap: 4, minWidth: 0 }, [
+    col({ gap: 4, minWidth: 0, flex: '1 1 320px' }, [
       jsx('h1', { style: { ...T.title, color: C.p, margin: 0 }, children: 'Idea Board' }),
       inSetup
-        ? txt('meta', C.t, setupDone ? 'Setup' : 'Setup · about two minutes · nothing runs until you finish')
-        : data && jsx(Receipt, { run: data.last_run })
+        ? txt('meta', C.t, setupDone ? 'Setup' : 'Setup · about two minutes · I only run once you schedule me or ask')
+        : data && jsx(Receipt, { run: data.last_run, jobQuery, setup: data.setup, onSchedule })
     ]),
     setupDone && !inSetup &&
-      row({ gap: 8 }, [
+      row({ gap: 8, marginLeft: 'auto' }, [
         jsx(Button, { variant: 'text', onClick: onSetup, children: 'Setup' }, 'setup'),
         jsx(Button, { variant: 'secondary', onClick: onRules, children: `What I’ve learned (${data.rules.length})` }, 'rules')
       ])
@@ -757,6 +831,8 @@ function BoardPage() {
   const [rulesOpen, setRulesOpen] = useState(false)
   const [undo, setUndo] = useState(null)
   const [showSetup, setShowSetup] = useState(false)
+  const [setupStep, setSetupStep] = useState(null)
+  const job = useNightlyJob()
   const rootRef = useRef(null)
   const detailRef = useRef(null)
   const data = board.data
@@ -768,22 +844,22 @@ function BoardPage() {
   useEffect(() => {
     rootRef.current && rootRef.current.focus({ preventScroll: true })
   }, [])
-  useEffect(() => {
-    if (!undo) return
-    const t = setTimeout(() => setUndo(null), 10000)
-    return () => clearTimeout(t)
-  }, [undo])
 
   const refresh = () => qc.invalidateQueries({ queryKey: BOARD_KEY })
+  const focusRow = id =>
+    setTimeout(() => {
+      const root = rootRef.current
+      const b = root && id && root.querySelector(`[data-card="${id}"]`)
+      if (b) b.focus()
+      else if (root) root.focus({ preventScroll: true })
+    }, 60)
   const select = (id, { focus = false } = {}) => {
+    if (id !== selected) setUndo(null)
     setSelected(id)
     const root = rootRef.current
     if (!root) return
     if (focus) {
-      requestAnimationFrame(() => {
-        const b = root.querySelector(`[data-card="${id}"]`)
-        b && b.focus()
-      })
+      focusRow(id)
     } else if (root.clientWidth - 64 <= NARROW && detailRef.current) {
       // Stacked layout: bring the detail into view after picking from the list.
       requestAnimationFrame(() => detailRef.current && detailRef.current.scrollIntoView({ block: 'start' }))
@@ -793,6 +869,8 @@ function BoardPage() {
     const i = ordered.findIndex(c => c.id === card.id)
     const next = ordered[i + 1] || ordered[i - 1]
     setSelected(next ? next.id : null)
+    // Keep the keyboard flow going: focus moves to the idea that took this one's place.
+    focusRow(next && next.id)
   }
   const dismiss = useMutation({
     mutationFn: ({ card, reason, note }) => rest(`/cards/${card.id}/dismiss`, { method: 'POST', body: { reason, note } }),
@@ -800,7 +878,8 @@ function BoardPage() {
     onSuccess: (res, { card }) => {
       setUndo({
         card,
-        message: res.rule ? `Dismissed. I learned: ${res.rule}` : res.action === 'evidence_consumed' ? 'Dismissed. I’ll count that as handled.' : 'Dismissed.'
+        rule: Boolean(res.rule),
+        message: res.rule ? `Dismissed. ${res.rule}` : res.action === 'evidence_consumed' ? 'Dismissed. I’ll count that as handled.' : 'Dismissed.'
       })
       refresh()
     },
@@ -825,27 +904,37 @@ function BoardPage() {
     onError: failed('undo that')
   })
   const start = card => {
+    setUndo(null)
     startIdea(card).finally(refresh)
   }
   const onDismiss = (card, reason, note) => dismiss.mutate({ card, reason, note })
 
   const onKeyDown = e => {
-    if (inSetup || !current) return
-    const onRow = e.target.closest && e.target.closest('[data-card]')
-    if (e.target !== rootRef.current && !onRow) return
+    if (inSetup || !current || e.metaKey || e.ctrlKey || e.altKey) return
+    const t = e.target
+    // Keys work anywhere on the page except text fields and anything rendered outside it (dialogs, menus).
+    if (!rootRef.current || !rootRef.current.contains(t) || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable) return
+    const onRow = Boolean(t.closest && t.closest('[data-card]'))
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key
     const i = ordered.findIndex(c => c.id === current.id)
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
       e.preventDefault()
-      const n = ordered[Math.max(0, Math.min(ordered.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]
-      n && select(n.id, { focus: Boolean(onRow) })
-    } else if (e.key === 'Enter' || e.key === 's') {
+      const n = ordered[Math.max(0, Math.min(ordered.length - 1, i + (k === 'ArrowDown' ? 1 : -1)))]
+      n && select(n.id, { focus: onRow })
+    } else if ((k === 'Enter' && (onRow || t === rootRef.current)) || k === 's') {
       e.preventDefault()
       start(current)
-    } else if (e.key === 'n') {
+    } else if (k === 'n') {
+      e.preventDefault()
       snooze.mutate(current)
-    } else if (e.key === 'd') {
+    } else if (k === 'd') {
+      e.preventDefault()
       setNoteFor(current)
     }
+  }
+  const openSetup = step => {
+    setSetupStep(step || null)
+    setShowSetup(true)
   }
 
   let body
@@ -853,19 +942,22 @@ function BoardPage() {
     body = row({ flex: 1, justifyContent: 'center' }, jsx(Loader, {}))
   } else if (board.isError) {
     body = jsx(Empty, {
-      title: 'I can’t reach Idea Board on this profile',
-      description: 'Turn it on in Settings → Plugins and run hermes plugins enable idea-board. If you still see this, restart Hermes.',
+      title: 'Idea Board isn’t on for this profile',
+      description: 'Turn it on in Settings → Plugins. If it’s on and you still see this, enable its backend, then restart Hermes:',
+      extra: code('hermes plugins enable idea-board'),
       action: jsx(Button, { variant: 'secondary', onClick: () => host.navigate('/settings/plugins'), children: 'Open Plugins' })
     })
   } else if (inSetup) {
-    body = jsx(SetupView, { data, onDone: () => setShowSetup(false) })
+    body = jsx(SetupView, { data, initialStep: setupStep, onDone: () => setShowSetup(false) }, setupStep || 'setup')
   } else if (!cards.length) {
+    const next = job.data ? `I’ll look again tonight at ${timeLabel(job.data.schedule)}.` : 'Ask me to look again whenever you like.'
     body = jsx(Empty, {
       title: data.last_run ? 'No new ideas right now' : 'No ideas yet',
       description: data.last_run
-        ? 'Last run, I found nothing worth your time that you haven’t already seen. I’ll look again on the next run.'
+        ? `Last run, I found nothing worth your time that you haven’t already seen. ${next}`
         : 'I read your recent chats and what this profile can do, then suggest things I could take off your plate.',
-      action: jsx(Button, { onClick: generateNow, children: data.last_run ? 'Look again now' : 'Make ideas now' })
+      extra: txt('meta', C.t, 'This opens a new chat with /idea-board generate ready; press send there.'),
+      action: jsx(Button, { onClick: generateNow, children: data.last_run ? 'Look again in a new chat' : 'Make ideas in a new chat' })
     })
   } else {
     body = jsxs('div', {
@@ -895,6 +987,7 @@ function BoardPage() {
                 role: 'status',
                 children: kids([
                   jsx('span', { style: { flex: 1 }, children: undo.message }),
+                  undo.rule && jsx(Button, { variant: 'text', size: 'inline', onClick: () => setRulesOpen(true), children: 'Edit rules' }, 'r'),
                   jsx(Button, { variant: 'textStrong', size: 'inline', onClick: () => undoMut.mutate(undo.card), children: 'Undo' }, 'u')
                 ])
               }),
@@ -913,7 +1006,7 @@ function BoardPage() {
     style: { height: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', padding: '24px 32px 0', gap: 16, minHeight: 0, outline: 'none' },
     children: [
       jsx('style', { children: STYLE }),
-      jsx(Header, { data, inSetup, onRules: () => setRulesOpen(true), onSetup: () => setShowSetup(true) }),
+      jsx(Header, { data, jobQuery: job, inSetup, onRules: () => setRulesOpen(true), onSetup: () => openSetup(), onSchedule: () => openSetup(3) }),
       jsx('div', { style: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }, children: body }),
       data && jsx(NoteDialog, { card: noteFor, reasons: data.reasons, onClose: () => setNoteFor(null), onDismiss }, noteFor ? noteFor.id : 'none'),
       data && jsx(RulesDialog, { open: rulesOpen, onClose: () => setRulesOpen(false), rules: data.rules })

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-05T14:24:58+00:00",
+  "generatedAt": "2026-11-05T14:41:38+00:00",
   "title": "Design System: Idea Board",
   "extensions": {
     "colorMeta": {
@@ -116,22 +116,6 @@
           "oklch(95.0% 0.006 254.0)"
         ]
       },
-      "text-quaternary": {
-        "role": "neutral",
-        "displayName": "Quaternary Text",
-        "canonical": "var(--ui-text-quaternary)",
-        "lightSample": "#1f23285c",
-        "tonalRamp": [
-          "oklch(15.0% 0.010 254.0)",
-          "oklch(26.4% 0.011 254.0)",
-          "oklch(37.9% 0.010 254.0)",
-          "oklch(49.3% 0.010 254.0)",
-          "oklch(60.7% 0.009 254.0)",
-          "oklch(72.1% 0.008 254.0)",
-          "oklch(83.6% 0.007 254.0)",
-          "oklch(95.0% 0.006 254.0)"
-        ]
-      },
       "hairline": {
         "role": "neutral",
         "displayName": "Hairline",
@@ -146,6 +130,22 @@
           "oklch(72.1% 0.162 262.5)",
           "oklch(83.6% 0.149 262.5)",
           "oklch(95.0% 0.135 262.5)"
+        ]
+      },
+      "ring": {
+        "role": "neutral",
+        "displayName": "Ring",
+        "canonical": "var(--ui-stroke-secondary)",
+        "lightSample": "#0846c438",
+        "tonalRamp": [
+          "oklch(15.0% 0.168 262.5)",
+          "oklch(26.4% 0.182 262.5)",
+          "oklch(37.9% 0.196 262.5)",
+          "oklch(49.3% 0.199 262.5)",
+          "oklch(60.7% 0.185 262.5)",
+          "oklch(72.1% 0.171 262.5)",
+          "oklch(83.6% 0.157 262.5)",
+          "oklch(95.0% 0.143 262.5)"
         ]
       },
       "fill-soft": {
@@ -271,7 +271,7 @@
       },
       {
         "name": "dot-ring",
-        "value": "inset 0 0 0 1px var(--ui-stroke-tertiary)",
+        "value": "inset 0 0 0 1px var(--ui-stroke-secondary)",
         "purpose": "Empty day dots and unfinished step markers; a ring, not a shadow."
       }
     ],
@@ -348,7 +348,7 @@
       "refersTo": "quote",
       "description": "Signature: the user's words, dated by fourteen dots for the last two weeks.",
       "html": "<div class=\"ds-evidence\"><div class=\"ds-quote\">“How many applications today?”</div><div class=\"ds-ev-line\"><span class=\"ds-ribbon\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class=\"on\"></i><i></i><i></i><i class=\"on\"></i><i></i></span><span>2 days in the last two weeks</span><button class=\"ds-ev-open\">Open chat</button></div></div>",
-      "css": ".ds-evidence { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 4px; } .ds-quote { font-size: 0.9375rem; font-style: italic; line-height: 1.5; color: var(--ui-text-primary, #1f2328f0); } .ds-ev-line { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); } .ds-ribbon { display: inline-flex; gap: 3px; } .ds-ribbon i { width: 6px; height: 6px; border-radius: 9999px; box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary, #0a44bb25); } .ds-ribbon i.on { background: var(--ui-accent, #0053fd); box-shadow: none; } .ds-ev-open { all: unset; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; } .ds-ev-open:hover { color: var(--ui-text-primary, #1f2328f0); } .ds-ev-open:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); }"
+      "css": ".ds-evidence { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 4px; } .ds-quote { font-size: 0.9375rem; font-style: italic; line-height: 1.5; color: var(--ui-text-primary, #1f2328f0); } .ds-ev-line { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); } .ds-ribbon { display: inline-flex; gap: 3px; } .ds-ribbon i { width: 6px; height: 6px; border-radius: 9999px; box-shadow: inset 0 0 0 1px var(--ui-stroke-secondary, #0846c438); } .ds-ribbon i.on { background: var(--ui-accent, #0053fd); box-shadow: none; } .ds-ev-open { all: unset; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; } .ds-ev-open:hover { color: var(--ui-text-primary, #1f2328f0); } .ds-ev-open:focus-visible { outline: 2px solid var(--ui-accent, #0053fd); }"
     },
     {
       "name": "Idea Title",
@@ -363,7 +363,7 @@
       "kind": "card",
       "refersTo": "prompt-block",
       "description": "The message that will go into a new chat; matches Hermes's PROMPT block shape, in the sans.",
-      "html": "<div class=\"ds-prompt\"><div class=\"ds-prompt-label\">Prompt · goes into a new chat</div><div class=\"ds-prompt-body\">I keep asking how many applications went out today. Set up one evening scorecard so I stop asking.</div></div>",
+      "html": "<div class=\"ds-prompt\"><div class=\"ds-prompt-label\">Your message · goes into a new chat</div><div class=\"ds-prompt-body\">I keep asking how many applications went out today. Set up one evening scorecard so I stop asking.</div></div>",
       "css": ".ds-prompt { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; gap: 6px; max-width: 68ch; } .ds-prompt-label { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ui-text-tertiary, #1f23288a); } .ds-prompt-body { background: var(--ui-bg-quinary, #0f3b940f); color: var(--ui-text-secondary, #1f2328bd); border-radius: 4px; padding: 10px; font-size: 0.8125rem; line-height: 1.5; white-space: pre-wrap; }"
     },
     {
@@ -380,12 +380,12 @@
       "refersTo": "step-marker",
       "description": "Numbered step marker, filled blue with a check when done; Title-type step name.",
       "html": "<div class=\"ds-steps\"><div class=\"ds-step\"><span class=\"ds-mark done\">✓</span><span class=\"ds-step-title\">What it reads</span></div><div class=\"ds-step\"><span class=\"ds-mark\">2</span><span class=\"ds-step-title\">Which model writes the ideas</span></div></div>",
-      "css": ".ds-steps { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; } .ds-step { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-top: 1px solid var(--ui-stroke-tertiary, #0a44bb25); } .ds-mark { width: 18px; height: 18px; border-radius: 9999px; display: grid; place-items: center; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary, #0a44bb25); } .ds-mark.done { background: var(--ui-accent, #0053fd); color: var(--dt-primary-foreground, #fff); box-shadow: none; } .ds-step-title { font-size: 0.875rem; font-weight: 600; color: var(--ui-text-primary, #1f2328f0); }"
+      "css": ".ds-steps { font-family: var(--font-sans, 'Segoe UI', system-ui, sans-serif); display: flex; flex-direction: column; } .ds-step { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-top: 1px solid var(--ui-stroke-tertiary, #0a44bb25); } .ds-mark { width: 18px; height: 18px; border-radius: 9999px; display: grid; place-items: center; font-size: 0.7rem; color: var(--ui-text-tertiary, #1f23288a); box-shadow: inset 0 0 0 1px var(--ui-stroke-secondary, #0846c438); } .ds-mark.done { background: var(--ui-accent, #0053fd); color: var(--dt-primary-foreground, #fff); box-shadow: none; } .ds-step-title { font-size: 0.875rem; font-weight: 600; color: var(--ui-text-primary, #1f2328f0); }"
     }
   ],
   "narrative": {
     "northStar": "The Field Notebook",
-    "overview": "Idea Board is a field notebook kept inside Hermes Desktop. Each entry is dated, quotes the user in their own words, names the tools it would use, and ends with an offer that is ready to run. The notebook is quiet and factual: it never sells, never decorates, and never claims anything it can't show the date and the words for.\n\nThe notebook is written on Hermes's own paper. Every color, font, control, dialog and shadow comes from the host app, so Idea Board follows every theme, skin and light or dark mode with no work of its own, and reads as a first-party Hermes page. The page chrome (titles, rows, meta lines, controls) is exactly Hermes-sized. One moment on any page is allowed to be larger: the idea itself, meaning its title and the user's quoted words. That contrast is the whole visual identity; nothing else needs to be loud.\n\nDensity follows Hermes's Scheduled jobs page: a 14px page title, 12.5px list rows, 11px meta, uppercase 10px group labels, flat rows with a tinted selection, and one blue action per view. Separation comes from whitespace and single hairlines, never from boxes.",
+    "overview": "Idea Board is a field notebook kept inside Hermes Desktop. Each entry is dated, quotes the user in their own words, names the tools it would use, and ends with an offer that is ready to run. The notebook is quiet and factual: it never sells, never decorates, and never claims anything it can't show the date and the words for.\n\nThe notebook is written on Hermes's own paper. Every color, font, control, dialog and shadow comes from the host app, so Idea Board follows every theme, skin and light or dark mode with no work of its own, and reads as a first-party Hermes page. The page chrome (titles, rows, meta lines, controls) is exactly Hermes-sized. One moment on any page is allowed to be larger: the idea itself, meaning its title and the user's quoted words. That contrast is the whole visual identity; nothing else needs to be loud.\n\nDensity follows Hermes's Scheduled jobs page: a 14px page title, 12.5px list rows, 11.2px meta, uppercase 9.6px group labels, flat rows with a tinted selection, and one blue action per view. Separation comes from whitespace and single hairlines, never from boxes.",
     "keyCharacteristics": [
       "Borrowed ink: host variables only; no literal colors, fonts or shadows in plugin code.",
       "Hermes-sized chrome with one larger reading moment (idea title 20px, quotes 15px).",
@@ -401,7 +401,7 @@
       },
       {
         "name": "The One Blue Rule",
-        "body": "At most one filled blue control per view. Selection uses the row tint, not blue; links and text actions stay tertiary until hovered.",
+        "body": "At most one filled blue control per view, dialogs and setup steps included. Selection uses the row tint, not blue; links and text actions stay tertiary until hovered. Setup's Finish button turns blue only when the open step has no blue action of its own.",
         "section": "colors"
       },
       {
@@ -412,6 +412,11 @@
       {
         "name": "The Eight Roles Rule",
         "body": "Plugin code sets font sizes only from the roles above (0.6, 0.7, 0.75, 0.78, 0.8125, 0.875, 0.9375 and 1.25rem). No half-pixel one-offs.",
+        "section": "typography"
+      },
+      {
+        "name": "The Real Heading Rule",
+        "body": "The page title is an `h1`, the selected idea's title and each setup step title are `h2`, and setup's sample idea is an `h3`, so screen readers can jump between them.",
         "section": "typography"
       },
       {
@@ -430,11 +435,13 @@
       "**Do** take README and demo screenshots in Hermes's default light theme at 1280×800, with real ideas, never invented ones."
     ],
     "donts": [
-      "**Don't** write a hex, rgb or named color, a font-family, or a box-shadow in `plugin.js`.",
+      "**Don't** write a hex, rgb or named color, a font-family other than the host's `var(--font-mono)` for inline code, or a box-shadow other than the 1px inset Ring on empty day dots and step markers, in `plugin.js`.",
       "**Don't** reference `--ui-text-danger`; it doesn't exist in Hermes. Use `--ui-red` for errors.",
       "**Don't** use font sizes outside the eight roles (no 11.5, 13.5 or 22px one-offs; 12.5px comes only from the Row role).",
       "**Don't** box sections, nest cards, or add colored side stripes; use a hairline or whitespace.",
-      "**Don't** use the blue fill for selection or for more than one action in a view.",
+      "**Don't** use the blue fill for selection or for more than one action in a view, dialogs included.",
+      "**Don't** use Hermes's quaternary text tone; Tertiary is the faintest.",
+      "**Don't** put the agent's \"I\" next to the user's \"I\": the promise goes beside Start, not under the user's message.",
       "**Don't** add icons, emoji or color to capability badges or chat replies for decoration.",
       "**Don't** let a primary action sit below the fold; the body scrolls, the frame doesn't."
     ]

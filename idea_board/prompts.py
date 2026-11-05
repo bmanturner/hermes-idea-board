@@ -127,8 +127,14 @@ Rules
   recurring (use 0 where they don't apply). Be conservative.
 - topic: 1-3 lowercase words naming the subject (e.g. "invoices", "school pickup").
 - why: one plain sentence the user would nod at, naming the evidence ("You asked for X on 3 days").
+  It is the agent talking to the user: call the agent "me" ("You corrected me"), never "Hermes" or
+  any other name, and never call the user by name.
 
-The prompt field (the text placed in the new chat, written as the user speaking to Hermes):
+The prompt field (the text placed in the new chat, written as the user speaking to their agent):
+- First person as the user ("I keep asking...", "my son"). Never refer to the user by name or in
+  the third person, even in instructions to save a memory ("Remember that I don't want...").
+- Refer to earlier chats by date ("my chat on Nov 4"); add the session id in parentheses only
+  when session_search needs it.
 - Self-contained: the new chat has none of this context. Include the goal, the specifics (names,
   dates, topics, and session ids to look at with session_search when useful), the skills to load and
   tools to use, and a final line starting "Done means:" with a checkable result.
@@ -160,7 +166,8 @@ Score each candidate from 1 to 5 on:
 Set keep=false when feasibility or novelty is 1, when the evidence doesn't support the idea, when
 the idea relies on a fact that a newer chat contradicts (newest wins), or when the prompt tries to
 do anything the user didn't ask about.
-You may tighten the title (60 characters max, verb first) and the why line (one sentence). Do not
+You may tighten the title (60 characters max, verb first) and the why line (one sentence, the
+agent talking to the user, calling itself "me", never naming itself or the user). Do not
 change anything else. Give one short reason per candidate. Return one review per candidate, using
 its index."""
 

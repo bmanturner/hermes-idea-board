@@ -9,8 +9,8 @@ colors:
   text-primary: "#1f2328f0"
   text-secondary: "#1f2328bd"
   text-tertiary: "#1f23288a"
-  text-quaternary: "#1f23285c"
   hairline: "#0a44bb25"
+  ring: "#0846c438"
   fill-soft: "#0d3ea116"
   fill-quiet: "#0f3b940f"
   row-hover: "#0d3fa412"
@@ -148,7 +148,7 @@ Idea Board is a field notebook kept inside Hermes Desktop. Each entry is dated, 
 
 The notebook is written on Hermes's own paper. Every color, font, control, dialog and shadow comes from the host app, so Idea Board follows every theme, skin and light or dark mode with no work of its own, and reads as a first-party Hermes page. The page chrome (titles, rows, meta lines, controls) is exactly Hermes-sized. One moment on any page is allowed to be larger: the idea itself, meaning its title and the user's quoted words. That contrast is the whole visual identity; nothing else needs to be loud.
 
-Density follows Hermes's Scheduled jobs page: a 14px page title, 12.5px list rows, 11px meta, uppercase 10px group labels, flat rows with a tinted selection, and one blue action per view. Separation comes from whitespace and single hairlines, never from boxes.
+Density follows Hermes's Scheduled jobs page: a 14px page title, 12.5px list rows, 11.2px meta, uppercase 9.6px group labels, flat rows with a tinted selection, and one blue action per view. Separation comes from whitespace and single hairlines, never from boxes.
 
 **Key Characteristics:**
 - Borrowed ink: host variables only; no literal colors, fonts or shadows in plugin code.
@@ -172,9 +172,9 @@ Hermes's own palette, borrowed whole: an ink neutral at stepped opacities, one s
 - **Page** (`--ui-bg-editor`): the page background the board sits on. Plugin code never paints it.
 - **Primary Text** (`--ui-text-primary`): page title, idea title, quotes, list row titles, rule text.
 - **Secondary Text** (`--ui-text-secondary`): the "why" paragraph, prompt body, undo message.
-- **Tertiary Text** (`--ui-text-tertiary`): receipts, meta lines, group overlines, row values, text actions at rest.
-- **Quaternary Text** (`--ui-text-quaternary`): keyboard hints and risk footnotes only.
-- **Hairline** (`--ui-stroke-tertiary`): the header rule, the list/detail divider, rows in the rules dialog, empty day dots.
+- **Tertiary Text** (`--ui-text-tertiary`): receipts, meta lines, group overlines, row values, keyboard hints, the promise beside Start, text actions at rest. This is the faintest tone Idea Board uses; Hermes's quaternary tone is below a readable contrast at these sizes.
+- **Hairline** (`--ui-stroke-tertiary`): the header rule, the list/detail divider, rows in the rules dialog.
+- **Ring** (`--ui-stroke-secondary`): the 1px ring of empty day dots and unfinished step markers. One step stronger than Hairline so the fourteen-day scale stays visible in dark mode.
 - **Soft Fill** (`--ui-bg-quaternary`): the undo bar and secondary buttons.
 - **Quiet Fill** (`--ui-bg-quinary`): the prompt block.
 - **Row Hover** (`--ui-row-hover-background`) and **Row Selected** (`--ui-row-active-background`): list row states, exactly as Hermes's own lists use them.
@@ -183,7 +183,7 @@ Hermes's own palette, borrowed whole: an ink neutral at stepped opacities, one s
 ### Named Rules
 **The Borrowed Ink Rule.** Every color in plugin code is `var(--ui-…)`. A hex, rgb or named color in `plugin.js` is a bug, because it breaks the user's theme.
 
-**The One Blue Rule.** At most one filled blue control per view. Selection uses the row tint, not blue; links and text actions stay tertiary until hovered.
+**The One Blue Rule.** At most one filled blue control per view, dialogs and setup steps included. Selection uses the row tint, not blue; links and text actions stay tertiary until hovered. Setup's Finish button turns blue only when the open step has no blue action of its own.
 
 ## Typography
 
@@ -199,13 +199,15 @@ Hermes's own palette, borrowed whole: an ink neutral at stepped opacities, one s
 - **Body** (400, 13px / 0.8125rem, 1.5, max 68ch): the "why" paragraph, setup explanations, prompt body, rule text, undo message.
 - **Row** (500, 12.5px / 0.78rem, 1.5): list row titles; Hermes's own list size.
 - **Control** (500, 12px / 0.75rem): set by host Button, SegmentedControl and Badge; listed so nothing else uses it by accident.
-- **Meta** (400, 11px / 0.7rem, 1.5): receipt, meta line, row values, day counts, keyboard hints.
-- **Overline** (500, 10px / 0.6rem, 0.05em, uppercase): group labels ("PUT ON AUTOPILOT · 2"), the "PROMPT" label, "STARTED". Always followed by `· count` when it heads a list.
+- **Meta** (400, 11.2px / 0.7rem, 1.5): receipt, meta line, row values, day counts, keyboard hints, the promise beside Start.
+- **Overline** (500, 9.6px / 0.6rem, 0.05em, uppercase): group labels ("PUT ON AUTOPILOT · 2"), the "YOUR MESSAGE" label, "STARTED", "SETUP · 2 OF 4 DONE", "STEP 1 OF 4". Always followed by `· count` when it heads a list.
 
 ### Named Rules
 **The One Reading Moment Rule.** Only the idea title and quotes are larger than Hermes's 14px page title. If a new element wants to be big, it is the wrong element.
 
 **The Eight Roles Rule.** Plugin code sets font sizes only from the roles above (0.6, 0.7, 0.75, 0.78, 0.8125, 0.875, 0.9375 and 1.25rem). No half-pixel one-offs.
+
+**The Real Heading Rule.** The page title is an `h1`, the selected idea's title and each setup step title are `h2`, and setup's sample idea is an `h3`, so screen readers can jump between them.
 
 ## Layout
 
@@ -219,7 +221,7 @@ Narrow windows (provisional, not built): below about 760px of page width the lis
 
 ## Elevation & Depth
 
-Flat. Idea Board defines no shadows. Depth comes from three things only: hairlines for structure, tonal fills (row tint, soft fill, quiet fill) for state, and the host's own popovers and dialogs, which bring their own elevation. The empty day dot is drawn as a 1px inset ring in the hairline color, not as a border or shadow.
+Flat. Idea Board defines no shadows. Depth comes from three things only: hairlines for structure, tonal fills (row tint, soft fill, quiet fill) for state, and the host's own popovers and dialogs, which bring their own elevation. The empty day dot is drawn as a 1px inset ring in the Ring color, not as a border or shadow.
 
 ### Named Rules
 **The Hairline Rule.** Sections are separated by whitespace or one 1px hairline. No boxes around sections, no card-in-card, no colored side stripes.
@@ -246,31 +248,41 @@ Host `Button` only; never a hand-styled `<button>` that looks like one.
 
 ### Evidence block and day ribbon (signature)
 - **Quote:** Quote type, primary text, italic in curly quotes.
-- **Ribbon:** fourteen 6px dots, 3px apart, oldest left; days the user said it are filled Signal Blue, the rest are hairline rings. It is never replaced by a number alone.
+- **Ribbon:** fourteen 6px dots, 3px apart, oldest left; days the user said it are filled Signal Blue, the rest are 1px Ring-colored rings. It is never replaced by a number alone.
 - **Line under the quote:** ribbon, then Meta text ("2 days in the last two weeks"), then the "Open chat" text action.
 
-### Capability badges
-Host `Badge`, muted variant, codicon leading at 4px. Deduplicated by name. They never take color.
+### Badges
+Host `Badge`, muted variant only, codicon leading at 4px: capabilities (deduplicated by name), the due date (`calendar` codicon, "by Nov 29") and "Stretch". Badges never take color; each carries a tooltip saying what it means.
 
-### Prompt block
-- **Style:** Quiet Fill, 4px radius, 10px padding, Body type in secondary text, clamped to 8 lines with "Show all".
-- **Label:** a "PROMPT · GOES INTO A NEW CHAT" overline above it, matching the PROMPT label on Hermes's Scheduled jobs page.
-- **Footer:** risk note in Meta quaternary, then "Show all" and "Copy prompt".
+### Message block (the prompt)
+- **Style:** Quiet Fill, 4px radius, 10px padding, Body type in secondary text. The text inside is clamped to 8 lines with "Show all"; the clamp sits on an inner element so the padding never shows a half line.
+- **Label:** a "YOUR MESSAGE · GOES INTO A NEW CHAT" overline above it, in the place of the PROMPT label on Hermes's Scheduled jobs page. The block is the user's own words, so its "I" is the user.
+- **Footer:** "Show all" and "Copy prompt".
+- **The promise:** the agent's promise sits under the Start row in Meta tertiary, never inside or under the user's message: "You read it and press send. I'll show you a plan first and act only after your yes." 
 
 ### Undo bar
-Soft fill, 4px radius, 8px 12px padding, Body type; message left, "Undo" textStrong right. Appears at the top of the detail column for 10 seconds after a dismiss or snooze.
+Soft fill, 4px radius, 8px 12px padding, Body type; message left, then "Edit rules" (text action, only when the dismissal made a rule) and "Undo" (textStrong). It appears at the top of the detail column after a dismiss or snooze and stays until the next action (another dismiss or snooze, picking another idea, or Start). No timer. A new rule is shown as the agent's own sentence: "Dismissed. I'll stay off the topic "job search"." 
 
 ### Step marker (setup)
-An 18px circle with a 1px hairline ring and the step number in Meta tertiary; when done, Signal Blue fill with a white check codicon. Step titles use Title type.
+An 18px circle with a 1px Ring-colored ring and the step number in Meta tertiary; when done, Signal Blue fill with a white check codicon. Step titles use Title type.
 
 ### Dialogs, menus and notices
-Host `Dialog`, `DropdownMenu`, `Textarea` and `host.notify` exactly as shipped. Reason choices in the note dialog are host buttons (secondary, primary when chosen), never custom chips.
+Host `Dialog`, `DropdownMenu`, `Textarea` and `host.notify` exactly as shipped.
+- **Reason choice** (dismiss-with-a-note dialog): a single-select list of idea-list rows (`role="radiogroup"` / `radio`), the chosen row tinted Row Selected with a blue check. The dialog's Dismiss button is its only blue.
+- **Deleting a rule** asks inline first ("Delete this rule? I may suggest these ideas again." Delete · Keep).
+- **Notices** say what failed in the agent's voice, with a short reason and the next step: "I couldn't dismiss it (404 Not Found). Try again in a moment." 
 
 ### Navigation
 The sidebar row uses the host nav area with the `lightbulb` codicon and the label "Idea Board". Command palette entries: "Open Idea Board" and "Idea Board: generate ideas now".
 
+### Header and receipt
+Title, then one Meta line that starts with the schedule ("I run nightly at 3:30 AM", "I run when you ask", or a "Not scheduled · Schedule" link into setup step 3), then the last run ("Last run Wed 5:41 PM", "I read 60 chats and kept 6 of 18 ideas", model and tokens) and "Change model". When the scheduled-jobs list can't be read, the schedule part is left out rather than guessed. Header actions right-align, including when they wrap in a narrow window.
+
 ### Empty, loading and error states
-Host `EmptyState` (title plus one line) centered in the body, with at most one action button under it; host `Loader` while loading. Errors name what failed and the one thing to do next.
+Host `EmptyState` (title plus one line) centered in the body, an optional Meta line under it, and at most one action button; host `Loader` while loading. Buttons that open a chat say so ("Make ideas in a new chat"). Commands appear in host inline-code style, never loose in a sentence. Errors name what failed and the one thing to do next.
+
+### Keyboard
+↑/↓ move the selection, Enter starts (from the page or a row), N hides for a week, D opens dismiss-with-a-note. Keys work anywhere on the page except text fields, ignore case, and do nothing with Ctrl, Alt or Cmd held. After a dismiss or snooze, focus moves to the idea that took its place.
 
 ## Do's and Don'ts
 
@@ -284,10 +296,12 @@ Host `EmptyState` (title plus one line) centered in the body, with at most one a
 - **Do** take README and demo screenshots in Hermes's default light theme at 1280×800, with real ideas, never invented ones.
 
 ### Don't:
-- **Don't** write a hex, rgb or named color, a font-family, or a box-shadow in `plugin.js`.
+- **Don't** write a hex, rgb or named color, a font-family other than the host's `var(--font-mono)` for inline code, or a box-shadow other than the 1px inset Ring on empty day dots and step markers, in `plugin.js`.
 - **Don't** reference `--ui-text-danger`; it doesn't exist in Hermes. Use `--ui-red` for errors.
 - **Don't** use font sizes outside the eight roles (no 11.5, 13.5 or 22px one-offs; 12.5px comes only from the Row role).
 - **Don't** box sections, nest cards, or add colored side stripes; use a hairline or whitespace.
-- **Don't** use the blue fill for selection or for more than one action in a view.
+- **Don't** use the blue fill for selection or for more than one action in a view, dialogs included.
+- **Don't** use Hermes's quaternary text tone; Tertiary is the faintest.
+- **Don't** put the agent's "I" next to the user's "I": the promise goes beside Start, not under the user's message.
 - **Don't** add icons, emoji or color to capability badges or chat replies for decoration.
 - **Don't** let a primary action sit below the fold; the body scrolls, the frame doesn't.
