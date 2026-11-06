@@ -1090,7 +1090,7 @@ function BoardPage() {
           className: 'ib-list-col',
           children: kids([
             ...KINDS.map(k => {
-              const items = ordered.filter(c => c.kind === k.kind)  // connector recs ride in "Connect next"
+              const items = ordered.filter(c => c.kind === k.kind && c.status !== 'older')  // connector recs ride in "Connect next"
               if (!items.length) return null
               return col({ gap: 2 }, [
                 jsx(Overline, { iconName: k.icon, style: { paddingBottom: 4 }, children: `${k.label} · ${items.length}` }),
