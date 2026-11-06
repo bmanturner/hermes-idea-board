@@ -113,6 +113,7 @@ Rules
   CAPABILITIES. Only status=ready ids, except a connector card, which adds exactly one
   status=available connector.
 - Respect BOARD: no idea that repeats an open, started or dismissed card, and nothing a RULE forbids.
+  set_aside cards were shown and left untouched: don't offer them again in new words.
   Read rules as rules about kinds of ideas, not single cards. Do not propose a job AUTOMATIONS
   already has or a pending suggested job.
 - Facts change: when chats disagree (a price, a limit, a date), the newest chat wins. Put only

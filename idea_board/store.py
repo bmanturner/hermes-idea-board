@@ -40,6 +40,9 @@ def cap_label(cap_id: str) -> str:
     return name  # MCP servers keep the name the user gave them
 
 
+BOARD_SIZE = 12        # open ideas on the board at once
+OLDER_AFTER_DAYS = 7   # an idea nobody touched for this long moves to "Older"
+
 STALE_RUN_SECONDS = 30 * 60
 STALE_RUN_ERROR = "it stopped before finishing (Hermes may have restarted); the next run starts fresh"
 
@@ -166,15 +169,46 @@ class Store:
         return [self._card(r) for r in self.conn.execute(q, statuses)]
 
     def board(self, now: float | None = None) -> list[dict[str, Any]]:
-        """Open cards, with snoozes that have run out reopened and expired one-offs closed."""
+        """Open cards, best first, at most BOARD_SIZE: snoozes that ran out reopen, expired one-offs close,
+        and ideas set aside move to 'older' (see ``_set_aside``)."""
         now = now or time.time()
         today = time.strftime("%Y-%m-%d", time.localtime(now))
         self.conn.execute("UPDATE cards SET status = 'open', snooze_until = NULL, updated_at = ? "
                           "WHERE status = 'snoozed' AND snooze_until <= ?", (now, now))
         self.conn.execute("UPDATE cards SET status = 'expired', updated_at = ? "
-                          "WHERE status IN ('open', 'snoozed') AND expires IS NOT NULL AND expires < ?", (now, today))
+                          "WHERE status IN ('open', 'snoozed', 'older') AND expires IS NOT NULL AND expires < ?",
+                          (now, today))
+        self._set_aside(now)
         self.conn.commit()
         return self.cards(("open",))
+
+    def _set_aside(self, now: float) -> None:
+        """Keep the board short. Ideas from the newest run, and ideas the user brought back or that came
+        back from a snooze since then, keep their place. The rest move to 'older' when nobody touched them
+        for OLDER_AFTER_DAYS, or when they fall outside the best BOARD_SIZE."""
+        rows = [dict(r) for r in self.conn.execute(
+            "SELECT id, created_at, updated_at, score FROM cards WHERE status = 'open'")]
+        if not rows:
+            return
+        touched = {r["id"]: float(r["updated_at"] or r["created_at"] or 0) for r in rows}
+        fresh_since = max(float(r["created_at"] or 0) for r in rows) - 3600  # one run inserts within minutes
+        fresh = {i for i, t in touched.items() if t >= fresh_since}
+        stale_before = now - OLDER_AFTER_DAYS * 86400
+        aside = {r["id"] for r in rows if r["id"] not in fresh and touched[r["id"]] < stale_before}
+        keep = sorted((r for r in rows if r["id"] not in aside),
+                      key=lambda r: (r["id"] not in fresh, -float(r["score"] or 0)))
+        aside |= {r["id"] for r in keep[BOARD_SIZE:]}
+        if aside:
+            self.conn.executemany("UPDATE cards SET status = 'older', updated_at = ? WHERE id = ?",
+                                  [(now, i) for i in aside])
+
+    def restore(self, card_id: str) -> bool:
+        """Put an idea from 'Older' back on the board; it counts as fresh until the next run."""
+        card = self.card(card_id)
+        if not card or card["status"] != "older":
+            return False
+        self._set(card_id, status="open")
+        return True
 
     def _set(self, card_id: str, **fields: Any) -> None:
         fields["updated_at"] = time.time()
@@ -343,6 +377,7 @@ class Store:
             "open": [c for c in recent if c["status"] in OPEN],
             "started": [c for c in recent if c["status"] in ("started", "done")],
             "dismissed": [c for c in recent if c["status"] == "dismissed"],
+            "set_aside": [c for c in recent if c["status"] == "older"],
             "rules": [r["text"] for r in self.rules()],
         }
 

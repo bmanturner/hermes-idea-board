@@ -53,6 +53,21 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(len(api.board()["rules"]), 0)
         self.assertEqual([c["id"] for c in api.board()["cards"]], [ids[1]])
 
+    def test_older_ideas_listed_restored_and_startable(self):
+        ids = [c["id"] for c in api.board()["cards"]]
+        self.store.conn.execute("UPDATE cards SET status = 'older' WHERE id = ?", (ids[0],))
+        self.store.conn.commit()
+        b = api.board()
+        self.assertEqual(([c["id"] for c in b["older"]], b["older_count"]), ([ids[0]], 1))
+        self.assertNotIn(ids[0], [c["id"] for c in b["cards"]])
+        self.assertIn("updated_at", b["older"][0])
+        self.assertEqual(api.restore(ids[0]), {"ok": True})
+        self.assertIn(ids[0], [c["id"] for c in api.board()["cards"]])
+        self.store.conn.execute("UPDATE cards SET status = 'older' WHERE id = ?", (ids[0],))
+        self.store.conn.commit()
+        api.started(ids[0])
+        self.assertEqual(api.board()["started"][0]["id"], ids[0])
+
     def test_errors(self):
         with self.assertRaises(api.HTTPException):
             api.dismiss("IB-9999", api.DismissInput(reason="not_topic", note=""))

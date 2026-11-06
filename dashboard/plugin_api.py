@@ -65,7 +65,7 @@ def _label(cap_id: str) -> dict[str, str]:
 def _card_out(c: dict[str, Any]) -> dict[str, Any]:
     keys = ("id", "status", "kind", "lens", "topic", "title", "why", "prompt", "schedule", "expires", "risk",
             "value_note", "value_min", "score", "then_recurring", "created_at", "started_at", "session_id",
-            "outcome", "snooze_until")
+            "outcome", "snooze_until", "updated_at")
     out = {k: c.get(k) for k in keys}
     out["stretch"] = bool(c.get("stretch"))
     out["uses"] = [_label(u) for u in c.get("uses") or []]
@@ -105,6 +105,7 @@ class SetupInput(BaseModel):
 
 SETUP_DEFAULTS = {"history_days": 14, "max_cards": 6}
 ALLOWED = {"history_days": (7, 14, 30), "max_cards": (3, 6, 10)}
+OLDER_SHOWN = 20
 
 
 def _model_info() -> dict[str, Any]:
@@ -143,12 +144,16 @@ def health():
 def board():
     s = _store()
     store_mod = _core("store")
+    cards = s.board()  # first: it moves set-aside ideas to "older"
+    older = sorted(s.cards(("older",)), key=lambda c: -(c.get("updated_at") or 0))
     started = [c for c in s.cards(("started", "done")) if c.get("started_at")]
     started.sort(key=lambda c: -(c.get("started_at") or 0))
     return {
-        "cards": [_card_out(c) for c in s.board()],
+        "cards": [_card_out(c) for c in cards],
         "started": [_card_out(c) for c in started[:10]],
         "snoozed": [_card_out(c) for c in s.cards(("snoozed",))],
+        "older": [_card_out(c) for c in older[:OLDER_SHOWN]],
+        "older_count": len(older),
         "rules": [{"id": r["id"], "text": r["text"], "scope": r["scope"], "hits": r["hits"],
                    "created_at": r["created_at"]} for r in s.rules()],
         "last_run": _run_out(s.last_run()),
@@ -220,7 +225,7 @@ def _require(s, card_id: str) -> dict[str, Any]:
 def started(card_id: str):
     s = _store()
     card = _require(s, card_id)
-    if card["status"] in ("open", "snoozed"):
+    if card["status"] in ("open", "snoozed", "older"):
         s.mark_started(card_id)
     return {"ok": True}
 
@@ -245,6 +250,13 @@ def snooze(card_id: str, body: SnoozeInput):
     _require(s, card_id)
     s.snooze(card_id, max(1, min(90, int(body.days or 7))))
     return {"ok": True}
+
+
+@router.post("/cards/{card_id}/restore")
+def restore(card_id: str):
+    s = _store()
+    _require(s, card_id)
+    return {"ok": s.restore(card_id)}
 
 
 @router.post("/cards/{card_id}/undo")

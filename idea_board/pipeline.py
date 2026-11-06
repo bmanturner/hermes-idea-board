@@ -209,7 +209,7 @@ def duplicate_of(c: dict[str, Any], store: Store) -> str | None:
     only while it is still on the board or snoozed: once dismissed, the dismissal's rule decides what stays
     off (a "wrong tool" dismissal must not block a different idea on the same topic)."""
     key = title_key(c.get("title") or "")
-    for old in store.cards(("open", "snoozed", "started", "done", "dismissed")):
+    for old in store.cards(("open", "snoozed", "older", "started", "done", "dismissed")):
         if jaccard(key, title_key(old["title"] or "")) >= 0.6:
             return old["id"]
         if old["kind"] == c.get("kind") and old.get("topic") and topic_match(old["topic"], c.get("topic") or "") \

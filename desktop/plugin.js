@@ -743,20 +743,41 @@ function SetupView({ data, onDone, initialStep }) {
 }
 
 // ---- page --------------------------------------------------------------------------------------
-function ListRow({ card, selected, onSelect }) {
+function ListRow({ card, selected, onSelect, meta }) {
   return jsxs('button', {
     type: 'button',
     className: selected ? 'ib-row is-selected' : 'ib-row',
     'data-card': card.id,
     'aria-current': selected ? 'true' : undefined,
     onClick: onSelect,
-    children: [txt('row', C.p, card.title), txt('meta', C.t, card.value_note)]
+    children: [txt('row', C.p, card.title), txt('meta', C.t, meta || card.value_note)]
   })
 }
 
-function Detail({ card, reasons, onStart, onSnooze, onDismiss, onNote }) {
+// Ideas I set aside to keep the board short: untouched for a week, or past the best 12.
+function Older({ cards, count, open, onToggle, selectedId, onSelect }) {
+  if (!count) return null
+  return col({ gap: 2 }, [
+    row({ alignItems: 'center', justifyContent: 'space-between', gap: 8, paddingBottom: 4 }, [
+      jsx(Overline, { children: `Older · ${count}` }),
+      onToggle && jsx(Button, { variant: 'text', size: 'inline', 'aria-expanded': open, onClick: onToggle, children: open ? 'Hide' : 'Show' })
+    ]),
+    ...(open
+      ? cards.map(c =>
+          jsx(ListRow, { card: c, meta: `Set aside ${when(c.updated_at)}`, selected: c.id === selectedId, onSelect: () => onSelect(c.id) }, c.id)
+        )
+      : [])
+  ])
+}
+
+function Detail({ card, reasons, onStart, onSnooze, onRestore, onDismiss, onNote }) {
+  const older = card.status === 'older'
   return col({ gap: 16, maxWidth: 720 }, [
     col({ gap: 8 }, [heading(2, 'ideaTitle', C.p, card.title), jsx(MetaLine, { card })]),
+    older &&
+      txt('meta', C.t, `I set this aside ${when(card.updated_at)}, after a week with no decision or to make room for newer ideas.`, {
+        maxWidth: PROSE
+      }),
     txt('body', C.s, card.why, { maxWidth: PROSE }),
     jsx(Evidence, { items: card.evidence }),
     jsx(Caps, { uses: card.uses }),
@@ -764,7 +785,9 @@ function Detail({ card, reasons, onStart, onSnooze, onDismiss, onNote }) {
     col({ gap: 6, paddingTop: 8 }, [
       row({ gap: 8, flexWrap: 'wrap' }, [
         jsxs(Button, { onClick: () => onStart(card), children: [icon('comment', { marginRight: 6 }), 'Start in a new chat'] }, 's'),
-        jsx(Button, { variant: 'secondary', onClick: () => onSnooze(card), children: 'Not now' }, 'n'),
+        older
+          ? jsx(Button, { variant: 'secondary', onClick: () => onRestore(card), children: 'Back on the board' }, 'b')
+          : jsx(Button, { variant: 'secondary', onClick: () => onSnooze(card), children: 'Not now' }, 'n'),
         jsx(DismissMenu, { card, reasons, onDismiss, onNote }, 'd')
       ]),
       txt('meta', C.t, `You read it and press send. ${RISK[card.risk] || RISK.none}`)
@@ -772,7 +795,7 @@ function Detail({ card, reasons, onStart, onSnooze, onDismiss, onNote }) {
     row({ ...T.meta, gap: 12, color: C.t, flexWrap: 'wrap' }, [
       jsxs('span', { children: [jsx(Kbd, { children: '↑' }), ' ', jsx(Kbd, { children: '↓' }), ' move'] }),
       jsxs('span', { children: [jsx(Kbd, { children: 'Enter' }), ' start'] }),
-      jsxs('span', { children: [jsx(Kbd, { children: 'N' }), ' not now'] }),
+      !older && jsxs('span', { children: [jsx(Kbd, { children: 'N' }), ' not now'] }, 'n'),
       jsxs('span', { children: [jsx(Kbd, { children: 'D' }), ' dismiss'] })
     ])
   ])
@@ -898,6 +921,7 @@ function BoardPage() {
   const [undo, setUndo] = useState(null)
   const [showSetup, setShowSetup] = useState(false)
   const [setupStep, setSetupStep] = useState(null)
+  const [showOlder, setShowOlder] = useState(false)
   const job = useNightlyJob()
   const rootRef = useRef(null)
   const detailRef = useRef(null)
@@ -905,8 +929,15 @@ function BoardPage() {
   const cards = data ? data.cards : []
   const suggested = new Set(cards.flatMap(c => (c.kind === 'connector' ? (c.uses || []).map(u => u.id) : [])))
   const recs = (data && data.connectors ? data.connectors : []).filter(r => !suggested.has(`connector:${r.slug}`))
-  // Connector recommendations follow the model's own "Connect next" cards, at the end of the list.
-  const ordered = useMemo(() => [...KINDS.flatMap(k => cards.filter(c => c.kind === k.kind)), ...recs.map(recItem)], [cards, recs])
+  const older = data ? data.older || [] : []
+  const olderCount = data ? data.older_count || older.length : 0
+  // With nothing new on the board, show what I set aside instead of an empty page.
+  const olderOpen = showOlder || (!cards.length && !recs.length)
+  // Connector recommendations follow the model's own "Connect next" cards; older ideas come last.
+  const ordered = useMemo(
+    () => [...KINDS.flatMap(k => cards.filter(c => c.kind === k.kind)), ...recs.map(recItem), ...(olderOpen ? older : [])],
+    [cards, recs, older, olderOpen]
+  )
   const current = ordered.find(c => c.id === selected) || ordered[0]
   const inSetup = Boolean(data && data.setup && (!data.setup.done || showSetup))
 
@@ -973,6 +1004,15 @@ function BoardPage() {
     },
     onError: failed('hide it')
   })
+  const restore = useMutation({
+    mutationFn: card => rest(`/cards/${card.id}/restore`, { method: 'POST' }),
+    onSuccess: (_r, card) => {
+      setUndo(null)
+      setSelected(card.id)
+      refresh()
+    },
+    onError: failed('put it back on the board')
+  })
   const undoMut = useMutation({
     mutationFn: u =>
       u.kind === 'conn'
@@ -1007,7 +1047,7 @@ function BoardPage() {
     } else if ((k === 'Enter' && (onRow || t === rootRef.current)) || k === 's') {
       e.preventDefault()
       start(current)
-    } else if (k === 'n') {
+    } else if (k === 'n' && current.status !== 'older') {
       e.preventDefault()
       current.isRec ? hideRec.mutate(current) : snooze.mutate(current)
     } else if (k === 'd') {
@@ -1057,7 +1097,13 @@ function BoardPage() {
                 ...items.map(c => jsx(ListRow, { card: c, selected: current && c.id === current.id, onSelect: () => select(c.id) }, c.id))
               ])
             }),
-            jsx(Started, { cards: data.started }, 'started')
+            !cards.length && !recs.length && txt('meta', C.t, 'Nothing new on the board right now. These are ideas I set aside.'),
+            jsx(Started, { cards: data.started }, 'started'),
+            jsx(
+              Older,
+              { cards: older, count: olderCount, open: olderOpen, onToggle: cards.length || recs.length ? () => setShowOlder(!showOlder) : null, selectedId: current && current.id, onSelect: id => select(id) },
+              'older'
+            )
           ])
         }),
         jsx('div', {
@@ -1077,7 +1123,11 @@ function BoardPage() {
             current &&
               (current.isRec
                 ? jsx(ConnectorDetail, { item: current, onConnect: start, onHide: it => hideRec.mutate(it) }, current.id)
-                : jsx(Detail, { card: current, reasons: data.reasons, onStart: start, onSnooze: c => snooze.mutate(c), onDismiss, onNote: setNoteFor }, current.id))
+                : jsx(
+                    Detail,
+                    { card: current, reasons: data.reasons, onStart: start, onSnooze: c => snooze.mutate(c), onRestore: c => restore.mutate(c), onDismiss, onNote: setNoteFor },
+                    current.id
+                  ))
           ])
         })
       ]

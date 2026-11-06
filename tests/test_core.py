@@ -134,6 +134,50 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(store_mod.cap_label("skill:pdf"), "the pdf skill")
         self.assertEqual(store_mod.cap_label("toolset:code_execution"), "the code execution tools")
 
+    def test_board_stays_short_and_sets_ideas_aside(self):
+        s = new_store()
+        day = 86400.0
+        now = __import__("time").time()  # restore() stamps the real clock
+
+        def run(n, at, base):
+            ids = []
+            for i in range(n):
+                cid = self.card(s, title=f"Idea {base + i}", topic=f"topic {base + i}", score=float(base + i))
+                s.conn.execute("UPDATE cards SET created_at = ?, updated_at = ? WHERE id = ?", (at, at, cid))
+                ids.append(cid)
+            s.conn.commit()
+            return ids
+
+        week_old = run(2, now - 8 * day, 100)   # strong but untouched for 8 days
+        earlier = run(10, now - 2 * day, 1)     # scores 1..10
+        newest = run(6, now - 3600, 0)          # scores 0..5: weaker, but the newest run
+        open_ids = [c["id"] for c in s.board(now=now)]
+        self.assertEqual(len(open_ids), store_mod.BOARD_SIZE)
+        self.assertTrue(set(newest) <= set(open_ids), "the newest run always shows")
+        self.assertEqual(set(open_ids) - set(newest), set(earlier[-6:]), "the rest go to the best earlier ideas")
+        older = {c["id"] for c in s.cards(("older",))}
+        self.assertEqual(older, set(week_old) | set(earlier[:4]))
+        # Bring one back: it is fresh until the next run, so it stays even though it scores low,
+        # and the weakest earlier idea makes room for it
+        self.assertTrue(s.restore(earlier[0]))
+        open_ids = [c["id"] for c in s.board(now=now)]
+        self.assertIn(earlier[0], open_ids)
+        self.assertNotIn(earlier[4], open_ids)
+        self.assertEqual(len(open_ids), store_mod.BOARD_SIZE)
+        self.assertFalse(s.restore(newest[0]), "only older ideas can be restored")
+        older = {c["id"] for c in s.cards(("older",))}
+        # Set-aside ideas are history for the next run, not open work
+        hist = s.history_for_prompt()
+        self.assertTrue({c["id"] for c in hist["set_aside"]} <= older)
+        self.assertFalse(older & {c["id"] for c in hist["open"]})
+
+    def test_runs_stopping_never_empties_the_board(self):
+        s = new_store()
+        cid = self.card(s)
+        s.conn.execute("UPDATE cards SET created_at = 0, updated_at = 0 WHERE id = ?", (cid,))
+        s.conn.commit()
+        self.assertEqual([c["id"] for c in s.board()], [cid])
+
     def test_snooze_reopens(self):
         s = new_store()
         a = self.card(s)
@@ -247,6 +291,14 @@ class PipelineTests(unittest.TestCase):
                           uses=[u for u in first["uses"] if u not in self.store.rules()[0]["match"]["capability"]])
         rep3 = pipeline.run(self.pkt, fake_llm([other_tool]), self.store, now=fixtures.NOW)
         self.assertEqual([k["title"] for k in rep3.kept], ["Chase Acme about the unpaid invoice"], rep3.rejected)
+
+    def test_set_aside_idea_is_not_offered_again(self):
+        rep = pipeline.run(self.pkt, fake_llm([cand()]), self.store, now=fixtures.NOW)
+        self.store.conn.execute("UPDATE cards SET status = 'older' WHERE id = ?", (rep.kept[0]["id"],))
+        rep2 = pipeline.run(self.pkt, fake_llm([cand(title="Draft the Acme invoice from Harvest each Monday")]),
+                            self.store, now=fixtures.NOW)
+        self.assertEqual(rep2.kept, [])
+        self.assertIn("repeats", rep2.rejected[0]["why"])
 
     def test_critic_can_drop(self):
         rev = [{"index": 0, "keep": False, "value": 2, "specificity": 1, "feasibility": 3, "novelty": 3,
