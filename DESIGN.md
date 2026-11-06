@@ -245,6 +245,7 @@ Host `Button` only; never a hand-styled `<button>` that looks like one.
 - **Content:** title in Row type (primary text), value line under it in Meta (tertiary), 2px apart.
 - **States:** hover takes Row Hover; selected takes Row Selected and stays 500 weight (no weight jump, so rows don't reflow). Keyboard ↑/↓ moves the selection; the focused page owns the keys.
 - **Groups:** an overline with the kind's codicon and count heads each group.
+- **Older:** last in the list, under an overline "Older · n" with a Show/Hide text action (no toggle when nothing else is on the board, where it opens by itself). Its rows carry "Set aside <day time>" as the value line. The detail adds one Meta line saying why it was set aside, and "Back on the board" (secondary) takes the place of "Not now".
 
 ### Evidence block and day ribbon (signature)
 - **Quote:** Quote type, primary text, italic in curly quotes.
@@ -289,7 +290,7 @@ Title, then one Meta line that starts with the schedule ("I run nightly at 3:30 
 Host `EmptyState` (title plus one line) centered in the body, an optional Meta line under it, and at most one action button; host `Loader` while loading. Buttons that open a chat say so ("Make ideas in a new chat"). Commands appear in host inline-code style, never loose in a sentence. Errors name what failed and the one thing to do next.
 
 ### Keyboard
-↑/↓ move the selection, Enter starts (from the page or a row), N hides for a week, D opens dismiss-with-a-note. Keys work anywhere on the page except text fields, ignore case, and do nothing with Ctrl, Alt or Cmd held. After a dismiss or snooze, focus moves to the idea that took its place.
+↑/↓ move the selection, Enter starts (from the page or a row), N hides for a week (not on Older ideas), D opens dismiss-with-a-note. Keys work anywhere on the page except text fields, ignore case, and do nothing with Ctrl, Alt or Cmd held. After a dismiss or snooze, focus moves to the idea that took its place.
 
 ## Do's and Don'ts
 

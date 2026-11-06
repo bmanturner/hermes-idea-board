@@ -75,6 +75,7 @@ Setup stores your choices in the plugin's own data. Without setup, these keys in
 - `↑`/`↓` move, `Enter` starts, `N` hides an idea for a week, `D` dismisses with a reason.
 - **Dismiss reasons:** *Not relevant to me*, *Not this topic*, *Don't automate this*, *Too risky* and *Wrong tool for this* become rules. *Already handled* marks the evidence as done. A rule starts narrow (this topic) and widens only when a second dismissal agrees. **What I've learned** lists every rule; edit or delete them there.
 - **Started** lists ideas you've started, linked to their chats.
+- **Older:** the board holds at most 12 ideas. Ideas from my newest run always show; the rest of the room goes to the best earlier ones. An idea left without a decision for a week, or pushed out of the top 12, moves to *Older*, where you can still start it, dismiss it, or put it back on the board. I don't offer set-aside ideas again in new words.
 
 ## Commands and tools
 
