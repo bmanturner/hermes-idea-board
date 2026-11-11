@@ -945,6 +945,13 @@ function BoardPage() {
     rootRef.current && rootRef.current.focus({ preventScroll: true })
   }, [])
 
+  // A newly selected idea starts at its top, where the undo bar and title are.
+  const currentId = current ? current.id : null
+  useEffect(() => {
+    const el = detailRef.current
+    if (el && el.scrollTop) el.scrollTo({ top: 0 })
+  }, [currentId])
+
   const refresh = () => qc.invalidateQueries({ queryKey: BOARD_KEY })
   const focusRow = id =>
     setTimeout(() => {
